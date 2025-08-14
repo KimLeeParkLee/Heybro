@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 
 @Entity
 @AllArgsConstructor
@@ -29,7 +30,7 @@ public class User {
 
     private String gender; // 성별
 
-    private String birthDate; // 생년원일
+    private Timestamp birthDate; // 생년원일
 
     private String phone; // 핸드폰 번호
 
