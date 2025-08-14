@@ -34,6 +34,4 @@ public class UserRegistrationResponseDto {
 
     @Schema(description = "브로 레벨")
     private int broLevel;
-
-
 }
