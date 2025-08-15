@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Schema(description = "로그인 응답 DTO")
 public class LoginResponseDto {
     @Schema(description = "회원 식별키")
-    private String userId;
+    private Long userId;
 
     @Schema(description = "닉네임")
     private String nickname;
@@ -29,9 +29,9 @@ public class LoginResponseDto {
     @Schema(description = "알림 설정 여부")
     private boolean notificationEnabled;
 
-    @Schema(description = "알림 설정 여부")
+    @Schema(description = "브로 포인트")
     private int broPoint;
 
-    @Schema(description = "알림 설정 여부")
+    @Schema(description = "브로 레벨")
     private int broLevel;
 }
