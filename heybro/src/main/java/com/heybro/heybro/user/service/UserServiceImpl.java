@@ -6,6 +6,7 @@ import com.heybro.heybro.user.dto.response.UserRegistrationResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserRegistrationResponseDto registerNewUser(UserRegistrationRequestDto requestDto) {
@@ -20,7 +22,7 @@ public class UserServiceImpl implements UserService {
                 .userName(requestDto.getUserName())
                 .nickname(requestDto.getNickname())
                 .email(requestDto.getEmail())
-                .password(requestDto.getPassword())
+                .password(passwordEncoder.encode(requestDto.getPassword()))
                 .gender(requestDto.getGender())
                 .birthDate(requestDto.getBirthDate())
                 .phone(requestDto.getPhone())
