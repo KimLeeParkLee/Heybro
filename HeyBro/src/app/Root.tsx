@@ -1,23 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider as JotaiProvider } from 'jotai';
-import { StatusBar } from 'react-native';
+import { StatusBar, ActivityIndicator } from 'react-native';
 
-// Import the UI primitive wrappers
 import { View } from '../shared/components/ui/View';
-import { Text } from '../shared/components/ui/Text';
-import RootNavigator from '../app/navigation/RootNavigator'; // Add this import
+import RootNavigator from './navigation/RootNavigator';
+import { useAuth } from '../features/auth/hooks/useAuth';
+
+/**
+ * This component handles the session restoration logic.
+ * It shows a loading indicator while checking for a stored session
+ * and then renders the main navigator.
+ */
+function AppContent() {
+  const { restoreSession } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const bootstrapAsync = async () => {
+      try {
+        await restoreSession();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    bootstrapAsync();
+  }, [restoreSession]);
+
+  if (isLoading) {
+    // You can replace this with a proper splash screen component later
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return <RootNavigator />;
+}
 
 function Root(): React.JSX.Element {
-  // Determine initial dark mode based on system preference or a default
-  // For now, let's assume a light theme by default, and dark mode can be toggled later.
-  const isDarkMode = false; // This will be managed by Jotai themeAtom later
+  const isDarkMode = false; // This will be managed by a Jotai themeAtom later
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? '#1a202c' : '#f7fafc', // Using colors from tailwind.config.js
-    flex: 1,
+    backgroundColor: isDarkMode ? '#1a202c' : '#f7fafc',
   };
 
   return (
@@ -29,8 +58,7 @@ function Root(): React.JSX.Element {
               barStyle={isDarkMode ? 'light-content' : 'dark-content'}
               backgroundColor={backgroundStyle.backgroundColor}
             />
-            {/* Replace the placeholder content with RootNavigator */}
-            <RootNavigator />
+            <AppContent />
           </NavigationContainer>
         </GestureHandlerRootView>
       </SafeAreaProvider>

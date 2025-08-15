@@ -17,9 +17,9 @@ module.exports = function(api) {
           },
         },
       ],
-      'react-native-worklets/plugin',
-      // 항상 마지막
-      'react-native-reanimated/plugin',
+      ['react-native-worklets/plugin', {}, 'rn-worklets'],
+
+      ['react-native-reanimated/plugin', {}, 'rn-reanimated'],
     ],
   };
 };
