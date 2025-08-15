@@ -35,7 +35,8 @@ public class User {
 
     private int totalBroPoint; // 누적 브로 포인트
 
-    private int broLevel; // 브로 레벨
+    @Builder.Default
+    private int broLevel = 1; // 브로 레벨
 
     private int experience; // 경험치
 
