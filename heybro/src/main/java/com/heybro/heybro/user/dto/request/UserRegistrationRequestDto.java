@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -29,7 +30,7 @@ public class UserRegistrationRequestDto {
     private String gender;
 
     @Schema(description = "생년월일")
-    private Timestamp birthDate;
+    private LocalDate birthDate;
 
     @Schema(description = "핸드폰 번호")
     private String phone;

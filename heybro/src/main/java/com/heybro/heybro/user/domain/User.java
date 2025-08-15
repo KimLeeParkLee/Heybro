@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Builder
 public class User {
@@ -26,7 +27,7 @@ public class User {
 
     private String gender; // 성별
 
-    private Timestamp birthDate; // 생년월일
+    private LocalDate birthDate; // 생년월일
 
     private String phone; // 핸드폰 번호
 
@@ -51,9 +52,4 @@ public class User {
     private boolean notificationEnabled; // 알림 설정 여부
 
     private String notificationToken; // 알림 토큰
-
-    public User() {
-        this.broPoint = 0;
-        this.broLevel = 1;
-    }
 }

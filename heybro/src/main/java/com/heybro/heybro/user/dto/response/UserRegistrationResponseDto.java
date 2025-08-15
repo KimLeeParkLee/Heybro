@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -24,7 +25,7 @@ public class UserRegistrationResponseDto {
     private String gender;
 
     @Schema(description = "생년월일")
-    private Timestamp birthDate;
+    private LocalDate birthDate;
 
     @Schema(description = "알림 설정 여부")
     private boolean notificationEnabled;
