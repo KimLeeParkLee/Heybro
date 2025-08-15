@@ -4,11 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "회원가입 요청 DTO")
