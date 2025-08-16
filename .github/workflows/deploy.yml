@@ -41,4 +41,4 @@ jobs:
             docker rm my-app-container || true
 
             # 받은 이미지로 새 컨테이너 실행
-            docker run -d --name my-app-container -p 8080:8080 rladbsk/heybro-backend:latest
+            docker run -d --name my-app-container --network="host" -e "SPRING_PROFILES_ACTIVE=prod" rladbsk/heybro-backend:latest
