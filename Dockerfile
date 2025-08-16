@@ -10,6 +10,12 @@ WORKDIR /app
 # Gradle Wrapper 파일을 먼저 복사하여 종속성 캐싱을 활용합니다.
 COPY gradlew .
 COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY gradle.properties .
+
+# gradlew 실행 권한 부여
+RUN chmod +x gradlew
 
 # build.gradle 파일을 복사합니다.
 COPY build.gradle .
