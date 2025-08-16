@@ -1,0 +1,44 @@
+name: Deploy to GCP VM
+
+on:
+  push:
+    branches: [ "backend" ] # backend 브랜치에 푸시될 때 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # 1. Docker Hub에 로그인 (Docker Hub ID/비번도 Secret으로 등록해야 함)
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 2. Docker 이미지 빌드 및 푸시
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: rladbsk/heybro-backend:latest # 자신의 Docker Hub ID와 앱 이름으로 변경
+
+      # 3. SSH로 GCP 서버에 접속하여 배포 스크립트 실행
+      - name: Deploy to GCP VM via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.GCP_SSH_HOST }}
+          username: ${{ secrets.GCP_SSH_USERNAME }}
+          key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          script: |
+            # Docker Hub에서 최신 이미지 받기
+            docker pull rladbsk/heybro-backend:latest
+
+            # 기존에 실행 중인 컨테이너가 있으면 중지 및 삭제
+            docker stop my-app-container || true
+            docker rm my-app-container || true
+
+            # 받은 이미지로 새 컨테이너 실행
+            docker run -d --name my-app-container -p 8080:8080 rladbsk/heybro-backend:latest
