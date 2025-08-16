@@ -1,0 +1,11 @@
+name: Actions Test
+
+on:
+  push: # 어떤 브랜치든 상관없이 push만 하면 실행됩니다.
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print a message
+        run: echo "Hello World! The workflow is running!"

@@ -1,6 +1,5 @@
 package com.heybro.heybro.common.advice;
 
-import com.heybro.heybro.common.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
