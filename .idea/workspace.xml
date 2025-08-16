@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-    </list>
+    <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,6 +13,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -55,7 +57,7 @@
       <option name="presentableId" value="Default" />
       <updated>1755061314104</updated>
       <workItem from="1755061315394" duration="5000" />
-      <workItem from="1755354010421" duration="1095000" />
+      <workItem from="1755354010421" duration="1680000" />
     </task>
     <servers />
   </component>
