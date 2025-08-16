@@ -2,7 +2,7 @@
 # 1단계: 프로젝트 빌드 (Builder Stage)
 # =================================================================
 # Java 17 JDK가 설치된 이미지를 기반으로 빌드 환경을 구성합니다.
-FROM amazon/amazoncorretto:17-jdk-alpine AS builder
+FROM amazoncorretto:17-alpine AS builder
 
 # 작업 디렉터리를 /app으로 설정합니다.
 WORKDIR /app
@@ -26,7 +26,7 @@ RUN ./gradlew bootJar -x test
 # 2단계: 최종 이미지 생성 (Final Stage)
 # =================================================================
 # Java 17 JRE(실행 환경)만 포함된 훨씬 가벼운 이미지를 기반으로 합니다.
-FROM amazon/amazoncorretto:17-jre-alpine
+FROM amazoncorretto:17-alpine
 
 # 작업 디렉터리를 /app으로 설정합니다.
 WORKDIR /app
