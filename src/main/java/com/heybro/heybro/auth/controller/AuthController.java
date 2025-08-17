@@ -4,11 +4,13 @@ import com.heybro.heybro.common.jwt.JwtUtil;
 import com.heybro.heybro.common.response.ApiResponse;
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
+import com.heybro.heybro.user.security.UserDetailsImpl;
 import com.heybro.heybro.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,5 +57,11 @@ public class AuthController {
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
 
         return ApiResponse.success("Access Token이 재발급되었습니다.");
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.logout(userDetails.getUsername());
+        return ApiResponse.success("성공적으로 로그아웃되었습니다.");
     }
 }
