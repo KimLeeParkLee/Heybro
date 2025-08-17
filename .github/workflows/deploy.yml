@@ -33,7 +33,6 @@ jobs:
           username: ${{ secrets.GCP_SSH_USERNAME }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
-          strict_host_key_checking: false  # 처음 접속 시 yes 자동 처리
           script: |
             # Docker Hub에서 최신 이미지 받기
             docker pull rladbsk/heybro-backend:latest
