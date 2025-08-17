@@ -91,18 +91,6 @@ public class UserServiceImpl implements UserService {
                 TimeUnit.MILLISECONDS
         );
 
-        // Access Token 헤더에 추가
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
-
-        // Refresh Token을 HttpOnly 쿠키에 추가
-        ResponseCookie cookie = ResponseCookie.from(AuthController.REFRESH_TOKEN_COOKIE_NAME, refreshToken)
-                .httpOnly(true)
-                .secure(true) // HTTPS 환경에서만 전송
-                .path("/")
-                .maxAge(refreshTokenExpiration / 1000) // 초 단위로 변환
-                .build();
-        response.addHeader("Set-Cookie", cookie.toString());
-
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new ResourceNotFoundException("해당 이메일을 가진 유저를 찾을 수 없습니다: " + email)
         );
@@ -115,6 +103,8 @@ public class UserServiceImpl implements UserService {
                 .notificationEnabled(user.isNotificationEnabled())
                 .broPoint(user.getBroPoint())
                 .broLevel(user.getBroLevel())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 }
