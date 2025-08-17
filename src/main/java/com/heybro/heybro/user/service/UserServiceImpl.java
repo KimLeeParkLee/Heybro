@@ -108,6 +108,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void logout(String email) {
+        redisTemplate.delete(email);
+    }
+
+    @Override
     public EmailValidationResponseDto checkEmail(String email) {
         boolean exists = userRepository.findByEmail(email).isPresent();
         return EmailValidationResponseDto.builder().duplicate(exists).build();
