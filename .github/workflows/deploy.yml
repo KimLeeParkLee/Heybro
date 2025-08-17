@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # 1. Docker Hub에 로그인 (Docker Hub ID/비번도 Secret으로 등록해야 함)
+      # 1. Docker Hub에 로그인
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -32,6 +32,8 @@ jobs:
           host: ${{ secrets.GCP_SSH_HOST }}
           username: ${{ secrets.GCP_SSH_USERNAME }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          port: 22
+          strict_host_key_checking: false  # 처음 접속 시 yes 자동 처리
           script: |
             # Docker Hub에서 최신 이미지 받기
             docker pull rladbsk/heybro-backend:latest
@@ -41,4 +43,7 @@ jobs:
             docker rm my-app-container || true
 
             # 받은 이미지로 새 컨테이너 실행
-            docker run -d --name my-app-container --network="host" -e "SPRING_PROFILES_ACTIVE=prod" -e "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" rladbsk/heybro-backend:latest
+            docker run -d --name my-app-container --network="host" \
+              -e "SPRING_PROFILES_ACTIVE=prod" \
+              -e "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" \
+              rladbsk/heybro-backend:latest
