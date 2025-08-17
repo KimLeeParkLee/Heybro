@@ -1,11 +1,11 @@
 package com.heybro.heybro.user.service;
 
-import com.heybro.heybro.auth.controller.AuthController;
 import com.heybro.heybro.common.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.jwt.JwtUtil;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
+import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
 import com.heybro.heybro.user.dto.response.UserRegistrationResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -106,5 +105,11 @@ public class UserServiceImpl implements UserService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    @Override
+    public EmailValidationResponseDto checkEmail(String email) {
+        boolean exists = userRepository.findByEmail(email).isPresent();
+        return EmailValidationResponseDto.builder().duplicate(exists).build();
     }
 }
