@@ -41,10 +41,10 @@ public class JwtUtil {
         Date now = new Date();
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(email)
-                        .setExpiration(new Date(now.getTime() + accessTokenExpiration))
-                        .setIssuedAt(now)
-                        .signWith(key, signatureAlgorithm)
+                        .subject(email)
+                        .issuedAt(now)
+                        .expiration(new Date(now.getTime() + accessTokenExpiration))
+                        .signWith(key)
                         .compact();
     }
 
@@ -52,10 +52,10 @@ public class JwtUtil {
     public String generateRefreshToken(String email) {
         Date now = new Date();
         return Jwts.builder()
-                .setSubject(email)
-                .setExpiration(new Date(now.getTime() + refreshTokenExpiration))
-                .setIssuedAt(now)
-                .signWith(key, signatureAlgorithm)
+                .subject(email)
+                .issuedAt(now)
+                .expiration(new Date(now.getTime() + refreshTokenExpiration))
+                .signWith(key)
                 .compact();
     }
 
