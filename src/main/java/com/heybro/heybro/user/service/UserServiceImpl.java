@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, String> redisTemplate;
+    public static final String BEARER_PREFIX = "Bearer ";
 
     @Value("${jwt.expiration.refresh-token}")
     private long refreshTokenExpiration;
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
         String email = userDetails.getUsername();
 
         // Access Token, Refresh Token 생성
-        String accessToken = jwtUtil.generateAccessToken(email);
+        String accessToken = BEARER_PREFIX + jwtUtil.generateAccessToken(email);
         String refreshToken = jwtUtil.generateRefreshToken(email);
 
         // Redis에 Refresh Token 저장

@@ -28,6 +28,7 @@ public class AuthController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, String> redisTemplate;
+    public static final String BEARER_PREFIX = "Bearer ";
 
     @Operation(summary = "일반 로그인")
     @PostMapping("/login")
@@ -55,7 +56,7 @@ public class AuthController {
         }
 
         // 새로운 Access Token 생성
-        String newAccessToken = jwtUtil.generateAccessToken(email);
+        String newAccessToken = BEARER_PREFIX + jwtUtil.generateAccessToken(email);
         return AccessTokenResponseDto.builder().accessToken(newAccessToken).build();
     }
 

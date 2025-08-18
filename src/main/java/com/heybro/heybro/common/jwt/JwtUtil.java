@@ -28,7 +28,6 @@ public class JwtUtil {
     private long refreshTokenExpiration;
 
     private SecretKey key; // Change type to SecretKey
-    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     @PostConstruct
     public void init() {
@@ -39,8 +38,7 @@ public class JwtUtil {
     // Access Token 생성
     public String generateAccessToken(String email) {
         Date now = new Date();
-        return BEARER_PREFIX +
-                Jwts.builder()
+        return Jwts.builder()
                         .subject(email)
                         .issuedAt(now)
                         .expiration(new Date(now.getTime() + accessTokenExpiration))
@@ -92,13 +90,14 @@ public class JwtUtil {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다. Error: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.");
+            log.error("Expired JWT token, 만료된 JWT token 입니다. Error: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다. Error: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
-            log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
-        }        return false;
+            log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다. Error: {}", e.getMessage());
+        }
+        return false;
     }
 }
