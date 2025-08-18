@@ -11,7 +11,7 @@ import HomeScreen from '../../features/home/screens/HomeScreen';
 import SettingsScreen from '../../features/settings/screens/SettingsScreen';
 
 // Define your screen types for better type safety
-type AuthStackParamList = {
+export type AuthStackParamList = {
   Login: undefined;
   Register: undefined;
 };

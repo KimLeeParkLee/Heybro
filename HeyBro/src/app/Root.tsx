@@ -1,9 +1,11 @@
+import '../shared/api/logFetch'; // Activate fetch logger
 import React, { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider as JotaiProvider } from 'jotai';
 import { StatusBar, ActivityIndicator } from 'react-native';
+import { jotaiStore } from './store'; // 중앙 스토어 import
 
 import { View } from '../shared/components/ui/View';
 import RootNavigator from './navigation/RootNavigator';
@@ -50,7 +52,7 @@ function Root(): React.JSX.Element {
   };
 
   return (
-    <JotaiProvider>
+    <JotaiProvider store={jotaiStore}>
       <SafeAreaProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <NavigationContainer>

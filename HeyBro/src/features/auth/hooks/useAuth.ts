@@ -1,59 +1,81 @@
 import { useAtom } from 'jotai';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import { sessionAtom, userAtom, User, Session } from '../state/authAtoms';
+import { sessionAtom, userAtom, Session, User } from '../state/authAtoms';
+import {
+  loginApi,
+  registerApi,
+  logoutUser,
+  loginWithOAuthApi,
+} from '../services/authService';
+import {
+  LoginCredentials,
+  RegisterCredentials,
+  AuthResponseData,
+  OAuthLoginRequest,
+  OAuthNewUserData,
+} from '../types/auth.types';
 
-// API 로그인 응답 타입 정의
-interface LoginResponse {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-}
-
-// 보안 저장소에 사용될 키 정의
 const SESSION_STORAGE_KEY = 'heybro_session';
+
+// Type guard to check if the response is for a new user
+function isNewUser(data: any): data is OAuthNewUserData {
+  return data && data.is_new_user === true;
+}
 
 export const useAuth = () => {
   const [session, setSession] = useAtom(sessionAtom);
   const [, setUser] = useAtom(userAtom);
 
-  // 로그인 처리 함수
-  const login = async (response: LoginResponse) => {
+  const handleAuthSuccess = async (authData: AuthResponseData) => {
+    const { access_token, refresh_token, ...userData } = authData;
     const newSession: Session = {
       isAuthenticated: true,
-      accessToken: response.accessToken,
-      refreshToken: response.refreshToken,
+      accessToken: access_token.replace('Bearer ', ''),
+      refreshToken: refresh_token,
     };
-
-    // 1. Jotai 상태 업데이트
     setSession(newSession);
-    setUser(response.user);
-
-    // 2. 보안 저장소에 세션 정보 저장
+    setUser(userData as User);
     await EncryptedStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(newSession));
   };
 
-  // 로그아웃 처리 함수
-  const logout = async () => {
-    // 1. Jotai 상태 초기화
-    setSession({ isAuthenticated: false, accessToken: null, refreshToken: null });
-    setUser(null);
+  // --- Public Hook Methods ---
 
-    // 2. 보안 저장소에서 세션 정보 삭제
-    await EncryptedStorage.removeItem(SESSION_STORAGE_KEY);
+  const login = async (credentials: LoginCredentials) => {
+    const authData = await loginApi(credentials);
+    await handleAuthSuccess(authData);
   };
 
-  // 앱 시작 시 세션 복원 함수
+  const register = async (credentials: RegisterCredentials) => {
+    const authData = await registerApi(credentials);
+    await handleAuthSuccess(authData);
+  };
+
+  const loginWithOAuth = async (
+    credentials: OAuthLoginRequest
+  ): Promise<OAuthNewUserData | void> => {
+    const response = await loginWithOAuthApi(credentials);
+    if (isNewUser(response)) {
+      // It's a new user, return the partial data so the UI can navigate
+      // to the registration completion screen.
+      return response;
+    }
+    // It's an existing user, proceed with login.
+    await handleAuthSuccess(response);
+  };
+
+  const logout = async () => {
+    await logoutUser();
+  };
+
   const restoreSession = async () => {
     try {
       const storedSession = await EncryptedStorage.getItem(SESSION_STORAGE_KEY);
       if (storedSession) {
         const parsedSession: Session = JSON.parse(storedSession);
-        // TODO: 여기서 refreshToken 유효성 검사 후 accessToken 재발급 로직 추가 가능
         setSession(parsedSession);
       }
     } catch (error) {
-      console.error("Failed to restore session:", error);
-      // 세션 복원 실패 시 로그아웃 처리
+      console.error('Failed to restore session:', error);
       await logout();
     }
   };
@@ -61,6 +83,8 @@ export const useAuth = () => {
   return {
     ...session,
     login,
+    register,
+    loginWithOAuth,
     logout,
     restoreSession,
   };

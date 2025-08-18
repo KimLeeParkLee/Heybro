@@ -9,7 +9,7 @@ export const themeAtom = atomWithStorage<'light' | 'dark'>('appTheme', 'light');
 // Initial state can be null or an empty object, indicating no active session
 export const sessionAtom = atom<null | { token: string; user: any }>(null);
 
-// Is Bootstrapped Atom: Indicates if the application's initial setup (e.g., splash screen, data loading) is complete
+// Is Bootstrapped Atom: Indicates if t3he application's initial setup (e.g., splash screen, data loading) is complete
 export const isBootstrappedAtom = atom<boolean>(false);
 
 // Example of a derived atom (read-only calculation)
