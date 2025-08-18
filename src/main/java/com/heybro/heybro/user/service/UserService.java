@@ -14,7 +14,7 @@ public interface UserService {
 
     LoginResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response);
 
-    void logout(String email);
+    void logout(String accessToken);
 
     EmailValidationResponseDto checkEmail(String email);
 }

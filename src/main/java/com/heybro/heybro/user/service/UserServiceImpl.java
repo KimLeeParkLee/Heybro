@@ -108,8 +108,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void logout(String email) {
-        redisTemplate.delete(email);
+    public void logout(String accessToken) {
+        long remainingTime = jwtUtil.getRemainingTime(accessToken);
+
+        // 남은 유효 시간이 0보다 클 경우, Redis에 블랙리스트로 추가
+        // Key: accessToken, Value: "logout", TTL: 남은 유효 시간
+        if (remainingTime > 0) {
+            redisTemplate.opsForValue().set(
+                    accessToken,
+                    "logout",
+                    remainingTime,
+                    TimeUnit.MILLISECONDS
+            );
+        }
+
+        // refresh token 삭제
+        redisTemplate.delete(jwtUtil.getEmailFromToken(accessToken));
 
     }
 

@@ -4,14 +4,13 @@ import com.heybro.heybro.common.jwt.JwtUtil;
 import com.heybro.heybro.common.response.ApiResponse;
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
-import com.heybro.heybro.user.security.UserDetailsImpl;
 import com.heybro.heybro.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,8 +60,15 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        userService.logout(userDetails.getUsername());
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String accessToken = authHeader.substring(7);
+
+            userService.logout(accessToken);
+        }
+
         return ResponseEntity.noContent().build();
     }
 }
