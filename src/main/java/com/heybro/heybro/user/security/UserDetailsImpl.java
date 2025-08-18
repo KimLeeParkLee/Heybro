@@ -33,7 +33,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        UserRoleEnum role = UserRoleEnum.USER; // 하드코딩된 권한
+        UserRoleEnum role = user.getRole();
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getAuthority());
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(authority);

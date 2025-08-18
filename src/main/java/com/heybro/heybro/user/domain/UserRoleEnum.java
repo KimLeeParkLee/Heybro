@@ -1,15 +1,14 @@
 package com.heybro.heybro.user.domain;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum UserRoleEnum {
-    USER("ROLE_USER"),  // 사용자 권한
-    ADMIN("ROLE_ADMIN");  // 관리자 권한
+
+    USER("ROLE_USER"),
+    ADMIN("ROLE_ADMIN");
 
     private final String authority;
-
-    UserRoleEnum(String authority) {
-        this.authority = authority;
-    }
 }

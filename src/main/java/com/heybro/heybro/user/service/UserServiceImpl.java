@@ -1,13 +1,15 @@
 package com.heybro.heybro.user.service;
 
+import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
 import com.heybro.heybro.common.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.jwt.JwtUtil;
 import com.heybro.heybro.user.domain.User;
+import com.heybro.heybro.user.domain.UserRoleEnum;
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
-import com.heybro.heybro.user.dto.response.UserRegistrationResponseDto;
+import com.heybro.heybro.user.dto.response.SingUpResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserRegistrationResponseDto registerNewUser(UserRegistrationRequestDto requestDto) {
+    public SingUpResponseDto registerNewUser(UserRegistrationRequestDto requestDto) {
         if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new IllegalStateException("이미 가입된 이메일입니다.");
         }
@@ -55,11 +57,12 @@ public class UserServiceImpl implements UserService {
                 .privacyConsent(requestDto.isPrivacyConsent())
                 .marketingConsent(requestDto.isMarketingConsent())
                 .notificationEnabled(requestDto.isNotificationEnabled())
+                .role(UserRoleEnum.USER)
                 .build();
 
         User savedUser = userRepository.save(user);
 
-        return UserRegistrationResponseDto.builder()
+        return SingUpResponseDto.builder()
                 .userId(savedUser.getUserId())
                 .nickname(savedUser.getNickname())
                 .gender(savedUser.getGender())
@@ -78,10 +81,11 @@ public class UserServiceImpl implements UserService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         String email = userDetails.getUsername();
+        UserRoleEnum role = userDetails.getUser().getRole();
 
         // Access Token, Refresh Token 생성
-        String accessToken = BEARER_PREFIX + jwtUtil.generateAccessToken(email);
-        String refreshToken = jwtUtil.generateRefreshToken(email);
+        String accessToken = BEARER_PREFIX + jwtUtil.createAccessToken(email, role);
+        String refreshToken = jwtUtil.createRefreshToken(email, role);
 
         // Redis에 Refresh Token 저장
         redisTemplate.opsForValue().set(
@@ -132,5 +136,28 @@ public class UserServiceImpl implements UserService {
     public EmailValidationResponseDto checkEmail(String email) {
         boolean exists = userRepository.findByEmail(email).isPresent();
         return EmailValidationResponseDto.builder().duplicate(exists).build();
+    }
+
+    @Override
+    public AccessTokenResponseDto reissueAccessToken(String refreshToken) {
+        if (!jwtUtil.validateToken(refreshToken)) {
+            throw new IllegalArgumentException("유효하지 않은 Refresh Token 입니다.");
+        }
+
+        String email = jwtUtil.getEmailFromToken(refreshToken);
+        String storedRefreshToken = redisTemplate.opsForValue().get(email);
+
+        if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
+            throw new IllegalArgumentException("Refresh Token이 일치하지 않습니다.");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+
+        String newAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(user.getEmail(), user.getRole());
+
+        return AccessTokenResponseDto.builder()
+                .accessToken(newAccessToken)
+                .build();
     }
 }

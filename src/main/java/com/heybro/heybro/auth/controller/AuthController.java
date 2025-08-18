@@ -1,11 +1,16 @@
 package com.heybro.heybro.auth.controller;
 
-import com.heybro.heybro.auth.controller.dto.request.RefreshTokenRequestDto;
-import com.heybro.heybro.auth.controller.dto.response.AccessTokenResponseDto;
+import com.heybro.heybro.auth.dto.request.OAuth2LoginRequestDto;
+import com.heybro.heybro.auth.dto.request.RefreshTokenRequestDto;
+import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
+import com.heybro.heybro.auth.service.OAuth2LoginServiceImpl;
+import com.heybro.heybro.common.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.jwt.JwtUtil;
 import com.heybro.heybro.common.response.ApiResponse;
+import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
+import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,10 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -26,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
+    private final OAuth2LoginServiceImpl oAuth2LoginServiceImpl;
+    private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, String> redisTemplate;
     public static final String BEARER_PREFIX = "Bearer ";
@@ -36,6 +40,12 @@ public class AuthController {
         return ApiResponse.success(userService.login(loginRequestDto, response));
     }
 
+    @Operation(summary = "소셜 로그인(Kakao, Google)")
+    @PostMapping("/oauth2/authorization")
+    public ApiResponse<Object> oauth2Login(@RequestBody OAuth2LoginRequestDto requestDto) {
+        return ApiResponse.success(oAuth2LoginServiceImpl.oauth2Login(requestDto));
+    }
+
     @Operation(summary = "access token 재발행")
     @PostMapping("/refresh")
     public AccessTokenResponseDto refreshAccessToken(@RequestBody RefreshTokenRequestDto requestDto) {
@@ -43,20 +53,23 @@ public class AuthController {
             throw new IllegalArgumentException("Refresh Token이 없습니다.");
         }
 
+        String refreshToken = requestDto.getRefreshToken();
         // Refresh Token 유효성 검증
-        if (!jwtUtil.validateToken(requestDto.getRefreshToken())) {
+        if (!jwtUtil.validateToken(refreshToken)) {
             throw new IllegalArgumentException("유효하지 않은 Refresh Token 입니다.");
         }
 
-        String email = jwtUtil.getEmailFromToken(requestDto.getRefreshToken());
+        String email = jwtUtil.getEmailFromToken(refreshToken);
         String storedRefreshToken = redisTemplate.opsForValue().get(email);
 
-        if (storedRefreshToken == null || !storedRefreshToken.equals(requestDto.getRefreshToken())) {
+        if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
             throw new IllegalArgumentException("Refresh Token이 일치하지 않습니다.");
         }
 
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         // 새로운 Access Token 생성
-        String newAccessToken = BEARER_PREFIX + jwtUtil.generateAccessToken(email);
+        String newAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(email, user.getRole());
         return AccessTokenResponseDto.builder().accessToken(newAccessToken).build();
     }
 

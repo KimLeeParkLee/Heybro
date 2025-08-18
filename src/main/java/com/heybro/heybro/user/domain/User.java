@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Builder
 public class User {
     @Id
@@ -53,4 +54,11 @@ public class User {
     private boolean notificationEnabled; // 알림 설정 여부
 
     private String notificationToken; // 알림 토큰
+
+    @Enumerated(EnumType.STRING)
+    private UserRoleEnum role;
+
+    private String provider;
+
+    private String providerId;
 }

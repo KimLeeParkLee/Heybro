@@ -1,5 +1,6 @@
 package com.heybro.heybro.common.jwt;
 
+import com.heybro.heybro.user.domain.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -7,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey; // Import this
+import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
 
@@ -17,6 +18,7 @@ public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
+    private static final String KEY_ROLE = "role";
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -27,7 +29,7 @@ public class JwtUtil {
     @Value("${jwt.expiration.refresh-token}")
     private long refreshTokenExpiration;
 
-    private SecretKey key; // Change type to SecretKey
+    private SecretKey key;
 
     @PostConstruct
     public void init() {
@@ -36,49 +38,57 @@ public class JwtUtil {
     }
 
     // Access Token 생성
-    public String generateAccessToken(String email) {
-        Date now = new Date();
-        return Jwts.builder()
-                        .subject(email)
-                        .issuedAt(now)
-                        .expiration(new Date(now.getTime() + accessTokenExpiration))
-                        .signWith(key)
-                        .compact();
+    public String createAccessToken(String email, UserRoleEnum role) {
+        return generateToken(email, role, accessTokenExpiration);
     }
 
     // Refresh Token 생성
-    public String generateRefreshToken(String email) {
+    public String createRefreshToken(String email, UserRoleEnum role) {
+        return generateToken(email, role, refreshTokenExpiration);
+    }
+
+    // Backward compatibility
+    public String generateAccessToken(String email) {
+        return generateToken(email, null, accessTokenExpiration);
+    }
+
+    private String generateToken(String email, UserRoleEnum role, long expiration) {
         Date now = new Date();
-        return Jwts.builder()
+        JwtBuilder builder = Jwts.builder()
                 .subject(email)
                 .issuedAt(now)
-                .expiration(new Date(now.getTime() + refreshTokenExpiration))
-                .signWith(key)
-                .compact();
+                .expiration(new Date(now.getTime() + expiration))
+                .signWith(key);
+
+        if (role != null) {
+            builder.claim(KEY_ROLE, role.getAuthority());
+        }
+
+        return builder.compact();
     }
 
     // 토큰에서 사용자 정보 가져오기
     public String getEmailFromToken(String token) {
-        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getSubject();
+        return getClaims(token).getSubject();
+    }
+
+    public UserRoleEnum getRoleFromToken(String token) {
+        String role = (String) getClaims(token).get(KEY_ROLE);
+        return UserRoleEnum.valueOf(role);
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
     }
 
     // 토큰에서 만료 시간 추출하여 남은 유효 시간 계산하기
     public long getRemainingTime(String token) {
         try {
-            // 토큰 파싱해서 클레임 가져오기
-            Claims claims = Jwts.parser()
-                    .verifyWith(key) // key는 JwtUtil에 이미 있는 서명 키 변수
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-
+            Claims claims = getClaims(token);
             Date expirationDate = claims.getExpiration();
             long now = new Date().getTime();
-
-            // 남은 유효 시간 계산
             return expirationDate.getTime() - now;
         } catch (Exception e) {
-            // 토큰이 유효하지 않거나 만료된 경우 0을 반환
             log.error("유효하지 않은 토큰입니다: {}", e.getMessage());
             return 0;
         }
@@ -87,7 +97,7 @@ public class JwtUtil {
     // 토큰 유효성 검증
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+            getClaims(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다. Error: {}", e.getMessage());

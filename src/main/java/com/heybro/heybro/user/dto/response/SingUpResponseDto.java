@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Getter
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "회원가입 응답 DTO")
-public class UserRegistrationResponseDto {
+public class SingUpResponseDto {
     @Schema(description = "회원 식별키")
     private Long userId;
 

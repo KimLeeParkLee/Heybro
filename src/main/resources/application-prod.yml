@@ -43,7 +43,7 @@ spring:
             client-id: ${KAKAO_CLIENT_ID}
             client-authentication-method: post
             authorization-grant-type: authorization_code
-            redirect-uri: http://34.22.78.152:8080/api/login/oauth2/kakao
+            redirect-uri: https://kimleeparklee/api/login/oauth2/kakao
             scope:
               - account_email
           google:

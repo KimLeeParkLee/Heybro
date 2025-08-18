@@ -1,4 +1,4 @@
-package com.heybro.heybro.auth.controller.dto.response;
+package com.heybro.heybro.auth.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
