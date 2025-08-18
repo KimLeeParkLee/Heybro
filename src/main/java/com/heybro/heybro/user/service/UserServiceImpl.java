@@ -110,6 +110,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void logout(String email) {
         redisTemplate.delete(email);
+
     }
 
     @Override
