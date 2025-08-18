@@ -1,6 +1,8 @@
 package com.heybro.heybro.common.jwt;
 
 import com.heybro.heybro.user.service.UserDetailsServiceImpl;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,11 +32,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = resolveToken(request);
 
         if (StringUtils.hasText(token)) {
-            if (jwtUtil.validateToken(token)) {
-                String userEmail = jwtUtil.getEmailFromToken(token);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            try {
+                if (jwtUtil.validateToken(token)) {
+                    String userEmail = jwtUtil.getEmailFromToken(token);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (ExpiredJwtException e) {
+                log.error("Expired JWT token: {}", e.getMessage());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+                response.setContentType("application/json");
+                response.getWriter().write("{\"message\": \"Expired JWT token\"}");
+                return;
+            } catch (JwtException e) {
+                log.error("Invalid JWT token: {}", e.getMessage());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+                response.setContentType("application/json");
+                response.getWriter().write("{\"message\": \"Invalid JWT token\"}");
+                return;
             }
         }
 
