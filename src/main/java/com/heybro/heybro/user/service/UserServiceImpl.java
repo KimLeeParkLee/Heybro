@@ -9,7 +9,6 @@ import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
-import com.heybro.heybro.user.dto.response.SingUpResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public SingUpResponseDto registerNewUser(UserRegistrationRequestDto requestDto) {
+    public LoginResponseDto registerNewUser(UserRegistrationRequestDto requestDto) {
         if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new IllegalStateException("이미 가입된 이메일입니다.");
         }
@@ -57,12 +56,26 @@ public class UserServiceImpl implements UserService {
                 .privacyConsent(requestDto.isPrivacyConsent())
                 .marketingConsent(requestDto.isMarketingConsent())
                 .notificationEnabled(requestDto.isNotificationEnabled())
-                
                 .build();
 
+        // 1. 사용자 정보 DB에 저장
         User savedUser = userRepository.save(user);
 
-        return SingUpResponseDto.builder()
+        // 2. Access Token, Refresh Token 생성
+        String email = savedUser.getEmail();
+        String accessToken = BEARER_PREFIX + jwtUtil.createAccessToken(email);
+        String refreshToken = jwtUtil.createRefreshToken(email);
+
+        // 3. Redis에 Refresh Token 저장
+        redisTemplate.opsForValue().set(
+                email,
+                refreshToken,
+                refreshTokenExpiration,
+                TimeUnit.MILLISECONDS
+        );
+
+        // 4. LoginResponseDto 형태로 사용자 정보와 토큰 반환
+        return LoginResponseDto.builder()
                 .userId(savedUser.getUserId())
                 .nickname(savedUser.getNickname())
                 .gender(savedUser.getGender())
@@ -70,6 +83,8 @@ public class UserServiceImpl implements UserService {
                 .notificationEnabled(savedUser.isNotificationEnabled())
                 .broPoint(savedUser.getBroPoint())
                 .broLevel(savedUser.getBroLevel())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 

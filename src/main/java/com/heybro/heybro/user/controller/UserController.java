@@ -2,7 +2,7 @@ package com.heybro.heybro.user.controller;
 
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
-import com.heybro.heybro.user.dto.response.SingUpResponseDto;
+import com.heybro.heybro.user.dto.response.LoginResponseDto;
 import com.heybro.heybro.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +22,7 @@ public class UserController {
     @Operation(summary = "회원가입")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SingUpResponseDto registerUser(@RequestBody UserRegistrationRequestDto requestDto) {
+    public LoginResponseDto registerUser(@RequestBody UserRegistrationRequestDto requestDto) {
         return userService.registerNewUser(requestDto);
     }
 

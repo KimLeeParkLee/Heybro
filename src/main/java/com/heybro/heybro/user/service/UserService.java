@@ -5,13 +5,12 @@ import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
-import com.heybro.heybro.user.dto.response.SingUpResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
-    SingUpResponseDto registerNewUser(UserRegistrationRequestDto requestDto);
+    LoginResponseDto registerNewUser(UserRegistrationRequestDto requestDto);
 
     LoginResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response);
 
