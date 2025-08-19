@@ -45,4 +45,6 @@ jobs:
             docker run -d --name my-app-container --network="host" \
               -e "SPRING_PROFILES_ACTIVE=prod" \
               -e "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" \
+              -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
+            
               rladbsk/heybro-backend:latest
