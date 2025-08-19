@@ -1,5 +1,6 @@
 package com.heybro.heybro.user.dto.response;
 
+import com.heybro.heybro.user.domain.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,4 +41,7 @@ public class LoginResponseDto {
 
     @Schema(description = "refresh token")
     private String refreshToken;
+
+    @Schema(description = "회원 유형")
+    private UserType userType;
 }
