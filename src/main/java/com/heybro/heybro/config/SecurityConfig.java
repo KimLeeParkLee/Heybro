@@ -50,7 +50,7 @@ public class SecurityConfig {
         // 요청 경로별 권한 설정
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/auth/**", "/api/oauth2/authorization").permitAll() // 로그인/인증 관련 경로는 모두 허용
+                        .requestMatchers("/api/auth/**", "/login/oauth2/code/**").permitAll() // 로그인/인증 관련 경로는 모두 허용
                         .requestMatchers("/api/users").permitAll() // 회원가입 및 이메일 검증
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Swagger
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
