@@ -10,11 +10,14 @@ import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
@@ -23,6 +26,11 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
     private final Map<String, OAuth2Client> oAuth2Clients;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final RedisTemplate<String, String> redisTemplate;
+    public static final String BEARER_PREFIX = "Bearer ";
+
+    @Value("${jwt.expiration.refresh-token}")
+    private long refreshTokenExpiration;
 
     public Object oauth2Login(OAuth2LoginRequestDto requestDto) {
         OAuth2Client oAuth2Client = oAuth2Clients.get(requestDto.getProvider().toLowerCase());
@@ -38,15 +46,22 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
         if (result.isNewUser()) {
             // 신규 가입일 경우
             return OAuth2SignUpResponseDto.builder()
-                    .isNewUser(true)
                     .email(user.getEmail())
                     .provider(user.getProvider())
                     .oauthToken(requestDto.getOauthToken()) // 추가 정보 입력을 위해 토큰 다시 전달
                     .build();
         } else {
             // 기존 회원 로그인일 경우
-            String accessToken = jwtUtil.createAccessToken(user.getEmail());
+            String accessToken = BEARER_PREFIX + jwtUtil.createAccessToken(user.getEmail());
             String refreshToken = jwtUtil.createRefreshToken(user.getEmail());
+
+            // 3. Redis에 Refresh Token 저장
+            redisTemplate.opsForValue().set(
+                    user.getEmail(),
+                    refreshToken,
+                    refreshTokenExpiration,
+                    TimeUnit.MILLISECONDS
+            );
 
             return LoginResponseDto.builder()
                     .userId(user.getUserId())
@@ -82,9 +97,7 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
                     .userName(userInfo.getName())
                     .provider(userInfo.getProvider())
                     .providerId(userInfo.getProviderId())
-                    
                     .build();
-            userRepository.save(user);
         }
         return new UserUpsertResult(user, isNewUser);
     }

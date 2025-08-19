@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Schema(description = "OAuth2 회원가입 응답 DTO")
 public class OAuth2SignUpResponseDto {
-    @Schema(description = "신규 회원 여부")
-    private boolean isNewUser;
-
     @Schema(description = "이메일")
     private String email;
 
