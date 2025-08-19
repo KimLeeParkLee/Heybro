@@ -49,7 +49,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
-            redirect-uri: https://kimleeparklee.shop/api/auth/oauth2/google
+            redirect-uri: https://kimleeparklee.shop/login/oauth2/code/google
             scope:
               - email
         provider:
