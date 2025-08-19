@@ -43,11 +43,13 @@ spring:
             client-id: ${KAKAO_CLIENT_ID}
             client-authentication-method: post
             authorization-grant-type: authorization_code
-            redirect-uri: https://kimleeparklee/api/login/oauth2/kakao
+            redirect-uri: https://kimleeparklee.shop/api/auth/oauth2/kakao
             scope:
               - account_email
           google:
             client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: https://kimleeparklee.shop/api/auth/oauth2/google
             scope:
               - email
         provider:

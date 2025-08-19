@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Objects;
 
-@Component
+@Component("kakao")
 @RequiredArgsConstructor
 public class KakaoOAuth2Client implements OAuth2Client {
 
@@ -21,9 +21,6 @@ public class KakaoOAuth2Client implements OAuth2Client {
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id:}")
     private String clientId;
-
-    @Value("${spring.security.oauth2.client.registration.kakao.client-secret:}")
-    private String clientSecret;
 
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri:}")
     private String redirectUri;
@@ -33,6 +30,25 @@ public class KakaoOAuth2Client implements OAuth2Client {
 
     @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri:}")
     private String userInfoUri;
+
+    @Override
+    public String getAccessToken(String authorizationCode) {
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "authorization_code");
+        body.add("client_id", clientId);
+        body.add("redirect_uri", redirectUri);
+        body.add("code", authorizationCode);
+
+        JsonNode response = webClient.post()
+                .uri(tokenUri)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .block();
+
+        return Objects.requireNonNull(response).get("access_token").asText();
+    }
 
     @Override
     public OAuth2UserInfo getUserInfoByToken(String accessToken) {

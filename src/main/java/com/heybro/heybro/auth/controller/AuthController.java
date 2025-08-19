@@ -3,6 +3,7 @@ package com.heybro.heybro.auth.controller;
 import com.heybro.heybro.auth.dto.request.OAuth2LoginRequestDto;
 import com.heybro.heybro.auth.dto.request.RefreshTokenRequestDto;
 import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
+import com.heybro.heybro.auth.dto.response.OAuth2SignUpResponseDto;
 import com.heybro.heybro.auth.service.OAuth2LoginServiceImpl;
 import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.jwt.JwtUtil;
@@ -18,6 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,14 +38,21 @@ public class AuthController {
 
     @Operation(summary = "일반 로그인")
     @PostMapping("/login")
-    public ApiResponse<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
-        return ApiResponse.success(userService.login(loginRequestDto, response));
+    public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        return userService.login(loginRequestDto, response);
     }
 
     @Operation(summary = "소셜 로그인(Kakao, Google)")
     @PostMapping("/oauth2/authorization")
-    public ApiResponse<Object> oauth2Login(@RequestBody OAuth2LoginRequestDto requestDto) {
-        return ApiResponse.success(oAuth2LoginServiceImpl.oauth2Login(requestDto));
+    public ResponseEntity<Object> oauth2Login(@RequestBody OAuth2LoginRequestDto requestDto) {
+        Object result = oAuth2LoginServiceImpl.oauth2Login(requestDto);
+        if (result instanceof OAuth2SignUpResponseDto) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(result));
+        } else if (result instanceof LoginResponseDto) {
+            return ResponseEntity.ok(ApiResponse.success(result));
+        } else {
+            return ResponseEntity.internalServerError().body(ApiResponse.error("Unexpected response type", 500));
+        }
     }
 
     @Operation(summary = "access token 재발행")
@@ -77,6 +86,10 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null) {
+            authHeader = request.getHeader("authorization");
+        }
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String accessToken = authHeader.substring(7);
