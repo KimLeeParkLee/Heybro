@@ -10,10 +10,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
-@Component
+@Component("google")
 @RequiredArgsConstructor
 public class GoogleOAuth2Client implements OAuth2Client {
 
@@ -35,47 +36,44 @@ public class GoogleOAuth2Client implements OAuth2Client {
     private String userInfoUri;
 
     @Override
-
-    public String getAccessToken(String authorizationCode) {
+    public Mono<String> getAccessToken(String authorizationCode) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
         body.add("client_secret", clientSecret);
-        body.add("redirect_uri", "postmessage");
+        body.add("redirect_uri", redirectUri);
         body.add("code", authorizationCode.trim());
 
-        JsonNode response = webClient.post()
+        return webClient.post()
                 .uri(tokenUri)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .bodyValue(body)
                 .retrieve()
                 .onStatus(s -> s.is4xxClientError() || s.is5xxServerError(),
                         r -> r.bodyToMono(String.class)
-                                .map(msg -> new RuntimeException("Google /token error: " + msg)))
+                                .flatMap(msg -> Mono.error(new RuntimeException("Google /token error: " + msg))))
                 .bodyToMono(JsonNode.class)
-                .block();
-
-        return Objects.requireNonNull(response).get("access_token").asText();
+                .map(response -> Objects.requireNonNull(response).get("access_token").asText());
     }
 
     @Override
-    public OAuth2UserInfo getUserInfoByToken(String accessToken) {
-        JsonNode userInfo = webClient.get()
+    public Mono<OAuth2UserInfo> getUserInfoByToken(String accessToken) {
+        return webClient.get()
                 .uri(userInfoUri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .block();
+                .map(userInfo -> {
+                    String providerId = Objects.requireNonNull(userInfo).get("sub").asText();
+                    String email = userInfo.get("email").asText();
+                    String name = userInfo.get("name").asText();
 
-        String providerId = Objects.requireNonNull(userInfo).get("sub").asText();
-        String email = userInfo.get("email").asText();
-        String name = userInfo.get("name").asText();
-
-        return OAuth2UserInfo.builder()
-                .provider("google")
-                .providerId(providerId)
-                .email(email)
-                .name(name)
-                .build();
+                    return OAuth2UserInfo.builder()
+                            .provider("google")
+                            .providerId(providerId)
+                            .email(email)
+                            .name(name)
+                            .build();
+                });
     }
 }

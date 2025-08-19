@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
@@ -32,42 +33,40 @@ public class KakaoOAuth2Client implements OAuth2Client {
     private String userInfoUri;
 
     @Override
-    public String getAccessToken(String authorizationCode) {
+    public Mono<String> getAccessToken(String authorizationCode) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
         body.add("redirect_uri", redirectUri);
         body.add("code", authorizationCode);
 
-        JsonNode response = webClient.post()
+        return webClient.post()
                 .uri(tokenUri)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .bodyValue(body)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .block();
-
-        return Objects.requireNonNull(response).get("access_token").asText();
+                .map(response -> Objects.requireNonNull(response).get("access_token").asText());
     }
 
     @Override
-    public OAuth2UserInfo getUserInfoByToken(String accessToken) {
-        JsonNode userInfo = webClient.get()
+    public Mono<OAuth2UserInfo> getUserInfoByToken(String accessToken) {
+        return webClient.get()
                 .uri(userInfoUri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .block();
+                .map(userInfo -> {
+                    String providerId = Objects.requireNonNull(userInfo).get("id").asText();
+                    String email = userInfo.get("kakao_account").get("email").asText();
+                    String name = userInfo.get("properties").get("nickname").asText();
 
-        String providerId = Objects.requireNonNull(userInfo).get("id").asText();
-        String email = userInfo.get("kakao_account").get("email").asText();
-        String name = userInfo.get("properties").get("nickname").asText();
-
-        return OAuth2UserInfo.builder()
-                .provider("kakao")
-                .providerId(providerId)
-                .email(email)
-                .name(name)
-                .build();
+                    return OAuth2UserInfo.builder()
+                            .provider("kakao")
+                            .providerId(providerId)
+                            .email(email)
+                            .name(name)
+                            .build();
+                });
     }
 }
