@@ -6,3 +6,4 @@ public interface OAuth2Client {
     String getAccessToken(String authorizationCode);
     OAuth2UserInfo getUserInfoByToken(String oauthToken);
 }
+
