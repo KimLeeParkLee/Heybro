@@ -1,7 +1,7 @@
 package com.heybro.heybro.user.security;
 
 import com.heybro.heybro.user.domain.User;
-import com.heybro.heybro.user.domain.UserRoleEnum;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,11 +33,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        UserRoleEnum role = user.getRole();
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getAuthority());
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(authority);
-        return authorities;
+        return new ArrayList<>();
     }
 
     @Override

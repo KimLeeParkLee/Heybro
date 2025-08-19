@@ -1,4 +1,4 @@
-package com.heybro.heybro.common.exception;
+package com.heybro.heybro.common.jwt.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

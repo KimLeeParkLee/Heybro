@@ -1,10 +1,10 @@
 package com.heybro.heybro.user.service;
 
 import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
-import com.heybro.heybro.common.exception.ResourceNotFoundException;
+import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.jwt.JwtUtil;
 import com.heybro.heybro.user.domain.User;
-import com.heybro.heybro.user.domain.UserRoleEnum;
+
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
                 .privacyConsent(requestDto.isPrivacyConsent())
                 .marketingConsent(requestDto.isMarketingConsent())
                 .notificationEnabled(requestDto.isNotificationEnabled())
-                .role(UserRoleEnum.USER)
+                
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -81,11 +81,10 @@ public class UserServiceImpl implements UserService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         String email = userDetails.getUsername();
-        UserRoleEnum role = userDetails.getUser().getRole();
 
         // Access Token, Refresh Token 생성
-        String accessToken = BEARER_PREFIX + jwtUtil.createAccessToken(email, role);
-        String refreshToken = jwtUtil.createRefreshToken(email, role);
+        String accessToken = BEARER_PREFIX + jwtUtil.createAccessToken(email);
+        String refreshToken = jwtUtil.createRefreshToken(email);
 
         // Redis에 Refresh Token 저장
         redisTemplate.opsForValue().set(
@@ -154,7 +153,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
-        String newAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(user.getEmail(), user.getRole());
+        String newAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(user.getEmail());
 
         return AccessTokenResponseDto.builder()
                 .accessToken(newAccessToken)

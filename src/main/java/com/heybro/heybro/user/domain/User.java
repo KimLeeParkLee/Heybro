@@ -55,8 +55,7 @@ public class User {
 
     private String notificationToken; // 알림 토큰
 
-    @Enumerated(EnumType.STRING)
-    private UserRoleEnum role;
+    
 
     private String provider;
 

@@ -4,7 +4,7 @@ import com.heybro.heybro.auth.dto.request.OAuth2LoginRequestDto;
 import com.heybro.heybro.auth.dto.request.RefreshTokenRequestDto;
 import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
 import com.heybro.heybro.auth.service.OAuth2LoginServiceImpl;
-import com.heybro.heybro.common.exception.ResourceNotFoundException;
+import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.jwt.JwtUtil;
 import com.heybro.heybro.common.response.ApiResponse;
 import com.heybro.heybro.user.domain.User;
@@ -69,7 +69,7 @@ public class AuthController {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         // 새로운 Access Token 생성
-        String newAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(email, user.getRole());
+        String newAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(email);
         return AccessTokenResponseDto.builder().accessToken(newAccessToken).build();
     }
 

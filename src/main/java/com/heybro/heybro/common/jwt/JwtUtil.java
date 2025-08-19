@@ -1,6 +1,6 @@
 package com.heybro.heybro.common.jwt;
 
-import com.heybro.heybro.user.domain.UserRoleEnum;
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -18,7 +18,7 @@ public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
-    private static final String KEY_ROLE = "role";
+    
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -38,31 +38,22 @@ public class JwtUtil {
     }
 
     // Access Token 생성
-    public String createAccessToken(String email, UserRoleEnum role) {
-        return generateToken(email, role, accessTokenExpiration);
+    public String createAccessToken(String email) {
+        return generateToken(email, accessTokenExpiration);
     }
 
     // Refresh Token 생성
-    public String createRefreshToken(String email, UserRoleEnum role) {
-        return generateToken(email, role, refreshTokenExpiration);
+    public String createRefreshToken(String email) {
+        return generateToken(email, refreshTokenExpiration);
     }
 
-    // Backward compatibility
-    public String generateAccessToken(String email) {
-        return generateToken(email, null, accessTokenExpiration);
-    }
-
-    private String generateToken(String email, UserRoleEnum role, long expiration) {
+    private String generateToken(String email, long expiration) {
         Date now = new Date();
         JwtBuilder builder = Jwts.builder()
                 .subject(email)
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + expiration))
                 .signWith(key);
-
-        if (role != null) {
-            builder.claim(KEY_ROLE, role.getAuthority());
-        }
 
         return builder.compact();
     }
@@ -72,10 +63,7 @@ public class JwtUtil {
         return getClaims(token).getSubject();
     }
 
-    public UserRoleEnum getRoleFromToken(String token) {
-        String role = (String) getClaims(token).get(KEY_ROLE);
-        return UserRoleEnum.valueOf(role);
-    }
+    
 
     private Claims getClaims(String token) {
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();

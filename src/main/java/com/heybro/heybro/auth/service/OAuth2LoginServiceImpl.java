@@ -6,7 +6,7 @@ import com.heybro.heybro.auth.dto.OAuth2UserInfo;
 import com.heybro.heybro.auth.dto.response.OAuth2SignUpResponseDto;
 import com.heybro.heybro.common.jwt.JwtUtil;
 import com.heybro.heybro.user.domain.User;
-import com.heybro.heybro.user.domain.UserRoleEnum;
+
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +45,8 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
                     .build();
         } else {
             // 기존 회원 로그인일 경우
-            String accessToken = jwtUtil.createAccessToken(user.getEmail(), user.getRole());
-            String refreshToken = jwtUtil.createRefreshToken(user.getEmail(), user.getRole());
+            String accessToken = jwtUtil.createAccessToken(user.getEmail());
+            String refreshToken = jwtUtil.createRefreshToken(user.getEmail());
 
             return LoginResponseDto.builder()
                     .userId(user.getUserId())
@@ -82,7 +82,7 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
                     .userName(userInfo.getName())
                     .provider(userInfo.getProvider())
                     .providerId(userInfo.getProviderId())
-                    .role(UserRoleEnum.USER)
+                    
                     .build();
             userRepository.save(user);
         }
