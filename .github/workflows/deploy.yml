@@ -47,5 +47,4 @@ jobs:
               -e "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" \
               -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
               -e "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}"
-            
               rladbsk/heybro-backend:latest
