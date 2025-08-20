@@ -15,9 +15,9 @@ import java.time.LocalDate;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId; // 회원 식별키
+    private Long id; // 회원 식별키
 
-    private String userName; // 회원 이름
+    private String name; // 회원 이름
 
     private String nickname; // 닉네임
 
