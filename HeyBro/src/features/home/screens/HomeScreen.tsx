@@ -1,16 +1,26 @@
 import React from 'react';
-import { useAuth } from '../../auth/hooks/useAuth';
-import { View, Text, Button } from '../../../shared/components/ui';
+import { ScrollView, StyleSheet } from 'react-native';
+import { UserInfo } from '../components/UserInfo';
+import { TodayRoutine } from '../components/TodayRoutine';
+import { AchievementCalendar } from '../components/AchievementCalendar';
+import { PopularPosts } from '../components/PopularPosts';
 
 const HomeScreen = () => {
-  const { logout } = useAuth();
-
   return (
-    <View className="flex-1 items-center justify-center bg-white dark:bg-dark">
-      <Text className="text-black dark:text-white text-2xl">Home Screen</Text>
-      <Button title="Logout" onPress={logout} />
-    </View>
+    <ScrollView style={styles.container}>
+      <UserInfo />
+      <TodayRoutine />
+      <AchievementCalendar />
+      <PopularPosts />
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB', // 전체 배경색
+  },
+});
 
 export default HomeScreen;

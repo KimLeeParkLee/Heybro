@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, Switch } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Switch, Alert } from 'react-native';
 import { Header } from '../../../shared/components/layout/Header';
 import { BottomButton } from '../../../shared/components/ui/BottomButton';
 import { TextInput } from '../../../shared/components/ui/TextInput';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../../app/navigation/RootNavigator';
 import { useAuth } from '../hooks/useAuth';
 import { RegisterCredentials } from '../types/auth.types';
-type RegisterScreenNavigationProp = NativeStackNavigationProp<
-  AuthStackParamList,
-  'Register'
->;
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+type RegisterScreenRouteProp = RouteProp<AuthStackParamList, 'Register'>;
 
 const RegisterScreen = () => {
-  const navigation = useNavigation<RegisterScreenNavigationProp>();
+  const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+  const route = useRoute<RegisterScreenRouteProp>();
+  const { registerAndLogin, completeOAuthRegistration } = useAuth();
+
+  // Route params for OAuth
+  const oauthParams = route.params;
+  const isOAuth = !!oauthParams?.provider;
+
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const {register} = useAuth();
 
   // Step 1: Email and Password
   const [email, setEmail] = useState('');
@@ -35,6 +40,12 @@ const RegisterScreen = () => {
   // Step 3: Nickname
   const [nickname, setNickname] = useState('');
 
+  useEffect(() => {
+    if (oauthParams?.email) {
+      setEmail(oauthParams.email);
+    }
+  }, [oauthParams]);
+
   const handleNextStep = () => {
     setStep(prev => prev + 1);
   };
@@ -42,23 +53,40 @@ const RegisterScreen = () => {
   const handleRegister = async () => {
     setIsLoading(true);
     try {
-      const credentials: RegisterCredentials = {
-        email,
-        password,
-        user_name: name,
-        nickname,
-        gender,
-        birth_date: birthDate,
-        phone,
-        privacy_consent: agreePrivacy,
-        marketing_consent: agreeMarketing,
-        notification_enabled: true, // Or based on another switch
-      };
-      await register(credentials);
-      navigation.navigate('Login');
-      
+      if (isOAuth && oauthParams) {
+        // OAuth registration completion
+        await completeOAuthRegistration(
+          {
+            user_name: name,
+            nickname,
+            gender,
+            birth_date: birthDate,
+            phone,
+            privacy_consent: agreePrivacy,
+            marketing_consent: agreeMarketing,
+            notification_enabled: true,
+          }
+        );
+      } else {
+        // Standard email/password registration
+        const credentials: RegisterCredentials = {
+          email,
+          password,
+          user_name: name,
+          nickname,
+          gender,
+          birth_date: birthDate,
+          phone,
+          privacy_consent: agreePrivacy,
+          marketing_consent: agreeMarketing,
+          notification_enabled: true,
+        };
+        await registerAndLogin(credentials);
+      }
+      // On success, RootNavigator will handle the navigation to Onboarding
     } catch (error) {
       console.error('Registration failed:', error);
+      Alert.alert('회원가입 실패', '오류가 발생했습니다. 다시 시도해주세요.');
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +97,9 @@ const RegisterScreen = () => {
       case 1:
         return (
           <>
-            <Text style={styles.title}>아이디와 비밀번호를 입력해주세요</Text>
+            <Text style={styles.title}>
+              {isOAuth ? '이메일 확인' : '아이디와 비밀번호를 입력해주세요'}
+            </Text>
             <TextInput
               label="이메일"
               value={email}
@@ -78,24 +108,28 @@ const RegisterScreen = () => {
               autoCapitalize="none"
               textContentType="emailAddress"
               autoComplete="email"
+              editable={!isOAuth} // Disable if OAuth
             />
-            <TextInput
-              label="비밀번호"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              textContentType="newPassword"
-              autoComplete="password-new"
-            />
-
-            <TextInput
-              label="비밀번호 확인"
-              value={passwordConfirm}
-              onChangeText={setPasswordConfirm}
-              secureTextEntry
-              textContentType="newPassword"
-              autoComplete="password-new"
-            />
+            {!isOAuth && (
+              <>
+                <TextInput
+                  label="비밀번호"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                  textContentType="newPassword"
+                  autoComplete="password-new"
+                />
+                <TextInput
+                  label="비밀번호 확인"
+                  value={passwordConfirm}
+                  onChangeText={setPasswordConfirm}
+                  secureTextEntry
+                  textContentType="newPassword"
+                  autoComplete="password-new"
+                />
+              </>
+            )}
           </>
         );
       case 2:
@@ -111,9 +145,17 @@ const RegisterScreen = () => {
             />
             <View style={styles.toggleContainer}>
               <Text>성별:</Text>
-              <Text style={gender === 'male' ? styles.activeGender : styles.inactiveGender} onPress={() => setGender('male')}>남</Text>
+              <Text
+                style={gender === 'male' ? styles.activeGender : styles.inactiveGender}
+                onPress={() => setGender('male')}>
+                남
+              </Text>
               <Text> / </Text>
-              <Text style={gender === 'female' ? styles.activeGender : styles.inactiveGender} onPress={() => setGender('female')}>여</Text>
+              <Text
+                style={gender === 'female' ? styles.activeGender : styles.inactiveGender}
+                onPress={() => setGender('female')}>
+                여
+              </Text>
             </View>
             <TextInput
               label="휴대폰 번호"
@@ -146,6 +188,7 @@ const RegisterScreen = () => {
   const isStepValid = () => {
     switch (step) {
       case 1:
+        if (isOAuth) return email.length > 0;
         return email.length > 0 && password.length > 0 && password === passwordConfirm;
       case 2:
         return name.length > 0 && birthDate.length > 0 && phone.length > 0 && agreePrivacy;
@@ -163,7 +206,7 @@ const RegisterScreen = () => {
       <BottomButton
         title={step === 3 ? '회원가입 완료' : '다음'}
         onPress={step === 3 ? handleRegister : handleNextStep}
-        disabled={!isStepValid()}
+        disabled={!isStepValid() || isLoading}
       />
     </SafeAreaView>
   );

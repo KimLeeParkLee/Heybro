@@ -1,7 +1,7 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { jotaiStore } from '../../app/store';
 import { sessionAtom, Session } from '../../features/auth/state/authAtoms';
-import { logoutUser } from '../../features/auth/services/authService';
+import { clearAuthData } from '../../features/auth/utils/sessionManager';
 import { ApiResponse } from '../types/api';
 
 // Define a custom error class for standardized error handling
@@ -48,21 +48,21 @@ async function handleTokenRefresh(): Promise<string | null> {
 
     if (!refreshToken) throw new Error('No refresh token available');
 
-    const response = await fetch(`${API_BASE_URL}/api/user/reissue`, {
+    const response = await fetch(`${API_BASE_URL}/api/auth/reissue`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: refreshToken }),
     });
 
     if (!response.ok) {
-      await logoutUser();
+      await clearAuthData();
       throw new Error('Failed to refresh token, status: ' + response.status);
     }
 
     const responseData: ApiResponse<{ access_token: string }> = await response.json();
 
     if (!responseData.success) {
-      await logoutUser();
+      await clearAuthData();
       throw new Error(responseData.message || 'Failed to refresh token');
     }
 
@@ -75,7 +75,7 @@ async function handleTokenRefresh(): Promise<string | null> {
     return newAccessToken;
   } catch (error) {
     console.error('Token refresh error:', error);
-    await logoutUser();
+    await clearAuthData();
     return null;
   } finally {
     isRefreshing = false;
@@ -93,13 +93,13 @@ export async function httpRequest<T>(
   options: RequestOptions = {}
 ): Promise<T> {
   const makeRequest = async (token: string | null): Promise<T> => {
-    const headers = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...options.headers,
     };
 
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers.Authorization = `Bearer ${token}`;
     }
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, { ...options, headers });

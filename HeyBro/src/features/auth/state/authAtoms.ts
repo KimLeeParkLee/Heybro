@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+import { OAuthNewUserData } from '../types/auth.types';
 
 // API 응답으로 오는 사용자 정보 타입
 export interface User {
@@ -6,10 +7,11 @@ export interface User {
   nickname: string;
   gender: 'male' | 'female' | 'other';
   birth_date: string;
-  is_notification_enabled: boolean;
-  point: number;
+  notification_enabled: boolean;
+  bro_point: number;
   bro_level: number;
-  type_id: number;
+  user_type: string;
+  onboarding_completed: boolean; // Add this line
 }
 
 // 인증 세션 정보 타입
@@ -32,3 +34,6 @@ export const sessionAtom = atom<Session>({
   accessToken: null,
   refreshToken: null,
 });
+
+// OAuth로 로그인했지만 아직 회원가입이 완료되지 않은 신규 사용자 정보를 임시 저장하는 Atom
+export const newOAuthUserAtom = atom<OAuthNewUserData | null>(null);

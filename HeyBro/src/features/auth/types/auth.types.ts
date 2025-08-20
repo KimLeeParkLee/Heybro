@@ -3,9 +3,15 @@ import { User } from '../state/authAtoms';
 // --- Standard Auth ---
 
 /**
+ * API 응답에서 오는 순수 사용자 데이터 타입입니다.
+ * 클라이언트에서만 사용하는 'onboarding_completed'는 제외합니다.
+ */
+export type ApiUserData = Omit<User, 'onboarding_completed'>;
+
+/**
  * 로그인 또는 회원가입 성공 시 서버로부터 받는 `data` 객체의 타입입니다.
  */
-export interface AuthResponseData extends User {
+export interface AuthResponseData extends ApiUserData {
   access_token: string;
   refresh_token: string;
 }

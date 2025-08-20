@@ -1,16 +1,11 @@
-import EncryptedStorage from 'react-native-encrypted-storage';
-import { jotaiStore } from '../../../app/store';
-import { sessionAtom, userAtom } from '../state/authAtoms';
 import { httpRequest } from '../../../shared/api/http';
 import {
   LoginCredentials,
   RegisterCredentials,
   AuthResponseData,
   OAuthLoginRequest,
-  OAuthLoginResponse,
+  OAuthNewUserData,
 } from '../types/auth.types';
-
-const SESSION_STORAGE_KEY = 'heybro_session';
 
 // --- Standard Auth APIs ---
 
@@ -31,45 +26,53 @@ export const registerApi = async (credentials: RegisterCredentials): Promise<Aut
 // --- OAuth API ---
 
 export const loginWithOAuthApi = async (
-  credentials: OAuthLoginRequest
-): Promise<OAuthLoginResponse> => {
-  return httpRequest<OAuthLoginResponse>('/api/oauth2/authorization', {
+  credentials: OAuthLoginRequest,
+): Promise<AuthResponseData | OAuthNewUserData> => {
+  const { provider, oauth_token } = credentials;
+
+  // Backend expects 'authorization_code' for Google and 'oauth_token' for others.
+  const payload = {
+    provider,
+    oauth_token 
+  };
+
+  const responseData = await httpRequest<any>('/api/auth/oauth2/authorization', {
     method: 'POST',
-    body: JSON.stringify(credentials),
+    body: JSON.stringify(payload),
   });
+
+  // Log the actual response data to debug
+  console.log('OAuth Response Data:', JSON.stringify(responseData, null, 2));
+
+  // After httpRequest, responseData is the `data` part of the API response.
+  // A new user is identified by the presence of `oauth_token` in the data.
+  if (responseData?.oauth_token) {
+    return {
+      is_new_user: true,
+      ...responseData,
+    };
+  }
+
+  // An existing user is identified by the presence of `access_token`.
+  if (responseData?.access_token) {
+    return responseData as AuthResponseData;
+  }
+
+  // If neither token is present, the response is unexpected.
+  throw new Error('Unexpected response from OAuth login');
 };
 
 
 // --- Logout ---
 
-export const logoutUser = async (): Promise<void> => {
-  console.log('Logging out user...');
-
-  try {
-    const session = jotaiStore.get(sessionAtom);  
-    if (session.isAuthenticated && session.accessToken) {
-        await httpRequest('/api/user/logout', {
-          method: 'POST',
-        });
-        console.log('Server notified of logout.');
-      }
-    
-  } catch (error) {
-    console.error('Failed to notify server of logout:', error);
-  } finally {
-    console.log('Clearing local session...');
-    jotaiStore.set(sessionAtom, {
-      isAuthenticated: false,
-      accessToken: null,
-      refreshToken: null,
-    });
-    jotaiStore.set(userAtom, null);
-
-    try {
-      await EncryptedStorage.removeItem(SESSION_STORAGE_KEY);
-      console.log('Session removed from EncryptedStorage.');
-    } catch (error) {
-      console.error('Failed to remove session from EncryptedStorage:', error);
-    }
-  }
+/**
+ * Notifies the server that the user is logging out.
+ * This function ONLY handles the API call. State and storage are managed in useAuth hook.
+ */
+export const logoutApi = async (): Promise<void> => {
+  // httpRequest will automatically include the auth token.
+  // We don't care about the response, so we don't return anything.
+  await httpRequest('/api/auth/logout', {
+    method: 'POST',
+  });
 };

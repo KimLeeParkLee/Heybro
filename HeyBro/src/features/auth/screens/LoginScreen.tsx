@@ -26,12 +26,14 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    GoogleSignin.configure({
-      iosClientId:
-        '8291726260-h6vohm7efc7t5tqcl4on6qlh2c49mjvl.apps.googleusercontent.com',
-    });
-  }, []);
+  // useEffect(() => {
+  //   GoogleSignin.configure({
+  //     iosClientId: '8291726260-h6vohm7efc7t5tqcl4on6qlh2c49mjvl.apps.googleusercontent.com',
+  //     webClientId: '8291726260-u9mqmn89desca5pvitjobktseqq8hlah.apps.googleusercontent.com',
+  //     offlineAccess: true,  
+  //     scopes: ['email'],
+  //   });
+  // }, []);
 
   const handleEmailPasswordLogin = async () => {
     if (!email || !password) {
@@ -63,26 +65,22 @@ const LoginScreen = () => {
       if (Platform.OS === 'android') {
         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       }
+      const response = await GoogleSignin.signIn();
+      const serverAuthCode = response.data?.serverAuthCode?.trim();
 
-      const { idToken } = await GoogleSignin.signIn();
-      const tokenToUse =
-        idToken ?? (await GoogleSignin.getTokens().catch(() => null))?.idToken;
-
-      if (!tokenToUse) {
-        throw new Error('Google ID Token not found');
+      if (!serverAuthCode) {
+        throw new Error('Google authorization code not found');
       }
 
       const result = await loginWithOAuth({
         provider: 'google',
-        oauth_token: tokenToUse,
+        oauth_token: serverAuthCode,
       });
-
       if (result?.is_new_user) {
-        Alert.alert(
-          '회원가입 필요',
-          `신규 회원입니다. 추가 정보를 입력해주세요. 이메일: ${result.email}`
-        );
-        // TODO: Navigate to profile completion
+        navigation.navigate('Register', {
+          email: result.email,
+          provider: result.provider,
+        });
       }
     } catch (error: any) {
       if (isErrorWithCode(error)) {
@@ -113,15 +111,15 @@ const LoginScreen = () => {
       const token = await kakaoLogin();
       const result = await loginWithOAuth({
         provider: 'kakao',
-        oauth_token: token.accessToken,
+        oauth_token: token.accessToken.trim(),
       });
 
       if (result?.is_new_user) {
-        Alert.alert(
-          '회원가입 필요',
-          `신규 회원입니다. 추가 정보를 입력해주세요. 이메일: ${result.email}`
-        );
-        // TODO: Navigate to profile completion
+        // Navigate to Register screen with OAuth data
+        navigation.navigate('Register', {
+          email: result.email,
+          provider: result.provider,
+        });
       }
     } catch (error) {
       Alert.alert('카카오 로그인 실패', '로그인 중 오류가 발생했습니다.');
