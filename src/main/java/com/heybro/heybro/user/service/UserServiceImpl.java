@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = User.builder()
-                .userName(requestDto.getUserName())
+                .name(requestDto.getUserName())
                 .nickname(requestDto.getNickname())
                 .email(requestDto.getEmail())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
         // 4. LoginResponseDto 형태로 사용자 정보와 토큰 반환
         return LoginResponseDto.builder()
-                .userId(savedUser.getUserId())
+                .userId(savedUser.getId())
                 .nickname(savedUser.getNickname())
                 .gender(savedUser.getGender())
                 .birthDate(savedUser.getBirthDate())
@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
         );
 
         return LoginResponseDto.builder()
-                .userId(user.getUserId())
+                .userId(user.getId())
                 .nickname(user.getNickname())
                 .gender(user.getGender())
                 .birthDate(user.getBirthDate())

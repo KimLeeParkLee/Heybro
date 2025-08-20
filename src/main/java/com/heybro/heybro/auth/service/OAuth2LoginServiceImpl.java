@@ -64,7 +64,7 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
                         );
 
                         return Mono.just(LoginResponseDto.builder()
-                                .userId(user.getUserId())
+                                .userId(user.getId())
                                 .nickname(user.getNickname())
                                 .gender(user.getGender())
                                 .birthDate(user.getBirthDate())
@@ -94,7 +94,7 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
             isNewUser = true;
             user = User.builder()
                     .email(userInfo.getEmail())
-                    .userName(userInfo.getName())
+                    .name(userInfo.getName())
                     .provider(userInfo.getProvider())
                     .providerId(userInfo.getProviderId())
                     .build();
