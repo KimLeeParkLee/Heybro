@@ -45,7 +45,8 @@ public class AuthController {
     @Operation(summary = "소셜 로그인(Kakao, Google)")
     @PostMapping("/oauth2/authorization")
     public ResponseEntity<Object> oauth2Login(@RequestBody OAuth2LoginRequestDto requestDto) {
-        Object result = oAuth2LoginServiceImpl.oauth2Login(requestDto);
+        Object result = oAuth2LoginServiceImpl.oauth2Login(requestDto).block();
+
         if (result instanceof OAuth2SignUpResponseDto) {
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(result));
         } else if (result instanceof LoginResponseDto) {
