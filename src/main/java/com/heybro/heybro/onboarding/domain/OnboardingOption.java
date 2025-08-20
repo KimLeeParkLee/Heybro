@@ -16,7 +16,7 @@ public class OnboardingOption {
 
     private String content; // 선택지 내용
 
-    private int order; // 선택지 순서
+    private int displayOrder; // 선택지 순서
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id") // question_id 이름으로 외래 키 컬럼 생성

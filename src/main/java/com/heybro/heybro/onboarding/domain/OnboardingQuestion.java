@@ -19,8 +19,9 @@ public class OnboardingQuestion {
 
     private String content; // 질문 내용
 
-    private int order; // 정렬 순서
+    private int displayOrder; // 정렬 순서
 
+    @Builder.Default
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OnboardingOption> options = new ArrayList<>(); // 온보딩 질문 선택지 리스트
 
