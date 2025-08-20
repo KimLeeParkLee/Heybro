@@ -46,7 +46,7 @@ public class GoogleOAuth2Client implements OAuth2Client {
         body.add("client_id", clientId);
         body.add("client_secret", clientSecret);
         body.add("redirect_uri", redirectUri);
-        body.add("code", authorizationCode.trim());
+        body.add("code", authorizationCode);
 
         log.info("[GoogleOAuth2Client] Requesting access token with parameters: {}", body);
 
