@@ -45,7 +45,7 @@ spring:
             client-id: ${KAKAO_CLIENT_ID}
             client-authentication-method: post
             authorization-grant-type: authorization_code
-            redirect-uri: https://kimleeparklee.shop/login/oauth2/code/kakao
+            redirect-uri: https://kimleeparklee.shop/api/login/oauth2/code/kakao
             scope:
               - account_email
           google:
