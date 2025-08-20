@@ -17,7 +17,4 @@ public class OAuth2SignUpResponseDto {
 
     @Schema(description = "provider")
     private String provider;
-
-    @Schema(description = "oauth token")
-    private String oauthToken;
 }
