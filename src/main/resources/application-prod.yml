@@ -75,7 +75,7 @@ logging:
 
 springdoc:
   swagger-ui:
-    path: /swagger-ui.html
+    path: /api/swagger-ui.html
     tags-sorter: alpha       # API 그룹(Tags)을 알파벳순으로 정렬
     operations-sorter: method # API를 HTTP Method 순으로 정렬
   # API 문서 기본 정보 설정
