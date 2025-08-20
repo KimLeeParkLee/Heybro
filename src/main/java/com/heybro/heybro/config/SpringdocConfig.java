@@ -31,16 +31,17 @@ public class SpringdocConfig {
         Components components = new Components()
                 .addSecuritySchemes(jwtSchemeName, securityScheme);
 
-        // 3. Swagger UI에 "Authorize" 버튼과 자물쇠 아이콘을 추가
+        // 3. Swagger UI에 "Authorize" 버튼과 자물쇠 아이콘 추가
         SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwtSchemeName);
 
-        // 4. 개발/운영 서버 URL 설정 (선택 사항)
+        // 4. 개발/운영 서버 URL 설정
         Server devServer = new Server().url("http://localhost:8080").description("개발 서버");
-        //Server prodServer = new Server().url("https://api.my-domain.com").description("운영 서버");
+        Server prodServer = new Server().url("https://kimleeparklee.shop").description("운영 서버");
+
 
         return new OpenAPI()
                 .addServersItem(devServer)
-                //.addServersItem(prodServer)
+                .addServersItem(prodServer)
                 .info(info)
                 .components(components)
                 .addSecurityItem(securityRequirement);
