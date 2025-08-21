@@ -55,9 +55,8 @@ public class User {
 
     private String notificationToken; // 알림 토큰
 
-    @Enumerated(EnumType.STRING) // DB에는 "DRY_OFFICE" 와 같은 문자열로 저장됩니다.
-    //@Column(name = "user_type")
-    private UserType userType;
+    @Enumerated(EnumType.STRING)
+    private UserType userType; // 회원 유형
 
     private String provider; // provider(Kakao, Google)
 
