@@ -25,6 +25,10 @@ public class ApiResponse<T> {
         return new ApiResponse<>(true, data, "성공적으로 처리되었습니다.", 200);
     }
 
+    public static <T> ApiResponse<T> success(T data, String message, int code) {
+        return new ApiResponse<>(true, data, message, code);
+    }
+
     // 성공 응답을 위한 정적 팩토리 메서드 (데이터 미포함)
     public static <T> ApiResponse<T> success() {
         return new ApiResponse<>(true, null, "성공적으로 처리되었습니다.", 200);
