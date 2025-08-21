@@ -2,7 +2,6 @@ package com.heybro.heybro.onboarding;
 
 import com.heybro.heybro.onboarding.domain.OnboardingOption;
 import com.heybro.heybro.onboarding.domain.OnboardingQuestion;
-import com.heybro.heybro.onboarding.repository.OnboardingOptionRepository;
 import com.heybro.heybro.onboarding.repository.OnboardingQuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -51,6 +50,8 @@ public class OnboardingDataInitializer implements CommandLineRunner {
         question2.addChoice(option3);
         question2.addChoice(option4);
 
+        onboardingQuestionRepository.save(question2);
+
         // 온보딩 질문 3
         OnboardingQuestion question3 = OnboardingQuestion.builder()
                 .content("평소 피부 고민은 어떤 편인가요?")
@@ -66,6 +67,8 @@ public class OnboardingDataInitializer implements CommandLineRunner {
         question3.addChoice(option2);
         question3.addChoice(option3);
         question3.addChoice(option4);
+
+        onboardingQuestionRepository.save(question3);
 
         // 온보딩 질문 4
         OnboardingQuestion question4 = OnboardingQuestion.builder()
@@ -83,6 +86,8 @@ public class OnboardingDataInitializer implements CommandLineRunner {
         question4.addChoice(option3);
         question4.addChoice(option4);
 
+        onboardingQuestionRepository.save(question4);
+
         // 온보딩 질문 5
         OnboardingQuestion question5 = OnboardingQuestion.builder()
                 .content("평소 주 활동 환경은 어디인가요?")
@@ -98,6 +103,8 @@ public class OnboardingDataInitializer implements CommandLineRunner {
         question5.addChoice(option2);
         question5.addChoice(option3);
         question5.addChoice(option4);
+
+        onboardingQuestionRepository.save(question5);
 
         // 온보딩 질문 6
         OnboardingQuestion question6 = OnboardingQuestion.builder()
@@ -115,6 +122,8 @@ public class OnboardingDataInitializer implements CommandLineRunner {
         question6.addChoice(option3);
         question6.addChoice(option4);
 
+        onboardingQuestionRepository.save(question6);
+
         // 온보딩 질문 7
         OnboardingQuestion question7 = OnboardingQuestion.builder()
                 .content("운동/외부 활동 빈도는 어느정도인가요?")
@@ -130,6 +139,8 @@ public class OnboardingDataInitializer implements CommandLineRunner {
         question7.addChoice(option2);
         question7.addChoice(option3);
         question7.addChoice(option4);
+
+        onboardingQuestionRepository.save(question7);
 
         // 온보딩 질문 8
         OnboardingQuestion question8 = OnboardingQuestion.builder()
@@ -147,6 +158,8 @@ public class OnboardingDataInitializer implements CommandLineRunner {
         question8.addChoice(option3);
         question8.addChoice(option4);
 
+        onboardingQuestionRepository.save(question8);
+
         // 온보딩 질문 9
         OnboardingQuestion question9 = OnboardingQuestion.builder()
                 .content("평소 관심있는 관리 항목은 무엇인가요?")
@@ -163,6 +176,8 @@ public class OnboardingDataInitializer implements CommandLineRunner {
         question9.addChoice(option3);
         question9.addChoice(option4);
 
+        onboardingQuestionRepository.save(question9);
+
         OnboardingQuestion question10 = OnboardingQuestion.builder()
                 .content("루틴 관리에 대해 어떻게 생각하시나요?")
                 .displayOrder(10)
@@ -177,5 +192,7 @@ public class OnboardingDataInitializer implements CommandLineRunner {
         question10.addChoice(option2);
         question10.addChoice(option3);
         question10.addChoice(option4);
+
+        onboardingQuestionRepository.save(question10);
     }
 }
