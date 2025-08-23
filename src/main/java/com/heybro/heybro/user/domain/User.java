@@ -66,8 +66,12 @@ public class User {
         this.userType = userType;
     }
 
-    public void updateBroPoint(int point) {
-        this.broPoint += point;
-        this.totalBroPoint += point;
+    public void earnPoints(int broPoint) {
+        this.broPoint += broPoint;
+        this.totalBroPoint += broPoint;
+    }
+
+    public void usePoints(int broPoint) {
+        this.broPoint -= broPoint;
     }
 }

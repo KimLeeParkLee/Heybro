@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,8 +33,14 @@ public class PointController {
     }
 
     @Operation(summary = "현재 포인트, 누적 포인트 적립")
-    @GetMapping("/earn")
+    @PostMapping("/earn")
     public void earnPoints(@RequestBody PointTransactionRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
         pointService.earnPoint(requestDto, userDetails.getUsername());
+    }
+
+    @Operation(summary = "포인트 사용")
+    @PostMapping("/use")
+    public void usePoints(@RequestBody PointTransactionRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
+        pointService.usePoints(requestDto, userDetails.getUsername());
     }
 }

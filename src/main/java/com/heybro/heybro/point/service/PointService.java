@@ -12,4 +12,6 @@ public interface PointService {
     TotalPointBalanceResponseDto getTotalPointBalance(String email);
 
     void earnPoint(PointTransactionRequestDto requestDto, String email);
+
+    void usePoints(PointTransactionRequestDto requestDto, String email);
 }

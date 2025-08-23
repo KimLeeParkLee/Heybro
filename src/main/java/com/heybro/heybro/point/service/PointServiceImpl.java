@@ -39,6 +39,20 @@ public class PointServiceImpl implements PointService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
-        user.updateBroPoint(user.getBroPoint() + requestDto.getPoint());
+        user.earnPoints(requestDto.getPoint());
+    }
+
+    @Override
+    @Transactional
+    public void usePoints(PointTransactionRequestDto requestDto, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
+
+        // 현재 포인트가 사용할 포인트보다 적을 경우 400 반환
+        if (user.getBroPoint() < requestDto.getPoint()) {
+            throw new IllegalArgumentException("포인트가 부족합니다.");
+        }
+
+        user.usePoints(requestDto.getPoint());
     }
 }
