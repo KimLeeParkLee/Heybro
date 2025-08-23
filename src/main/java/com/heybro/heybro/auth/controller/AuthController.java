@@ -14,6 +14,7 @@ import com.heybro.heybro.user.dto.response.LoginResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
+@Tag(name = "인증", description = "인증 API")
 public class AuthController {
-
     private final UserService userService;
     private final OAuth2LoginServiceImpl oAuth2LoginServiceImpl;
     private final UserRepository userRepository;
