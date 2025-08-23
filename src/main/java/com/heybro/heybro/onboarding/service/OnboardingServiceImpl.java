@@ -13,6 +13,7 @@ import com.heybro.heybro.onboarding.repository.UserOnboardingAnswerRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserType;
 import com.heybro.heybro.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,6 +53,7 @@ public class OnboardingServiceImpl implements OnboardingService {
     }
 
     @Override
+    @Transactional
     public UserTypeResponseDto submitResults(OnboardingResultRequestDto request, UserDetails userDetails) {
         // 1. userId로 User 엔티티를 DB에서 조회
         User user = userRepository.findByEmail(userDetails.getUsername())
