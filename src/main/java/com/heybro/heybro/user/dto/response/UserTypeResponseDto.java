@@ -1,4 +1,4 @@
-package com.heybro.heybro.onboarding.dto.response;
+package com.heybro.heybro.user.dto.response;
 
 import com.heybro.heybro.user.domain.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;

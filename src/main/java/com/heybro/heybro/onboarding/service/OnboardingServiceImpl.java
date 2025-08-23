@@ -6,7 +6,7 @@ import com.heybro.heybro.onboarding.domain.UserOnboardingAnswer;
 import com.heybro.heybro.onboarding.dto.request.OnboardingResultRequestDto;
 import com.heybro.heybro.onboarding.dto.response.OnboardingOptionsResponseDto;
 import com.heybro.heybro.onboarding.dto.response.OnboardingQuestionResponseDto;
-import com.heybro.heybro.onboarding.dto.response.UserTypeResponseDto;
+import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.onboarding.repository.OnboardingOptionRepository;
 import com.heybro.heybro.onboarding.repository.OnboardingQuestionRepository;
 import com.heybro.heybro.onboarding.repository.UserOnboardingAnswerRepository;

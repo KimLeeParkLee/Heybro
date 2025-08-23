@@ -1,7 +1,7 @@
 package com.heybro.heybro.user.service;
 
 import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
-import com.heybro.heybro.onboarding.dto.response.UserTypeResponseDto;
+import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
