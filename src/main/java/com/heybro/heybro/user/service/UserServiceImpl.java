@@ -3,6 +3,7 @@ package com.heybro.heybro.user.service;
 import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
 import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.jwt.JwtUtil;
+import com.heybro.heybro.onboarding.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.user.domain.User;
 
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
@@ -172,6 +173,13 @@ public class UserServiceImpl implements UserService {
 
         return AccessTokenResponseDto.builder()
                 .accessToken(newAccessToken)
+                .build();
+    }
+
+    @Override
+    public UserTypeResponseDto getUserType(String email) {
+        return UserTypeResponseDto.builder()
+                .userType(userRepository.findUserTypeByEmail(email))
                 .build();
     }
 }
