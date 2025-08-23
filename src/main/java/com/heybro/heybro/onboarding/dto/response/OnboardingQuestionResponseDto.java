@@ -14,7 +14,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "온보딩 질문 조회 응답 DTO")
-public class OnboardingQuestionResponse {
+public class OnboardingQuestionResponseDto {
     @Schema(description = "온보딩 질문 식별키")
     private Long onboardingQuestionId;
 
@@ -25,5 +25,5 @@ public class OnboardingQuestionResponse {
     private int displayOrder;
 
     @Schema(description = "선택지 리스트")
-    private List<OnboardingOptionsResponse> options = new ArrayList<>();
+    private List<OnboardingOptionsResponseDto> options = new ArrayList<>();
 }

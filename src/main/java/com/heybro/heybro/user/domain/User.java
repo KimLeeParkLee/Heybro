@@ -61,4 +61,8 @@ public class User {
     private String provider; // provider(Kakao, Google)
 
     private String providerId; // provider id
+
+    public void updateUserType(UserType userType) {
+        this.userType = userType;
+    }
 }

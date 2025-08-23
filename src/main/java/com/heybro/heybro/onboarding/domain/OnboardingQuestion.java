@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
@@ -28,5 +29,20 @@ public class OnboardingQuestion {
     public void addChoice(OnboardingOption option) {
         this.options.add(option);
         option.setOnboardingQuestion(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OnboardingQuestion that = (OnboardingQuestion) o;
+        // 데이터베이스의 PK인 'id'가 같다면 같은 객체로 인식하도록 설정
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        // equals에서 사용하는 'id'로 해시코드를 생성
+        return Objects.hash(id);
     }
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "온보딩 선택지 조회 응답 DTO")
-public class OnboardingOptionsResponse {
+public class OnboardingOptionsResponseDto {
     @Schema(description = "온보딩 선택지 식별키")
     private Long onboardingOptionId;
 
