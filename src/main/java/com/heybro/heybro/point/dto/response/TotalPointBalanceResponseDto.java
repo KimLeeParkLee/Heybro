@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 @Schema(description = "누적 포인트 조회 응답 DTO")
 public class TotalPointBalanceResponseDto {
     @Schema(description = "누적 포인트")
-    private int totalPoint;
+    private long totalPoint;
 }
