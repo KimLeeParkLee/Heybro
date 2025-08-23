@@ -11,5 +11,6 @@ import java.util.List;
 @Service
 public interface OnboardingService {
     List<OnboardingQuestionResponseDto> findOnboardingQuestions();
+
     UserTypeResponseDto submitResults(OnboardingResultRequestDto request, UserDetails userDetails);
 }

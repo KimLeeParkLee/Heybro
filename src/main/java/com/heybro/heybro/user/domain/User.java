@@ -65,4 +65,9 @@ public class User {
     public void updateUserType(UserType userType) {
         this.userType = userType;
     }
+
+    public void updateBroPoint(int point) {
+        this.broPoint += point;
+        this.totalBroPoint += point;
+    }
 }
