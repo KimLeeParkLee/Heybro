@@ -1,6 +1,5 @@
 package com.heybro.heybro.user.repository;
 
-import com.heybro.heybro.point.dto.response.PointBalanceResponseDto;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserType;
 import org.springframework.data.jpa.repository.JpaRepository;
