@@ -2,6 +2,7 @@ package com.heybro.heybro.point.controller;
 
 import com.heybro.heybro.point.dto.request.PointTransactionRequestDto;
 import com.heybro.heybro.point.dto.response.PointBalanceResponseDto;
+import com.heybro.heybro.point.dto.response.PointHistoryResponseDto;
 import com.heybro.heybro.point.dto.response.TotalPointBalanceResponseDto;
 import com.heybro.heybro.point.service.PointService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,5 +45,11 @@ public class PointController {
     @PostMapping("/use")
     public void usePoints(@RequestBody PointTransactionRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
         pointService.usePoints(requestDto, userDetails.getUsername());
+    }
+
+    @Operation(summary = "포인트 내역 조회")
+    @GetMapping("/history")
+    public List<PointHistoryResponseDto> getPointHistory(@AuthenticationPrincipal UserDetails userDetails) {
+        return pointService.getPointHistory(userDetails.getUsername());
     }
 }

@@ -4,6 +4,7 @@ import com.heybro.heybro.point.domain.PointHistory;
 import com.heybro.heybro.point.domain.TransactionType;
 import com.heybro.heybro.point.dto.request.PointTransactionRequestDto;
 import com.heybro.heybro.point.dto.response.PointBalanceResponseDto;
+import com.heybro.heybro.point.dto.response.PointHistoryResponseDto;
 import com.heybro.heybro.point.dto.response.TotalPointBalanceResponseDto;
 import com.heybro.heybro.point.repository.PointHistoryRepository;
 import com.heybro.heybro.user.domain.User;
@@ -14,9 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.security.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +57,7 @@ public class PointServiceImpl implements PointService {
                 .transactionDate(LocalDateTime.now())
                 .transactionType(TransactionType.EARN)
                 .description("루틴 달성")
+                .user(user)
                 .build());
     }
 
@@ -79,6 +81,27 @@ public class PointServiceImpl implements PointService {
                 .transactionDate(LocalDateTime.now())
                 .transactionType(TransactionType.USE)
                 .description("쿠폰 결제")
+                .user(user)
                 .build());
+    }
+
+    @Override
+    public List<PointHistoryResponseDto> getPointHistory(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
+
+        List<PointHistoryResponseDto> responseDtoList = new ArrayList<>();
+        List<PointHistory> histories = pointHistoryRepository.findByUserOrderByTransactionDateDesc(user);
+
+        for (PointHistory history : histories) {
+            responseDtoList.add(PointHistoryResponseDto.builder()
+                    .transactionType(history.getTransactionType())
+                    .transactionDate(history.getTransactionDate())
+                    .description(history.getDescription())
+                    .amount(history.getAmount())
+                    .build());
+        }
+
+        return responseDtoList;
     }
 }
