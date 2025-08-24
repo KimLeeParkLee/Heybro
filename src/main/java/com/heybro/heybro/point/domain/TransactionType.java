@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum TransactionType {
-    EARN,
-    USE
+    EARN("적립"),
+    USE("사용");
+
+    private final String description;
 }
