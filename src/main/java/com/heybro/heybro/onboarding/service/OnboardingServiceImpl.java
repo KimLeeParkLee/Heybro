@@ -13,6 +13,7 @@ import com.heybro.heybro.onboarding.repository.UserOnboardingAnswerRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserType;
 import com.heybro.heybro.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,10 +55,10 @@ public class OnboardingServiceImpl implements OnboardingService {
 
     @Override
     @Transactional
-    public UserTypeResponseDto submitResults(OnboardingResultRequestDto request, UserDetails userDetails) {
-        // 1. userId로 User 엔티티를 DB에서 조회
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                        .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+    public UserTypeResponseDto submitResults(OnboardingResultRequestDto request, String email) {
+        // 1. userId로 User 엔티티 DB에서 조회
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
         // 2. 요청으로 들어온 답변 DTO 리스트를 실제 Answer 엔티티 리스트로 변환
         List<UserOnboardingAnswer> answers = request.getAnswers().stream()
@@ -79,16 +80,20 @@ public class OnboardingServiceImpl implements OnboardingService {
                 })
                 .collect(Collectors.toList());
 
-        // 5. 변환된 Answer 엔티티 리스트를 DB에 한번에 저장
+        // 5. 변환된 Answer 엔티티 리스트를 DB에 저장
         userOnboardingAnswerRepository.saveAll(answers);
 
-        // 6. 저장된 답변들을 기반으로 최종 UserType을 계산
+        // 6. 저장된 답변들을 기반으로 최종 UserType 계산
         UserType finalUserType = calculateUserType(answers);
 
-        // 7. 조회한 User 엔티티의 타입을 업데이트
+        // 7. 조회한 User 엔티티 회원 유형 업데이트
         user.updateUserType(finalUserType);
 
-        // 8. 최종 결과를 DTO로 변환하여 반환
+        // 8. 조회한 User 엔티티 기상 및 취침 시간 업데이트
+        user.updateWakeupTime(request.getWakeupTime());
+        user.updateBedtime(request.getBedtime());
+
+        // 9. 최종 결과를 DTO로 변환하여 반환
         return UserTypeResponseDto.from(finalUserType);
     }
 

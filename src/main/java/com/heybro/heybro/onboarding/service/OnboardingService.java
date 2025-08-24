@@ -12,5 +12,5 @@ import java.util.List;
 public interface OnboardingService {
     List<OnboardingQuestionResponseDto> findOnboardingQuestions();
 
-    UserTypeResponseDto submitResults(OnboardingResultRequestDto request, UserDetails userDetails);
+    UserTypeResponseDto submitResults(OnboardingResultRequestDto request, String email);
 }

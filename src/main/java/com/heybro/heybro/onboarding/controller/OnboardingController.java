@@ -31,6 +31,6 @@ public class OnboardingController {
     @Operation(summary = "온보딩 결과 전송")
     @PostMapping("/results")
     public UserTypeResponseDto submitOnboardingResults(@RequestBody OnboardingResultRequestDto request, @AuthenticationPrincipal UserDetails userDetails) {
-        return onboardingService.submitResults(request, userDetails);
+        return onboardingService.submitResults(request, userDetails.getUsername());
     }
 }

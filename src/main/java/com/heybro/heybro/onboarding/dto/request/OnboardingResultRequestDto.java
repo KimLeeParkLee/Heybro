@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -16,6 +17,12 @@ import java.util.List;
 public class OnboardingResultRequestDto {
     @Schema(description = "답변 리스트")
     private List<AnswerDto> answers;
+
+    @Schema(description = "기상 시간")
+    private LocalTime wakeupTime;
+
+    @Schema(description = "취침 시간")
+    private LocalTime bedtime;
 
     @Getter
     @NoArgsConstructor

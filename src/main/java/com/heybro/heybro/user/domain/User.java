@@ -3,8 +3,8 @@ package com.heybro.heybro.user.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @AllArgsConstructor
@@ -41,9 +41,9 @@ public class User {
 
     private int experience; // 경험치
 
-    private Time wakeUpTime; // 기상 시간
+    private LocalTime wakeupTime; // 기상 시간
 
-    private Time bedtime; // 취침 시간
+    private LocalTime bedtime; // 취침 시간
 
     private String profileImageUrl; // 프로필 사진
 
@@ -73,5 +73,13 @@ public class User {
 
     public void usePoints(int broPoint) {
         this.broPoint -= broPoint;
+    }
+
+    public void updateWakeupTime(LocalTime wakeupTime) {
+        this.wakeupTime = wakeupTime;
+    }
+
+    public void updateBedtime(LocalTime bedtime) {
+        this.bedtime = bedtime;
     }
 }
