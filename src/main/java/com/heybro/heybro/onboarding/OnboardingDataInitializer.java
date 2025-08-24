@@ -15,6 +15,9 @@ public class OnboardingDataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // 애플리케이션 시작 시점에 코드 실행
+        if (onboardingQuestionRepository.count() > 0) {
+            return;
+        }
 
         // 온보딩 질문 1
         OnboardingQuestion question1 = OnboardingQuestion.builder()
