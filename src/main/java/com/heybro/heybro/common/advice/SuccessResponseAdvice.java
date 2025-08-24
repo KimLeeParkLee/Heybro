@@ -31,10 +31,6 @@ public class SuccessResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                   Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-
-        // HTTP 상태 코드 설정
-        response.setStatusCode(HttpStatus.OK);
-
         // 반환된 body가 없는 경우(void 등) 성공 응답 객체를 생성
         if (body == null) {
             return ApiResponse.success();

@@ -45,14 +45,13 @@ public class AuthController {
 
     @Operation(summary = "소셜 로그인(Kakao, Google)")
     @PostMapping("/oauth2/authorization")
-    public ResponseEntity<Object> oauth2Login(@RequestBody OAuth2LoginRequestDto requestDto) {
+    public Object oauth2Login(@RequestBody OAuth2LoginRequestDto requestDto) {
         Object result = oAuth2LoginServiceImpl.oauth2Login(requestDto).block();
 
         if (result instanceof OAuth2SignUpResponseDto) {
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(ApiResponse.success(result, "신규 회원 가입이 완료되었습니다.", HttpStatus.CREATED.value()));
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } else if (result instanceof LoginResponseDto) {
-            return ResponseEntity.ok(ApiResponse.success(result));
+            return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.internalServerError().body(ApiResponse.error("Unexpected response type", 500));
         }
