@@ -13,6 +13,12 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @Builder
+@Table(uniqueConstraints = {
+        @UniqueConstraint(
+                name = "UNIQUE_LOG_USER_ROUTINE_DATE",
+                columnNames = {"user_id", "routine_id", "taskDate"}
+        )
+})
 public class DailyRoutineLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

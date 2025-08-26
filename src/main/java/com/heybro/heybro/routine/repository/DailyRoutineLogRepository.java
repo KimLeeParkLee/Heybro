@@ -10,5 +10,6 @@ import java.util.List;
 
 @Repository
 public interface DailyRoutineLogRepository extends JpaRepository<DailyRoutineLog, Long> {
+    List<DailyRoutineLog> findAllByTaskDate(LocalDate date);
     List<DailyRoutineLog> findAllByUserAndTaskDate(User user, LocalDate taskDate);
 }

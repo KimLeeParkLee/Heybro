@@ -4,6 +4,7 @@ import com.heybro.heybro.routine.domain.DailyRoutineLog;
 import com.heybro.heybro.routine.domain.Routine;
 import com.heybro.heybro.routine.domain.RoutineElement;
 import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
+import com.heybro.heybro.routine.repository.RoutineRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserRoutine;
 import com.heybro.heybro.user.domain.UserRoutineSchedule;
@@ -13,6 +14,7 @@ import com.heybro.heybro.user.repository.UserRoutineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,6 +27,7 @@ public class RoutineServiceImpl implements RoutineService {
     private final UserRepository userRepository;
     private final UserRoutineRepository userRoutineRepository;
     private final DailyRoutineLogRepository dailyRoutineLogRepository;
+    private final RoutineLogService routineLogService;
 
     /**
      * 과거부터 오늘까지면 DailyRoutineLog에서 조회
@@ -98,6 +101,12 @@ public class RoutineServiceImpl implements RoutineService {
 
             // (2) 해당 날짜의 모든 로그를 DailyRoutineLog에서 조회
             List<DailyRoutineLog> logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, date);
+
+            // 만약 오늘 날짜인데 로그가 없으면 즉시 생성
+            if (logs.isEmpty() && date.isEqual(LocalDate.now())) {
+                routineLogService.createLogsForUser(user, LocalDate.now());
+                logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, date);
+            }
 
             // (3) 로그를 DTO로 변환
             List<UserRoutineResponseDto.RoutineResponseDto> routineResponseDtoList = logs.stream()
