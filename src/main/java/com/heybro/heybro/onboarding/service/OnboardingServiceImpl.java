@@ -6,6 +6,10 @@ import com.heybro.heybro.onboarding.domain.UserOnboardingAnswer;
 import com.heybro.heybro.onboarding.dto.request.OnboardingResultRequestDto;
 import com.heybro.heybro.onboarding.dto.response.OnboardingOptionsResponseDto;
 import com.heybro.heybro.onboarding.dto.response.OnboardingQuestionResponseDto;
+import com.heybro.heybro.routine.domain.*;
+import com.heybro.heybro.routine.repository.RoutineRepository;
+import com.heybro.heybro.user.domain.UserRoutineElement;
+import com.heybro.heybro.user.domain.UserRoutineSchedule;
 import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.onboarding.repository.OnboardingOptionRepository;
 import com.heybro.heybro.onboarding.repository.OnboardingQuestionRepository;
@@ -13,13 +17,14 @@ import com.heybro.heybro.onboarding.repository.UserOnboardingAnswerRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserType;
 import com.heybro.heybro.user.repository.UserRepository;
+import com.heybro.heybro.user.repository.UserRoutineElementRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,7 +36,8 @@ public class OnboardingServiceImpl implements OnboardingService {
     private final OnboardingOptionRepository onboardingOptionRepository;
     private final UserOnboardingAnswerRepository userOnboardingAnswerRepository;
     private final UserRepository userRepository;
-
+    private final UserRoutineElementRepository userRoutineElementRepository;
+    private final RoutineRepository routineRepository;
 
     @Override
     public List<OnboardingQuestionResponseDto> findOnboardingQuestions() {
@@ -93,7 +99,43 @@ public class OnboardingServiceImpl implements OnboardingService {
         user.updateWakeupTime(request.getWakeupTime());
         user.updateBedtime(request.getBedtime());
 
-        // 9. 최종 결과를 DTO로 변환하여 반환
+        // 9. 회원 유형에 맞는 루틴 생성해주기
+        // (1) 온보딩 검사로 나온 회원 유형의 루틴 검색
+        Routine routine = routineRepository.findByType(finalUserType);
+
+        // (2) 검색한 루틴의 루틴 요소
+        List<RoutineElement> routineElements = routine.getElementList();
+
+        // (3) 회원 루틴 요소 및 기본 스케줄 생성
+        List<UserRoutineElement> userRoutineElementsToSave = new ArrayList<>();
+
+        for (RoutineElement elementTemplate : routineElements) {
+            // 먼저 UserRoutineElement 객체 생성
+            UserRoutineElement userElement = UserRoutineElement.builder()
+                    .user(user)
+                    .routineElement(elementTemplate)
+                    .schedules(new ArrayList<>()) // 양방향 연관관계를 위해 빈 리스트로 초기화
+                    .build();
+
+            // 생성된 UserRoutineElement에 대해 매일(월~일) 스케줄 생성
+            for (DayOfWeek day : DayOfWeek.values()) { // DayOfWeek.values()는 MONDAY부터 SUNDAY까지 모든 요일 반환
+                UserRoutineSchedule schedule = UserRoutineSchedule.builder()
+                        .dayOfWeek(day)       // 요일 설정
+                        .scheduleTime(null)   // 시간은 null로 설정
+                        .userRoutineElement(userElement) // 부모인 userElement와 연결
+                        .build();
+
+                // userElement의 schedules 리스트에 생성된 스케줄 추가
+                userElement.getSchedules().add(schedule);
+            }
+            userRoutineElementsToSave.add(userElement);
+        }
+
+        // (4) 생성된 모든 회원 루틴 요소들을 DB에 한 번에 저장
+        // UserRoutineElement에 CascadeType.ALL이 설정되어 있으므로, schedules도 함께 저장
+        userRoutineElementRepository.saveAll(userRoutineElementsToSave);
+
+        // 10. 최종 결과를 DTO로 변환하여 반환
         return UserTypeResponseDto.from(finalUserType);
     }
 
