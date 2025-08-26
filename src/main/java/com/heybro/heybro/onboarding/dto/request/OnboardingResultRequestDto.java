@@ -1,7 +1,6 @@
 package com.heybro.heybro.onboarding.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,11 +26,9 @@ public class OnboardingResultRequestDto {
     @Getter
     @NoArgsConstructor
     public static class AnswerDto {
-        @JsonProperty("onboarding_question_id")
         @Schema(description = "온보딩 질문 식별키")
         private Long onboardingQuestionId;
 
-        @JsonProperty("onboarding_option_id")
         @Schema(description = "온보딩 선택지 식별키")
         private Long onboardingOptionId;
     }
