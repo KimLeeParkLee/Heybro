@@ -1,0 +1,34 @@
+package com.heybro.heybro.routine.domain;
+
+import com.heybro.heybro.user.domain.User;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+public class DailyRoutineLog {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // 일일 루틴 기록 식별키
+
+    private LocalDate taskDate; // 날짜
+
+    private LocalTime scheduledTime; // 시간
+
+    private boolean isCompleted; // 완료 여부
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user; // 회원
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "routine_id")
+    private Routine routine; // 루틴
+}

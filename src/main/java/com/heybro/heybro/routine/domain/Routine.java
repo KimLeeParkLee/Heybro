@@ -1,6 +1,5 @@
 package com.heybro.heybro.routine.domain;
 
-import com.heybro.heybro.user.domain.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,9 +17,25 @@ public class Routine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 루틴 식별키
 
+    private String name; // 루틴 이름
+
     @Enumerated(EnumType.STRING)
-    private UserType type; // 루틴 유형
+    private TimeOfDay timeOfDay; // 루틴 시간대 (MORNING, LUNCH, EVENING)
+
+    private String iconImage; // 아이콘 url
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "routine_template_id")
+    private RoutineTemplate routineTemplate; // 루틴
 
     @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoutineElement> elementList = new ArrayList<>(); // 루틴 요소 리스트
+
+    @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id ASC")
+    private List<RoutineTip> tipList = new ArrayList<>(); // 루틴 팁 리스트
+
+    public void updateRoutine(RoutineTemplate routineTemplate) {
+        this.routineTemplate = routineTemplate;
+    }
 }

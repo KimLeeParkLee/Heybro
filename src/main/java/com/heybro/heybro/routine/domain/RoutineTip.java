@@ -17,6 +17,6 @@ public class RoutineTip {
     private String content; // 루틴 팁 내용
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "routine_sub_element_id")
-    private RoutineSubElement routineSubElement;
+    @JoinColumn(name = "routine_id")
+    private Routine routine; // 루틴 요소
 }
