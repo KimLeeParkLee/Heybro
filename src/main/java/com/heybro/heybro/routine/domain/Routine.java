@@ -29,9 +29,11 @@ public class Routine {
     private RoutineTemplate routineTemplate; // 루틴
 
     @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<RoutineElement> elementList = new ArrayList<>(); // 루틴 요소 리스트
 
     @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     @OrderBy("id ASC")
     private List<RoutineTip> tipList = new ArrayList<>(); // 루틴 팁 리스트
 
