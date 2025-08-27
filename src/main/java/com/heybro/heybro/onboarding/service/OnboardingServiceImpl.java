@@ -9,9 +9,12 @@ import com.heybro.heybro.onboarding.dto.response.OnboardingQuestionResponseDto;
 import com.heybro.heybro.onboarding.repository.OnboardingOptionRepository;
 import com.heybro.heybro.onboarding.repository.OnboardingQuestionRepository;
 import com.heybro.heybro.onboarding.repository.UserOnboardingAnswerRepository;
+import com.heybro.heybro.routine.domain.DailyRoutineLog;
 import com.heybro.heybro.routine.domain.Routine;
 import com.heybro.heybro.routine.domain.RoutineTemplate;
+import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
 import com.heybro.heybro.routine.repository.RoutineTemplateRepository;
+import com.heybro.heybro.routine.service.RoutineLogService;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserRoutine;
 import com.heybro.heybro.user.domain.UserRoutineSchedule;
@@ -26,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,6 +43,9 @@ public class OnboardingServiceImpl implements OnboardingService {
     private final UserRepository userRepository;
     private final UserRoutineRepository userRoutineRepository;
     private final RoutineTemplateRepository routineTemplateRepository;
+    private final DailyRoutineLogRepository dailyRoutineLogRepository;
+
+    private final RoutineLogService routineLogService;
 
     @Override
     public List<OnboardingQuestionResponseDto> findOnboardingQuestions() {
@@ -135,6 +142,18 @@ public class OnboardingServiceImpl implements OnboardingService {
         // (4) 생성된 모든 회원 루틴 요소들을 DB에 한 번에 저장
         // UserRoutineElement에 CascadeType.ALL이 설정되어 있으므로, schedules도 함께 저장
         userRoutineRepository.saveAll(userRoutineElementsToSave);
+
+        // 10. DailyRoutineLog에 오늘 로그 저장하기
+        // (1) 먼저 오늘 날짜의 로그가 존재하는지 조회
+        List<DailyRoutineLog> logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, LocalDate.now());
+
+        // (2) 로그가 존재하지 않으면 즉시 생성
+        if (logs.isEmpty()) {
+            routineLogService.createLogsForUser(user, LocalDate.now());
+            logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, LocalDate.now());
+        }
+
+        dailyRoutineLogRepository.saveAll(logs);
 
         // 10. 최종 결과를 DTO로 변환하여 반환
         return UserTypeResponseDto.from(finalUserType);
