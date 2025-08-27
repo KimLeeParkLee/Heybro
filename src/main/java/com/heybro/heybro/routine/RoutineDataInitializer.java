@@ -53,7 +53,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("일어나서 물 한 잔 마시기")
                 .timeOfDay(TimeOfDay.MORNING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/MORNING/%E1%84%86%E1%85%AE%E1%86%AF+%E1%84%86%E1%85%A1%E1%84%89%E1%85%B5%E1%84%80%E1%85%B5.png")
+                .iconImage("https://drive.google.com/file/d/1Vp03pqKmtYfFeLqkncbf_dTpP73brpgT/view?usp=drive_link")
                 .tipList(createTips("천천히 마시면서 위장이 놀라지 않게 하세요.", "찬물보다는 미지근한 물이 소화에 더 좋아요."))
                 .elementList(Collections.singletonList(
                         RoutineElement.builder()
@@ -68,7 +68,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("건강 보조제 챙겨 먹기")
                 .timeOfDay(TimeOfDay.MORNING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/MORNING/%E1%84%80%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A1%E1%86%BC%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A9%E1%84%8C%E1%85%A6.png")
+                .iconImage("https://drive.google.com/file/d/1ukKs2To3sLyQYOAZ9tOxL1-zUpTGyrAm/view?usp=drive_link")
                 .tipList(createTips("매일 같은 시간대에 섭취하면 습관화에 좋아요.", "커피나 차와 함께 먹지 않도록 주의하세요."))
                 .elementList(Collections.singletonList(
                         RoutineElement.builder()
@@ -83,7 +83,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("토너로 피부결 정돈하기")
                 .timeOfDay(TimeOfDay.MORNING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/MORNING/%E1%84%90%E1%85%A9%E1%84%82%E1%85%A5.png")
+                .iconImage("https://drive.google.com/file/d/1klmt34jWh1hDssErZRXPeLU1oa6OhcRK/view?usp=sharing")
                 .tipList(createTips("세안 직후 바로 발라야 수분 손실을 막을 수 있어요.", "화장솜 대신 손바닥을 쓰면 피부 자극이 줄어듭니다."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("토너 덜어내기").content("세안 후 화장솜이나 손바닥에 토너를 적당히 덜어주세요.").detailImage("https://drive.google.com/uc?export=view&id=1Mn27Us_0_7gaZcywBGfn8TYLj-wPVHUG").build(),
@@ -95,7 +95,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("에센스/세럼 바르기")
                 .timeOfDay(TimeOfDay.MORNING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/MORNING/%E1%84%8B%E1%85%A6%E1%84%89%E1%85%A6%E1%86%AB%E1%84%89%E1%85%B3%E1%84%89%E1%85%A6%E1%84%85%E1%85%A5%E1%86%B7.png")
+                .iconImage("https://drive.google.com/file/d/1Q1bMGLr91Gp32nAEuL9kShLaOqQaEyX1/view?usp=sharing")
                 .tipList(createTips("세럼은 피부 고민에 맞는 제품을 선택하세요.", "여러 제품을 쓸 땐 점도가 묽은 것부터 바르세요."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("세럼 펌핑하기").content("적당량의 세럼을 손에 펌핑합니다.").build(),
@@ -107,7 +107,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("로션/크림 바르기")
                 .timeOfDay(TimeOfDay.MORNING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/MORNING/%E1%84%85%E1%85%A9%E1%84%89%E1%85%A7%E1%86%AB%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%B7.png")
+                .iconImage("https://drive.google.com/file/d/17G9fijMamsQy8XZVG2Rqp8XAvJMuo8DY/view?usp=sharing")
                 .tipList(createTips("목까지 함께 발라야 관리가 완성돼요.", "아침에는 가벼운 로션, 저녁엔 영양 크림이 적합합니다."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("로션/크림 덜어내기").content("손등만한 크기의 양을 손바닥에 덜어주세요.").build(),
@@ -119,7 +119,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("면도하기")
                 .timeOfDay(TimeOfDay.MORNING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/MORNING/%E1%84%86%E1%85%A7%E1%86%AB%E1%84%83%E1%85%A9.png")
+                .iconImage("https://drive.google.com/file/d/1aQ_O3PPuHEhiY0k6iWFJ3TvsQSb30O2C/view?usp=sharing")
                 .tipList(createTips("쉐이빙 폼을 잘 발라야 칼날이 피부에 밀착돼서 상처가 나지않아요.", "잘 밀리지 않는 부분은 피부를 반대 방향으로 당겨서 한번 더 밀어주세요."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("쉐이빙 폼 바르기").content("쉐이빙 폼을 거품을 잘내서 얼굴에 발라주세요.").detailImage("https://drive.google.com/uc?export=view&id=1-wwxnGNwTDlbx-_NI59XcwhW6phCHMvA").build(),
@@ -131,7 +131,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("외출 전 향수 / 섬유 탈취제 뿌리기")
                 .timeOfDay(TimeOfDay.MORNING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/MORNING/%E1%84%92%E1%85%A3%E1%86%BC%E1%84%89%E1%85%AE.png")
+                .iconImage("https://drive.google.com/file/d/1nohQ6AnD_HFh9PqjnFjoBBL6rAndQZxk/view?usp=sharing")
                 .tipList(createTips("가까운 거리에서 직접 뿌리면 자극적일 수 있습니다.", "계절에 맞는 향을 선택하세요."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("몸과 옷에 분사하기").content("손목, 귀 뒤, 옷 위에 가볍게 분사합니다.").detailImage("https://drive.google.com/uc?export=view&id=1ol5F4uY1qeueDFkRrp-UHTpNonquYdiL").build(),
@@ -143,7 +143,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("점심 식사 후 양치하기")
                 .timeOfDay(TimeOfDay.LUNCH)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/LUNCH/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%8E%E1%85%B5.png")
+                .iconImage("https://drive.google.com/file/d/1dfr1pTE-eEpXPKyi3FEUeWl040cSmBBY/view?usp=sharing")
                 .tipList(createTips("칫솔질 전 가볍게 물로 헹구면 더 효과적입니다.", "치실이나 가글을 함께 사용하면 좋습니다."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("식후 30분 뒤 양치").content("식사 후 30분 뒤 양치하세요.").build(),
@@ -154,7 +154,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("미스트 뿌리기")
                 .timeOfDay(TimeOfDay.LUNCH)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/LUNCH/%E1%84%86%E1%85%B5%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3.png")
+                .iconImage("https://drive.google.com/file/d/15YJ5DluvK9upjKenT4Hwlbw8T3caLnb-/view?usp=sharing")
                 .tipList(createTips("미스트는 미온수 성분이 든 제품이 자극이 적습니다.", "뿌린 뒤 휴지로 닦아내지 말고 흡수시켜주세요."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("거리 두고 분사하기").content("얼굴에서 20cm 정도 거리를 두고 미스트를 분사하세요.").build(),
@@ -165,7 +165,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("립밤 바르기")
                 .timeOfDay(TimeOfDay.LUNCH)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/LUNCH/%E1%84%85%E1%85%B5%E1%86%B8%E1%84%87%E1%85%A1%E1%86%B3.png")
+                .iconImage("https://drive.google.com/file/d/1zup8mc8jcGqDsFs0wXm3wuIsAGh-Y9rs/view?usp=sharing")
                 .tipList(createTips("자기 전 두껍게 바르면 ‘립 마스크’ 효과가 있습니다.", "무향·무색 제품을 쓰면 덧바르기 편해요."))
                 .elementList(Collections.singletonList(
                         RoutineElement.builder().step(1).name("입술에 골고루 바르기").content("입술 중앙부터 바깥쪽으로 골고루 바르세요.").detailImage("https://drive.google.com/uc?export=view&id=105-219qac66hj43R9WaQkZIibhYkSJl-").build()
@@ -175,7 +175,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("핸드크림 바르기")
                 .timeOfDay(TimeOfDay.LUNCH)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/LUNCH/%E1%84%92%E1%85%A2%E1%86%AB%E1%84%83%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%B7.png")
+                .iconImage("https://drive.google.com/file/d/1zabKYnzrq7_SM4o-ZdiOSORnqWDQE6T5/view?usp=sharing")
                 .tipList(createTips("건조하기 쉬운 손등부터 챙기세요.", "끈적임이 적은 제형은 낮에 쓰기 좋아요."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("손등에 덜어 문지르기").content("적당량을 손등에 짜서 양손으로 문질러 주세요.").build(),
@@ -186,7 +186,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("거울 보고 상태 확인하기")
                 .timeOfDay(TimeOfDay.LUNCH)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/LUNCH/%E1%84%80%E1%85%A5%E1%84%8B%E1%85%AE%E1%86%AF.png")
+                .iconImage("https://drive.google.com/file/d/1pHcsbjGfSPVAc5Ozd_on0gEZy8_4si9e/view?usp=sharing")
                 .tipList(createTips("중요한 회의 전 습관화하면 깔끔한 이미지를 유지할 수 있어요.", "표정까지 확인하면 자신감이 더 생겨요."))
                 .elementList(Collections.singletonList(
                         RoutineElement.builder().step(1).name("얼굴과 옷매무새 체크").content("얼굴, 머리카락, 옷매무새를 빠르게 체크하세요.").detailImage("https://drive.google.com/uc?export=view&id=1sdMU9TDZy36WvzN1MBeuwsSwssqcEL5Y").build()
@@ -197,7 +197,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("클렌징 오일 / 폼으로 이중 세안하기")
                 .timeOfDay(TimeOfDay.EVENING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/EVENING/%E1%84%8F%E1%85%B3%E1%86%AF%E1%84%85%E1%85%A6%E1%86%AB%E1%84%8C%E1%85%B5%E1%86%BC.png")
+                .iconImage("https://drive.google.com/file/d/1J6vOsP4wPlHgnD5guVENqYFCp1_IKM5V/view?usp=sharing")
                 .tipList(createTips("눈가, 콧방울은 특히 꼼꼼히 닦아주세요.", "세안 후 타올로 문지르지 말고 톡톡 두드리세요."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("클렌징 오일로 녹이기").content("클렌징 오일로 메이크업과 노폐물을 녹여줍니다.").build(),
@@ -209,7 +209,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("보습 크림 바르기")
                 .timeOfDay(TimeOfDay.EVENING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/EVENING/%E1%84%87%E1%85%A9%E1%84%89%E1%85%B3%E1%86%B8%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%B7.png")
+                .iconImage("https://drive.google.com/file/d/1mKJhBfjPlFgz89Ck3hNEQ5Cc0_0fT2BW/view?usp=sharing")
                 .tipList(createTips("겨울철엔 평소보다 조금 더 두껍게 발라주세요.", "피부 결 방향대로 바르는 게 흡수에 좋아요."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("크림 덜어내기").content("손가락 끝에 크림을 소량씩 덜어냅니다.").build(),
@@ -221,7 +221,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("손톱 및 발톱 관리")
                 .timeOfDay(TimeOfDay.EVENING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/EVENING/%E1%84%89%E1%85%A9%E1%86%AB%E1%84%90%E1%85%A9%E1%86%B8.png")
+                .iconImage("https://drive.google.com/file/d/18mX5LE-Eox8Jg9qamyIIF5OwOZDH2QbD/view?usp=sharing")
                 .tipList(createTips("자르기보다는 갈아서 관리하면 손상이 적습니다.", "취침 전 관리하면 흡수가 잘돼요."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("길이 정돈하기").content("손톱깎이나 파일로 길이를 정돈합니다.").build(),
@@ -233,7 +233,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("취침 전 스트레칭 하기")
                 .timeOfDay(TimeOfDay.EVENING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/EVENING/%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%85%E1%85%A6%E1%84%8E%E1%85%B5%E1%86%BC.png")
+                .iconImage("https://drive.google.com/file/d/1j5NQU-lNrf7nW2dCRaA6Ul03ni-Afk6p/view?usp=sharing")
                 .tipList(createTips("스트레칭은 10분 이내가 적당합니다.", "무리하지 말고 호흡에 맞춰 하세요."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("목과 어깨 풀기").content("가볍게 목과 어깨를 돌려 풀어줍니다.").build(),
@@ -245,7 +245,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
         routines.add(Routine.builder()
                 .name("눈 마사지하기")
                 .timeOfDay(TimeOfDay.EVENING)
-                .iconImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/routine/icon/EVENING/%E1%84%82%E1%85%AE%E1%86%AB%E1%84%86%E1%85%A1%E1%84%89%E1%85%A1%E1%84%8C%E1%85%B5.png")
+                .iconImage("https://drive.google.com/file/d/1BhJP1boulSgaUM9sElEAceUA604yK1Zh/view?usp=sharing")
                 .tipList(createTips("눈가 전용 크림을 함께 쓰면 효과가 좋아요.", "너무 강하게 누르지 않도록 주의하세요."))
                 .elementList(Arrays.asList(
                         RoutineElement.builder().step(1).name("눈썹 뼈 누르기").content("눈썹 아래 뼈를 지그시 눌러줍니다.").build(),
