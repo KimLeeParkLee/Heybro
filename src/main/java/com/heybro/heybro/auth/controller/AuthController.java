@@ -5,8 +5,8 @@ import com.heybro.heybro.auth.dto.request.RefreshTokenRequestDto;
 import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
 import com.heybro.heybro.auth.dto.response.OAuth2SignUpResponseDto;
 import com.heybro.heybro.auth.service.OAuth2LoginServiceImpl;
-import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.jwt.JwtUtil;
+import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.response.ApiResponse;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
@@ -22,7 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController

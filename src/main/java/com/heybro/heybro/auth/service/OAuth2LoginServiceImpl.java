@@ -1,12 +1,11 @@
 package com.heybro.heybro.auth.service;
 
-import com.heybro.heybro.auth.dto.request.OAuth2LoginRequestDto;
 import com.heybro.heybro.auth.client.OAuth2Client;
 import com.heybro.heybro.auth.dto.OAuth2UserInfo;
+import com.heybro.heybro.auth.dto.request.OAuth2LoginRequestDto;
 import com.heybro.heybro.auth.dto.response.OAuth2SignUpResponseDto;
 import com.heybro.heybro.common.jwt.JwtUtil;
 import com.heybro.heybro.user.domain.User;
-
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

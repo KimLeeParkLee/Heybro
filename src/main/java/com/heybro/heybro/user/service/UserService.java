@@ -1,11 +1,11 @@
 package com.heybro.heybro.user.service;
 
 import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
-import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
+import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 

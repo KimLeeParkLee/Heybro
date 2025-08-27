@@ -2,8 +2,8 @@ package com.heybro.heybro.onboarding.controller;
 
 import com.heybro.heybro.onboarding.dto.request.OnboardingResultRequestDto;
 import com.heybro.heybro.onboarding.dto.response.OnboardingQuestionResponseDto;
-import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.onboarding.service.OnboardingService;
+import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

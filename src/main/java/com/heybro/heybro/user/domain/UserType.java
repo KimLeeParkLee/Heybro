@@ -1,6 +1,7 @@
 package com.heybro.heybro.user.domain;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter

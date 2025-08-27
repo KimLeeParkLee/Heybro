@@ -6,16 +6,17 @@ import com.heybro.heybro.onboarding.domain.UserOnboardingAnswer;
 import com.heybro.heybro.onboarding.dto.request.OnboardingResultRequestDto;
 import com.heybro.heybro.onboarding.dto.response.OnboardingOptionsResponseDto;
 import com.heybro.heybro.onboarding.dto.response.OnboardingQuestionResponseDto;
-import com.heybro.heybro.routine.domain.*;
-import com.heybro.heybro.routine.repository.RoutineRepository;
-import com.heybro.heybro.user.domain.UserRoutine;
-import com.heybro.heybro.user.domain.UserRoutineSchedule;
-import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.onboarding.repository.OnboardingOptionRepository;
 import com.heybro.heybro.onboarding.repository.OnboardingQuestionRepository;
 import com.heybro.heybro.onboarding.repository.UserOnboardingAnswerRepository;
+import com.heybro.heybro.routine.domain.Routine;
+import com.heybro.heybro.routine.domain.RoutineTemplate;
+import com.heybro.heybro.routine.repository.RoutineTemplateRepository;
 import com.heybro.heybro.user.domain.User;
+import com.heybro.heybro.user.domain.UserRoutine;
+import com.heybro.heybro.user.domain.UserRoutineSchedule;
 import com.heybro.heybro.user.domain.UserType;
+import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.repository.UserRoutineRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -37,7 +38,7 @@ public class OnboardingServiceImpl implements OnboardingService {
     private final UserOnboardingAnswerRepository userOnboardingAnswerRepository;
     private final UserRepository userRepository;
     private final UserRoutineRepository userRoutineRepository;
-    private final RoutineRepository routineRepository;
+    private final RoutineTemplateRepository routineTemplateRepository;
 
     @Override
     public List<OnboardingQuestionResponseDto> findOnboardingQuestions() {
@@ -101,7 +102,7 @@ public class OnboardingServiceImpl implements OnboardingService {
 
         // 9. 회원 유형에 맞는 루틴 생성해주기
         // (1) 온보딩 검사로 나온 회원 유형의 루틴 검색
-        RoutineTemplate routineTemplate = routineRepository.findByType(finalUserType);
+        RoutineTemplate routineTemplate = routineTemplateRepository.findByType(finalUserType);
 
         // (2) 검색한 루틴의 루틴 요소
         List<Routine> routines = routineTemplate.getElementList();
