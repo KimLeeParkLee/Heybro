@@ -75,6 +75,10 @@ public class User {
         this.broPoint -= broPoint;
     }
 
+    public void updateExperience(int experience) {
+        this.experience += experience;
+    }
+
     public void updateWakeupTime(LocalTime wakeupTime) {
         this.wakeupTime = wakeupTime;
     }
