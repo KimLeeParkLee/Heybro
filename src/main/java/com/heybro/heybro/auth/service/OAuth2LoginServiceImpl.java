@@ -70,6 +70,7 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
                                 .notificationEnabled(user.isNotificationEnabled())
                                 .broPoint(user.getBroPoint())
                                 .broLevel(user.getBroLevel())
+                                .experience(user.getExperience())
                                 .accessToken(serviceAccessToken)
                                 .refreshToken(serviceRefreshToken)
                                 .build());

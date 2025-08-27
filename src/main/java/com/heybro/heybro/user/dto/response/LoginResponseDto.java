@@ -36,6 +36,9 @@ public class LoginResponseDto {
     @Schema(description = "브로 레벨")
     private int broLevel;
 
+    @Schema(description = "경험치")
+    private int experience;
+
     @Schema(description = "access token")
     private String accessToken;
 

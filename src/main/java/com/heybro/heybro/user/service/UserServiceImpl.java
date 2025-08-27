@@ -84,6 +84,7 @@ public class UserServiceImpl implements UserService {
                 .notificationEnabled(savedUser.isNotificationEnabled())
                 .broPoint(savedUser.getBroPoint())
                 .broLevel(savedUser.getBroLevel())
+                .experience(savedUser.getExperience())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -122,6 +123,7 @@ public class UserServiceImpl implements UserService {
                 .notificationEnabled(user.isNotificationEnabled())
                 .broPoint(user.getBroPoint())
                 .broLevel(user.getBroLevel())
+                .experience(user.getExperience())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
