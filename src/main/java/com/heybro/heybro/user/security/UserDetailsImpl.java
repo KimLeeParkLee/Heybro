@@ -1,9 +1,7 @@
 package com.heybro.heybro.user.security;
 
 import com.heybro.heybro.user.domain.User;
-
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;

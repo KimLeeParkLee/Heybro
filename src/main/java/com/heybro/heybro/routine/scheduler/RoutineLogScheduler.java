@@ -1,26 +1,18 @@
 package com.heybro.heybro.routine.scheduler;
 
-import com.heybro.heybro.routine.domain.DailyRoutineLog;
-import com.heybro.heybro.routine.domain.Routine;
 import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
 import com.heybro.heybro.routine.service.RoutineLogService;
 import com.heybro.heybro.user.domain.User;
-import com.heybro.heybro.user.domain.UserRoutine;
-import com.heybro.heybro.user.domain.UserRoutineSchedule;
 import com.heybro.heybro.user.repository.UserRepository;
-import com.heybro.heybro.user.repository.UserRoutineRepository; // [변경점 1] import 추가
+import com.heybro.heybro.user.repository.UserRoutineRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
