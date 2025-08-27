@@ -1,5 +1,6 @@
 package com.heybro.heybro.routine.controller;
 
+import com.heybro.heybro.routine.dto.response.RoutineElementDetailResponseDto;
 import com.heybro.heybro.routine.service.RoutineService;
 import com.heybro.heybro.user.dto.response.UserRoutineResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,13 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,4 +27,9 @@ public class RoutineController {
         return routineService.getRoutinesByDate(date, userDetails.getUsername());
     }
 
+    @Operation(summary = "루틴 요소 상세 조회")
+    @GetMapping("/{routineElementId}")
+    public RoutineElementDetailResponseDto getRoutineElements(@PathVariable Long routineElementId) {
+        return routineService.getRoutineElements(routineElementId);
+    }
 }

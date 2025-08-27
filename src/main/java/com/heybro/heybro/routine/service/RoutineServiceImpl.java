@@ -3,8 +3,12 @@ package com.heybro.heybro.routine.service;
 import com.heybro.heybro.routine.domain.DailyRoutineLog;
 import com.heybro.heybro.routine.domain.Routine;
 import com.heybro.heybro.routine.domain.RoutineElement;
+import com.heybro.heybro.routine.dto.response.RoutineElementDetailResponseDto;
+import com.heybro.heybro.routine.dto.response.RoutineElementResponseDto;
+import com.heybro.heybro.routine.dto.response.RoutineTipResponseDto;
 import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
 import com.heybro.heybro.routine.repository.RoutineRepository;
+import com.heybro.heybro.routine.repository.RoutineTemplateRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserRoutine;
 import com.heybro.heybro.user.domain.UserRoutineSchedule;
@@ -14,7 +18,6 @@ import com.heybro.heybro.user.repository.UserRoutineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -28,6 +31,8 @@ public class RoutineServiceImpl implements RoutineService {
     private final UserRoutineRepository userRoutineRepository;
     private final DailyRoutineLogRepository dailyRoutineLogRepository;
     private final RoutineLogService routineLogService;
+    private final RoutineRepository routineRepository;
+    private final RoutineTemplateRepository routineTemplateRepository;
 
     /**
      * 과거부터 오늘까지면 DailyRoutineLog에서 조회
@@ -61,34 +66,30 @@ public class RoutineServiceImpl implements RoutineService {
 
                 Routine routine = userRoutine.getRoutine();
 
-                // (5) Routine에 연결된 Element와 Tip을 DTO 리스트로 변환 (반복문 밖에서 한 번만 수행)
-                List<UserRoutineResponseDto.RoutineElementResponseDto> elementDtos = routine.getElementList().stream()
-                        .sorted(Comparator.comparing(RoutineElement::getStep))
-                        .map(UserRoutineResponseDto.RoutineElementResponseDto::from)
-                        .collect(Collectors.toList());
-
-                List<UserRoutineResponseDto.RoutineTipResponseDto> tipDtos = routine.getTipList().stream()
-                        .map(UserRoutineResponseDto.RoutineTipResponseDto::from)
-                        .collect(Collectors.toList());
-
                 // (6) 필터링된 각 스케줄에 대해 최종 RoutineResponseDto를 만들어 리스트에 추가
                 for (UserRoutineSchedule schedule : filteredSchedules) {
                     UserRoutineResponseDto.RoutineResponseDto routineDto = UserRoutineResponseDto.RoutineResponseDto.builder()
+                            .routineId(routine.getId())
                             .scheduleTime(schedule.getScheduleTime())
                             .routineName(routine.getName())
                             .iconImage(routine.getIconImage())
                             .timeOfDay(routine.getTimeOfDay())
                             .completed(false) // 미래 날짜이므로 항상 false
-                            .elements(elementDtos)
-                            .tips(tipDtos)
                             .build();
                     routineResponseDtoList.add(routineDto);
                 }
             }
 
             // TimeOfDay순으로 먼저 정렬 후 scheduleTime 순으로 정렬
-            routineResponseDtoList.sort(Comparator.comparing(UserRoutineResponseDto.RoutineResponseDto::getTimeOfDay)
-                    .thenComparing(UserRoutineResponseDto.RoutineResponseDto::getScheduleTime));
+            routineResponseDtoList.sort(
+                    Comparator.comparing(
+                            UserRoutineResponseDto.RoutineResponseDto::getTimeOfDay,
+                            Comparator.nullsLast(Comparator.naturalOrder())
+                    ).thenComparing(
+                            UserRoutineResponseDto.RoutineResponseDto::getScheduleTime,
+                            Comparator.nullsLast(Comparator.naturalOrder())
+                    )
+            );
 
             // (7) 최종적으로 UserRoutineResponseDto로 감싸서 반환
             return UserRoutineResponseDto.builder()
@@ -113,33 +114,50 @@ public class RoutineServiceImpl implements RoutineService {
                     .map(log -> {
                         Routine routine = log.getRoutine();
 
-                        List<UserRoutineResponseDto.RoutineElementResponseDto> elementDtos = routine.getElementList().stream()
-                                .sorted(Comparator.comparing(RoutineElement::getStep))
-                                .map(UserRoutineResponseDto.RoutineElementResponseDto::from)
-                                .collect(Collectors.toList());
-
-                        List<UserRoutineResponseDto.RoutineTipResponseDto> tipDtos = routine.getTipList().stream()
-                                .map(UserRoutineResponseDto.RoutineTipResponseDto::from)
-                                .collect(Collectors.toList());
-
                         return UserRoutineResponseDto.RoutineResponseDto.builder()
                                 .scheduleTime(log.getScheduledTime())
                                 .routineName(routine.getName())
                                 .iconImage(routine.getIconImage())
                                 .completed(log.isCompleted()) // 로그에 기록된 실제 완료 여부
-                                .elements(elementDtos)
-                                .tips(tipDtos)
                                 .build();
                     })
                     .collect(Collectors.toList());
 
             // TimeOfDay, scheduleTime 순으로 정렬
-            routineResponseDtoList.sort(Comparator.comparing(UserRoutineResponseDto.RoutineResponseDto::getTimeOfDay)
-                    .thenComparing(UserRoutineResponseDto.RoutineResponseDto::getScheduleTime));
+            routineResponseDtoList.sort(
+                    Comparator.comparing(
+                            UserRoutineResponseDto.RoutineResponseDto::getTimeOfDay,
+                            Comparator.nullsLast(Comparator.naturalOrder())
+                    ).thenComparing(
+                            UserRoutineResponseDto.RoutineResponseDto::getScheduleTime,
+                            Comparator.nullsLast(Comparator.naturalOrder())
+                    )
+            );
+
 
             return UserRoutineResponseDto.builder()
                     .routines(routineResponseDtoList)
                     .build();
         }
+    }
+
+    @Override
+    public RoutineElementDetailResponseDto getRoutineElements(Long routineElementId) {
+        Routine routine = routineRepository.findById(routineElementId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 루틴을 찾을 수 없습니다."));
+
+        List<RoutineElementResponseDto> elementDtos = routine.getElementList().stream()
+                .sorted(Comparator.comparing(RoutineElement::getStep))
+                .map(RoutineElementResponseDto::from)
+                .toList();
+
+        List<RoutineTipResponseDto> tipDtos = routine.getTipList().stream()
+                .map(RoutineTipResponseDto::from)
+                .toList();
+
+        return RoutineElementDetailResponseDto.builder()
+                .elements(elementDtos)
+                .tips(tipDtos)
+                .build();
     }
 }
