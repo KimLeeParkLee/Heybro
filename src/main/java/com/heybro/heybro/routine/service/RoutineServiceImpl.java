@@ -115,8 +115,10 @@ public class RoutineServiceImpl implements RoutineService {
                         Routine routine = log.getRoutine();
 
                         return UserRoutineResponseDto.RoutineResponseDto.builder()
+                                .routineId(routine.getId())
                                 .scheduleTime(log.getScheduledTime())
                                 .routineName(routine.getName())
+                                .timeOfDay(routine.getTimeOfDay())
                                 .iconImage(routine.getIconImage())
                                 .completed(log.isCompleted()) // 로그에 기록된 실제 완료 여부
                                 .build();
