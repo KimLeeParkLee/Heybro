@@ -11,4 +11,6 @@ public interface RoutineService {
     UserRoutineResponseDto getRoutinesByDate(LocalDate date, String email);
 
     RoutineElementDetailResponseDto getRoutineElements(Long routineElementId);
+
+    void completeUserRoutine(String email, Long routineId);
 }

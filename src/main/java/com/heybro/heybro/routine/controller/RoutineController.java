@@ -32,4 +32,10 @@ public class RoutineController {
     public RoutineElementDetailResponseDto getRoutineElements(@PathVariable Long routineElementId) {
         return routineService.getRoutineElements(routineElementId);
     }
+
+    @Operation(summary = "루틴 완료")
+    @PatchMapping("/{routineId}")
+    public void completeUserRoutine(@PathVariable Long routineId, @AuthenticationPrincipal UserDetails userDetails) {
+        routineService.completeUserRoutine(userDetails.getUsername(), routineId);
+    }
 }

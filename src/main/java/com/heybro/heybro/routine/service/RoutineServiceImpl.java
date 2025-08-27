@@ -8,13 +8,13 @@ import com.heybro.heybro.routine.dto.response.RoutineElementResponseDto;
 import com.heybro.heybro.routine.dto.response.RoutineTipResponseDto;
 import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
 import com.heybro.heybro.routine.repository.RoutineRepository;
-import com.heybro.heybro.routine.repository.RoutineTemplateRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserRoutine;
 import com.heybro.heybro.user.domain.UserRoutineSchedule;
 import com.heybro.heybro.user.dto.response.UserRoutineResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.repository.UserRoutineRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,6 @@ public class RoutineServiceImpl implements RoutineService {
     private final DailyRoutineLogRepository dailyRoutineLogRepository;
     private final RoutineLogService routineLogService;
     private final RoutineRepository routineRepository;
-    private final RoutineTemplateRepository routineTemplateRepository;
 
     /**
      * 과거부터 오늘까지면 DailyRoutineLog에서 조회
@@ -161,5 +160,25 @@ public class RoutineServiceImpl implements RoutineService {
                 .elements(elementDtos)
                 .tips(tipDtos)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void completeUserRoutine(String email, Long routineId) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+
+        Routine routine = routineRepository.findById(routineId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 루틴을 찾을 수 없습니다."));
+
+        // (1) DailyRoutineLog에서 회원, 루틴 아이디로 해당하는 루틴 찾기
+        DailyRoutineLog logs = dailyRoutineLogRepository.findAllByUserAndRoutine(user, routine);
+
+        // (2) 완료 상태로 변경
+        logs.toggleCompletion();
+
+        // (3) 브로 포인트, 경험치 10씩 추가 
+        user.earnPoints(10);
+        user.updateExperience(10);
     }
 }

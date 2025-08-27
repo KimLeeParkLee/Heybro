@@ -37,4 +37,8 @@ public class DailyRoutineLog {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "routine_id")
     private Routine routine; // 루틴
+
+    public void toggleCompletion() {
+        this.isCompleted = !this.isCompleted;
+    }
 }
