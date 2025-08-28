@@ -1,11 +1,7 @@
 package com.heybro.heybro.routine.service;
 
-import com.heybro.heybro.routine.domain.DailyRoutineLog;
-import com.heybro.heybro.routine.domain.Routine;
-import com.heybro.heybro.routine.domain.RoutineElement;
-import com.heybro.heybro.routine.dto.response.RoutineElementDetailResponseDto;
-import com.heybro.heybro.routine.dto.response.RoutineElementResponseDto;
-import com.heybro.heybro.routine.dto.response.RoutineTipResponseDto;
+import com.heybro.heybro.routine.domain.*;
+import com.heybro.heybro.routine.dto.response.*;
 import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
 import com.heybro.heybro.routine.repository.RoutineRepository;
 import com.heybro.heybro.user.domain.User;
@@ -16,16 +12,21 @@ import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.repository.UserRoutineRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RoutineServiceImpl implements RoutineService {
     private final UserRepository userRepository;
     private final UserRoutineRepository userRoutineRepository;
@@ -180,5 +181,105 @@ public class RoutineServiceImpl implements RoutineService {
         // (3) 브로 포인트, 경험치 10씩 추가 
         user.earnPoints(10);
         user.updateExperience(10);
+    }
+
+    // 단일 루틴 달성률 조회 시 월별, 일별만 가능
+    @Override
+    public AchievementSummaryResponseDto getSummaryAchievements(ViewType view, PeriodType period, LocalDate date, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+
+        List<DailyRoutineLog> logs;
+
+        // PeriodType.MONTH인 경우 : 월 루틴 달성률 조회
+        if (period == PeriodType.month) {
+            // 해당 월의 시작일과 마지막일 계산
+            LocalDate startDate = date.withDayOfMonth(1);
+            LocalDate endDate = date.withDayOfMonth(date.lengthOfMonth());
+
+            // DailyRoutineLog에서 date에 해당하는 달의 routine log 가져오기
+            logs = dailyRoutineLogRepository.findAllByUserAndTaskDateBetween(user, startDate, endDate);
+        } else { // PeriodType.DATE인 경우 : 일 루틴 달성률 조회
+            // DailyRoutineLog에서 date에 해당하는 달의 routine log 가져오기
+            logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, date);
+        }
+
+        long totalCount = logs.size();
+        long completedCount = logs.stream().filter(DailyRoutineLog::isCompleted).count();
+        System.out.println(Math.round((double) completedCount / totalCount));
+        int achievementRate = (totalCount == 0) ? 0 : (int) Math.round((double) completedCount / totalCount * 100.0);
+
+        return AchievementSummaryResponseDto.builder()
+                .view(view)
+                .period(period)
+                .date(date)
+                .achievementRate(achievementRate)
+                .build();
+    }
+
+    // 목록 루틴 달성률 조회 시 월별, 주별만 가능
+    // 일주일은 해당 주의 일요일~토요일 조회
+    @Override
+    public AchievementListResponseDto getListAchievements(ViewType view, PeriodType period, LocalDate date, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+
+        LocalDate startDate;
+        LocalDate endDate;
+
+        // PeriodType.MONTH인 경우 : 해당 달의 모든 일 루틴 달성률 조회
+        if (period == PeriodType.month) {
+            // 해당 월의 시작일과 마지막일 계산
+            startDate = date.withDayOfMonth(1);
+            endDate = date.withDayOfMonth(date.lengthOfMonth());
+        } else { // PeriodType.WEEK인 경우 : 해당 주의 모든 일 루틴 달성률 조회
+            // 해당 주의 시작일(일요일)과 마지막일(토요일) 계산
+            startDate = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+            endDate = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
+        }
+
+        // DailyRoutineLog에서 date에 해당하는 달 또는 주의 routine log 가져오기
+        List<DailyRoutineLog> logs = dailyRoutineLogRepository.findAllByUserAndTaskDateBetween(user, startDate, endDate);
+
+        // 가져온 로그들을 날짜(taskDate)별로 그룹화
+        Map<LocalDate, List<DailyRoutineLog>> logsByDate = logs.stream()
+                .collect(Collectors.groupingBy(DailyRoutineLog::getTaskDate));
+
+        List<AchievementListResponseDto.AchievementResponseDto> dailyAchievements = new ArrayList<>();
+
+        // 시작일부터 종료일까지 하루씩 반복
+        for (LocalDate day = startDate; !day.isAfter(endDate); day = day.plusDays(1)) {
+            // 해당 날짜에 해당하는 로그 리스트를 Map에서 찾기
+            List<DailyRoutineLog> dailyLogs = logsByDate.get(day);
+
+            if (dailyLogs == null || dailyLogs.isEmpty()) {
+                dailyAchievements.add(
+                        AchievementListResponseDto.AchievementResponseDto.builder()
+                                .date(day)
+                                .achievementRate(null)
+                                .build()
+                );
+            } else {
+                // 로그가 있는 경우에만 달성률 계산 (0% ~ 100%)
+                long totalCount = dailyLogs.size();
+                long completedCount = dailyLogs.stream().filter(DailyRoutineLog::isCompleted).count();
+                int achievementRate = (int) Math.round((double) completedCount / totalCount * 100.0);
+
+                dailyAchievements.add(
+                        AchievementListResponseDto.AchievementResponseDto.builder()
+                                .date(day)
+                                .achievementRate(achievementRate)
+                                .build()
+                );
+            }
+        }
+
+        return AchievementListResponseDto.builder()
+                .view(view)
+                .period(period)
+                .startDate(startDate)
+                .endDate(endDate)
+                .achievements(dailyAchievements)
+                .build();
     }
 }

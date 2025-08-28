@@ -1,5 +1,7 @@
 package com.heybro.heybro.routine.controller;
 
+import com.heybro.heybro.routine.domain.PeriodType;
+import com.heybro.heybro.routine.domain.ViewType;
 import com.heybro.heybro.routine.dto.response.RoutineElementDetailResponseDto;
 import com.heybro.heybro.routine.service.RoutineService;
 import com.heybro.heybro.user.dto.response.UserRoutineResponseDto;
@@ -7,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +26,7 @@ public class RoutineController {
 
     @Operation(summary = "특정 날짜 회원의 루틴 조회")
     @GetMapping("/routine-logs")
-    public UserRoutineResponseDto getRoutines(@RequestParam LocalDate date, @AuthenticationPrincipal UserDetails userDetails) {
+    public UserRoutineResponseDto getRoutines(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @AuthenticationPrincipal UserDetails userDetails) {
         return routineService.getRoutinesByDate(date, userDetails.getUsername());
     }
 
@@ -37,5 +40,12 @@ public class RoutineController {
     @PatchMapping("/{routineId}")
     public void completeUserRoutine(@PathVariable Long routineId, @AuthenticationPrincipal UserDetails userDetails) {
         routineService.completeUserRoutine(userDetails.getUsername(), routineId);
+    }
+
+    @Operation(summary = "루틴 달성률 조회")
+    @GetMapping("/achievements")
+    public Object getAchievements(@RequestParam ViewType view, @RequestParam PeriodType period, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @AuthenticationPrincipal UserDetails userDetails) {
+        if (view == ViewType.list) return routineService.getListAchievements(view, period, date, userDetails.getUsername());
+        else return routineService.getSummaryAchievements(view, period, date, userDetails.getUsername());
     }
 }

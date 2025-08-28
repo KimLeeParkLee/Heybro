@@ -14,4 +14,6 @@ public interface DailyRoutineLogRepository extends JpaRepository<DailyRoutineLog
     List<DailyRoutineLog> findAllByUserAndTaskDate(User user, LocalDate taskDate);
 
     DailyRoutineLog findAllByUserAndRoutine(User user, Routine routine);
+
+    List<DailyRoutineLog> findAllByUserAndTaskDateBetween(User user, LocalDate startDate, LocalDate endDate);
 }
