@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,5 +28,11 @@ public class CouponController {
     @GetMapping("/{coupon_id}")
     public CouponResponseDto getCoupon(@PathVariable Long coupon_id) {
         return couponService.getCoupon(coupon_id);
+    }
+
+    @Operation(summary = "쿠폰 구매")
+    @PostMapping("/{coupon_id}/purchase")
+    public void purchaseCoupon(@PathVariable Long coupon_id, @AuthenticationPrincipal UserDetails userDetails) {
+        couponService.purchaseCoupon(coupon_id, userDetails.getUsername());
     }
 }

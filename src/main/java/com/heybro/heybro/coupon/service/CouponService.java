@@ -9,4 +9,6 @@ public interface CouponService {
     CouponListResponseDto getCoupons();
 
     CouponResponseDto getCoupon(Long couponId);
+
+    void purchaseCoupon(Long couponId, String email);
 }
