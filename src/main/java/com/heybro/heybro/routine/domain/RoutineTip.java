@@ -7,7 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 public class RoutineTip {
     @Id
@@ -19,4 +18,6 @@ public class RoutineTip {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "routine_id")
     private Routine routine; // 루틴 요소
+
+    public void updateRoutine(Routine routine) { this.routine = routine; }
 }

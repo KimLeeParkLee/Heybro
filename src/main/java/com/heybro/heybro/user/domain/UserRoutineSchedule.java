@@ -10,7 +10,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 public class UserRoutineSchedule {
     @Id

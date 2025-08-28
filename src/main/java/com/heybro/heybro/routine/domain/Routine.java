@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 public class Routine {
     @Id
@@ -37,7 +36,6 @@ public class Routine {
     @OrderBy("id ASC")
     private List<RoutineTip> tipList = new ArrayList<>(); // 루틴 팁 리스트
 
-    public void updateRoutine(RoutineTemplate routineTemplate) {
+    public void updateRoutineTemplate(RoutineTemplate routineTemplate) {
         this.routineTemplate = routineTemplate;
-    }
-}
+    }}

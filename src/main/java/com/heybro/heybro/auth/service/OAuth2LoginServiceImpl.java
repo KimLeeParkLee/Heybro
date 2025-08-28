@@ -87,8 +87,8 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
         if (userOptional.isPresent()) {
             user = userOptional.get();
             if (user.getProvider() == null) {
-                user.setProvider(userInfo.getProvider());
-                user.setProviderId(userInfo.getProviderId());
+                user.updateProvider(userInfo.getProvider());
+                user.updateProviderId(userInfo.getProviderId());
             }
         } else {
             isNewUser = true;
