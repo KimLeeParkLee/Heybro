@@ -10,7 +10,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 public class User {
     @Id
@@ -62,18 +61,14 @@ public class User {
 
     private String providerId; // provider id
 
-    public void updateUserType(UserType userType) {
-        this.userType = userType;
-    }
+    public void updateUserType(UserType userType) { this.userType = userType; }
 
     public void earnPoints(int broPoint) {
         this.broPoint += broPoint;
         this.totalBroPoint += broPoint;
     }
 
-    public void usePoints(int broPoint) {
-        this.broPoint -= broPoint;
-    }
+    public void usePoints(int broPoint) { this.broPoint -= broPoint; }
 
     public void updateExperience(int experience) {
         this.experience += experience;
@@ -86,4 +81,8 @@ public class User {
     public void updateBedtime(LocalTime bedtime) {
         this.bedtime = bedtime;
     }
+
+    public void updateProvider(String provider) { this.provider = provider; }
+
+    public void updateProviderId(String providerId) { this.providerId = providerId; }
 }

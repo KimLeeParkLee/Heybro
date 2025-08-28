@@ -11,7 +11,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 @Table(uniqueConstraints = {
         @UniqueConstraint(

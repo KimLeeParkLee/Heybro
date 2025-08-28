@@ -7,7 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 public class RoutineElement {
     @Id
@@ -25,4 +24,6 @@ public class RoutineElement {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "routine_id")
     private Routine routine; // 루틴
+
+    public void updateRoutine(Routine routine) { this.routine = routine; }
 }

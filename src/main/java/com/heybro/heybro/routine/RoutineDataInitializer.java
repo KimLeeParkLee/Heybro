@@ -37,11 +37,11 @@ public class RoutineDataInitializer implements CommandLineRunner {
 
             List<Routine> routines = createInitialRoutines(); // 메서드 이름 명확하게 변경
             for (Routine routine : routines) {
-                routine.updateRoutine(routineTemplate);
+                routine.updateRoutineTemplate(routineTemplate);
                 setBidirectionalReferences(routine); // 양방향 참조 설정
             }
 
-            routineTemplate.setElementList(routines);
+            routineTemplate.updateElementList(routines);
             routineTemplateRepository.save(routineTemplate); // RoutineTemplate을 저장
         }
     }
@@ -269,13 +269,13 @@ public class RoutineDataInitializer implements CommandLineRunner {
         // Routine <-> RoutineElement 연결
         if (routine.getElementList() != null) {
             for (RoutineElement element : routine.getElementList()) {
-                element.setRoutine(routine);
+                element.updateRoutine(routine);
             }
         }
         // Routine <-> RoutineTip 연결
         if (routine.getTipList() != null) {
             for (RoutineTip tip : routine.getTipList()) {
-                tip.setRoutine(routine);
+                tip.updateRoutine(routine);
             }
         }
     }
