@@ -27,6 +27,9 @@ public class LoginResponseDto {
     @Schema(description = "생년월일")
     private LocalDate birthDate;
 
+    @Schema(description = "프로필 사진")
+    private String profileImage;
+
     @Schema(description = "알림 설정 여부")
     private boolean notificationEnabled;
 

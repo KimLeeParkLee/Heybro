@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService {
                 .gender(requestDto.getGender())
                 .birthDate(requestDto.getBirthDate())
                 .phone(requestDto.getPhone())
+                .profileImage("https://drive.google.com/file/d/1HkRMMWYo0bWc8qWbkEDL5xCcr1GQ1rJu/view?usp=sharing")
                 .privacyConsent(requestDto.isPrivacyConsent())
                 .marketingConsent(requestDto.isMarketingConsent())
                 .notificationEnabled(requestDto.isNotificationEnabled())

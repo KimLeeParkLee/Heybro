@@ -45,7 +45,7 @@ public class User {
 
     private LocalTime bedtime; // 취침 시간
 
-    private String profileImageUrl; // 프로필 사진
+    private String profileImage; // 프로필 사진
 
     private boolean privacyConsent; // 개인정보 동의 여부
 
