@@ -6,20 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/service/OAuth2LoginServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/service/OAuth2LoginServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/domain/OnboardingOption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/domain/OnboardingOption.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/domain/OnboardingQuestion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/domain/OnboardingQuestion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/domain/UserOnboardingAnswer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/domain/UserOnboardingAnswer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/point/domain/PointHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/point/domain/PointHistory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/RoutineDataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/RoutineDataInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/DailyRoutineLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/DailyRoutineLog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/Routine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/Routine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineElement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineElement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineTemplate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineTip.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineTip.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/UserRoutine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/UserRoutine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/UserRoutineSchedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/UserRoutineSchedule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/controller/CouponController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/controller/CouponController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/service/CouponService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/service/CouponService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/service/CouponServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/service/CouponServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

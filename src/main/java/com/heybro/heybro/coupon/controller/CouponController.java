@@ -1,6 +1,7 @@
 package com.heybro.heybro.coupon.controller;
 
 import com.heybro.heybro.coupon.dto.response.CouponListResponseDto;
+import com.heybro.heybro.coupon.dto.response.CouponResponseDto;
 import com.heybro.heybro.coupon.service.CouponService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,5 +20,11 @@ public class CouponController {
     @GetMapping
     public CouponListResponseDto getCoupons() {
         return couponService.getCoupons();
+    }
+
+    @Operation(summary = "쿠폰 상세 조회")
+    @GetMapping("/{couponId}")
+    public CouponResponseDto getCoupon(@PathVariable Long couponId) {
+        return couponService.getCoupon(couponId);
     }
 }
