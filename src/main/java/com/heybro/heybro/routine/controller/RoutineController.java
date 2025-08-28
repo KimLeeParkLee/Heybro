@@ -30,16 +30,16 @@ public class RoutineController {
         return routineService.getRoutinesByDate(date, userDetails.getUsername());
     }
 
-    @Operation(summary = "루틴 요소 상세 조회")
-    @GetMapping("/{routineId}")
-    public RoutineDetailResponseDto getRoutines(@PathVariable Long routineId) {
-        return routineService.getRoutines(routineId);
+    @Operation(summary = "루틴 상세 조회")
+    @GetMapping("/{routine_id}")
+    public RoutineDetailResponseDto getRoutines(@PathVariable Long routine_id) {
+        return routineService.getRoutines(routine_id);
     }
 
     @Operation(summary = "루틴 완료")
-    @PatchMapping("/{routineId}")
-    public void completeUserRoutine(@PathVariable Long routineId, @AuthenticationPrincipal UserDetails userDetails) {
-        routineService.completeUserRoutine(userDetails.getUsername(), routineId);
+    @PatchMapping("/{routine_id}")
+    public void completeUserRoutine(@PathVariable Long routine_id, @AuthenticationPrincipal UserDetails userDetails) {
+        routineService.completeUserRoutine(userDetails.getUsername(), routine_id);
     }
 
     @Operation(summary = "루틴 달성률 조회")

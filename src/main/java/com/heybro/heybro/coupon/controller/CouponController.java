@@ -23,8 +23,8 @@ public class CouponController {
     }
 
     @Operation(summary = "쿠폰 상세 조회")
-    @GetMapping("/{couponId}")
-    public CouponResponseDto getCoupon(@PathVariable Long couponId) {
-        return couponService.getCoupon(couponId);
+    @GetMapping("/{coupon_id}")
+    public CouponResponseDto getCoupon(@PathVariable Long coupon_id) {
+        return couponService.getCoupon(coupon_id);
     }
 }
