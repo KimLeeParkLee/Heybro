@@ -13,8 +13,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "루틴 요소 상세 조회 응답 DTO")
-public class RoutineElementDetailResponseDto {
+@Schema(description = "루틴 상세 조회 응답 DTO")
+public class RoutineDetailResponseDto {
     @Schema(description = "루틴 요소 리스트")
     List<RoutineElementResponseDto> elements = new ArrayList<>();
 

@@ -2,7 +2,7 @@ package com.heybro.heybro.routine.controller;
 
 import com.heybro.heybro.routine.domain.PeriodType;
 import com.heybro.heybro.routine.domain.ViewType;
-import com.heybro.heybro.routine.dto.response.RoutineElementDetailResponseDto;
+import com.heybro.heybro.routine.dto.response.RoutineDetailResponseDto;
 import com.heybro.heybro.routine.service.RoutineService;
 import com.heybro.heybro.user.dto.response.UserRoutineResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,16 +24,16 @@ import java.time.LocalDate;
 public class RoutineController {
     private final RoutineService routineService;
 
-    @Operation(summary = "특정 날짜 회원의 루틴 조회")
+    @Operation(summary = "특정 날짜 회원의 루틴 목록 조회")
     @GetMapping("/routine-logs")
     public UserRoutineResponseDto getRoutines(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @AuthenticationPrincipal UserDetails userDetails) {
         return routineService.getRoutinesByDate(date, userDetails.getUsername());
     }
 
     @Operation(summary = "루틴 요소 상세 조회")
-    @GetMapping("/{routineElementId}")
-    public RoutineElementDetailResponseDto getRoutineElements(@PathVariable Long routineElementId) {
-        return routineService.getRoutineElements(routineElementId);
+    @GetMapping("/{routineId}")
+    public RoutineDetailResponseDto getRoutines(@PathVariable Long routineId) {
+        return routineService.getRoutines(routineId);
     }
 
     @Operation(summary = "루틴 완료")

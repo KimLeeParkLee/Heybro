@@ -144,8 +144,8 @@ public class RoutineServiceImpl implements RoutineService {
     }
 
     @Override
-    public RoutineElementDetailResponseDto getRoutineElements(Long routineElementId) {
-        Routine routine = routineRepository.findById(routineElementId)
+    public RoutineDetailResponseDto getRoutines(Long routineId) {
+        Routine routine = routineRepository.findById(routineId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 루틴을 찾을 수 없습니다."));
 
         List<RoutineElementResponseDto> elementDtos = routine.getElementList().stream()
@@ -157,7 +157,7 @@ public class RoutineServiceImpl implements RoutineService {
                 .map(RoutineTipResponseDto::from)
                 .toList();
 
-        return RoutineElementDetailResponseDto.builder()
+        return RoutineDetailResponseDto.builder()
                 .elements(elementDtos)
                 .tips(tipDtos)
                 .build();
