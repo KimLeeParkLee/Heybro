@@ -1,5 +1,7 @@
 package com.heybro.heybro.user.controller;
 
+import com.heybro.heybro.coupon.dto.response.CouponPurchaseResponseDto;
+import com.heybro.heybro.coupon.service.CouponService;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UserController {
     private final UserService userService;
+    private final CouponService couponService;
 
     @Operation(summary = "회원가입")
     @PostMapping
@@ -39,5 +42,11 @@ public class UserController {
     @GetMapping("/user-types")
     public UserTypeResponseDto getUserType(@AuthenticationPrincipal UserDetails userDetails) {
         return userService.getUserType(userDetails.getUsername());
+    }
+
+    @Operation(summary = "쿠폰 구매 내역 조회")
+    @GetMapping("/coupons/purchases")
+    public CouponPurchaseResponseDto getPurchasesByUser(@AuthenticationPrincipal UserDetails userDetails) {
+        return couponService.findPurchasesByUser(userDetails.getUsername());
     }
 }

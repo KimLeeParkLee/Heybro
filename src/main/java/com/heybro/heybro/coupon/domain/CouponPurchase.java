@@ -23,6 +23,8 @@ public class CouponPurchase {
 
     private LocalDate usedAt; // 사용 날짜
 
+    private LocalDate purchaseDate; // 구매 날짜
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_id")
     private Coupon coupon; // 쿠폰

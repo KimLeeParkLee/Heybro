@@ -5,6 +5,7 @@ import com.heybro.heybro.coupon.domain.Coupon;
 import com.heybro.heybro.coupon.domain.CouponPurchase;
 import com.heybro.heybro.coupon.domain.CouponType;
 import com.heybro.heybro.coupon.dto.response.CouponListResponseDto;
+import com.heybro.heybro.coupon.dto.response.CouponPurchaseResponseDto;
 import com.heybro.heybro.coupon.dto.response.CouponResponseDto;
 import com.heybro.heybro.coupon.repository.CouponPurchaseRepository;
 import com.heybro.heybro.coupon.repository.CouponRepository;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +77,40 @@ public class CouponServiceImpl implements CouponService {
                 () -> new ResourceNotFoundException("해당 아이디를 가진 쿠폰을 찾을 수 없습니다: " + couponId)
         );
 
-        couponPurchaseRepository.save(CouponPurchase.builder().coupon(coupon).user(user).build());
+        couponPurchaseRepository.save(CouponPurchase.builder()
+                .purchaseDate(LocalDate.now())
+                .coupon(coupon)
+                .user(user)
+                .build());
+    }
+
+    @Override
+    public CouponPurchaseResponseDto findPurchasesByUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
+
+        List<CouponPurchase> coupons = couponPurchaseRepository.findAllByUserOrderByPurchaseDateDesc(user);
+        List<CouponResponseDto> usableCoupons = new ArrayList<>();
+        List<CouponResponseDto> usedCoupons = new ArrayList<>();
+
+        for (CouponPurchase couponPurchase : coupons) {
+            if (!couponPurchase.isUsed()) {
+                usableCoupons.add(CouponResponseDto.builder()
+                        .couponId(couponPurchase.getCoupon().getId())
+                        .name(couponPurchase.getCoupon().getName())
+                        .couponType(couponPurchase.getCoupon().getCouponType())
+                        .detailImage(couponPurchase.getCoupon().getDetailImage())
+                        .build());
+            } else {
+                usedCoupons.add(CouponResponseDto.builder()
+                        .couponId(couponPurchase.getCoupon().getId())
+                        .name(couponPurchase.getCoupon().getName())
+                        .couponType(couponPurchase.getCoupon().getCouponType())
+                        .detailImage(couponPurchase.getCoupon().getDetailImage())
+                        .build());
+            }
+        }
+
+        return CouponPurchaseResponseDto.builder().usableCoupons(usableCoupons).usedCoupons(usedCoupons).build();
     }
 }
