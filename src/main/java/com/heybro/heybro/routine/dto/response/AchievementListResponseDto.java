@@ -31,6 +31,7 @@ public class AchievementListResponseDto {
     LocalDate endDate;
 
     @Schema(description = "조회 마지막 날짜")
+    @Builder.Default
     List<AchievementResponseDto> achievements = new ArrayList<>();
 
     @Getter

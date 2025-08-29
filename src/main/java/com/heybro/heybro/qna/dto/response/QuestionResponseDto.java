@@ -43,15 +43,19 @@ public class QuestionResponseDto {
     private LocalDateTime createdAt;
 
     @Schema(description = "카테고리")
-    private QuestionCategory category;
+    @Builder.Default
+    private List<QuestionCategory> categories = new ArrayList<>();
 
     @Schema(description = "태그 목록")
+    @Builder.Default
     private List<Tag> tags = new ArrayList<>();
 
     @Schema(description = "질문 이미지 목록")
+    @Builder.Default
     private List<QuestionImageResponseDto> questionImages = new ArrayList<>();
 
     @Schema(description = "답변 목록")
+    @Builder.Default
     private List<AnswerResponseDto> answers = new ArrayList<>();
 
     @Getter
@@ -76,6 +80,7 @@ public class QuestionResponseDto {
         private LocalDateTime createAt;
 
         @Schema(description = "답변 이미지 목록")
+        @Builder.Default
         private List<AnswerImageResponseDto> answerImages = new ArrayList<>();
 
         public static AnswerResponseDto from(Answer answer) {

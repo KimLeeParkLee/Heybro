@@ -16,8 +16,10 @@ import java.util.List;
 @Schema(description = "루틴 상세 조회 응답 DTO")
 public class RoutineDetailResponseDto {
     @Schema(description = "루틴 요소 리스트")
+    @Builder.Default
     List<RoutineElementResponseDto> elements = new ArrayList<>();
 
     @Schema(description = "루틴 팁 리스트")
+    @Builder.Default
     List<RoutineTipResponseDto> tips = new ArrayList<>();
 }

@@ -26,5 +26,6 @@ public class UserRoutine {
     private Routine routine; // 루틴 요소
 
     @OneToMany(mappedBy = "userRoutine", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<UserRoutineSchedule> schedules = new ArrayList<>(); // 루틴 일정 리스트
 }

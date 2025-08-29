@@ -16,8 +16,10 @@ import java.util.List;
 @Schema(description = "쿠폰 목록 응답 DTO")
 public class CouponListResponseDto {
     @Schema(description = "금액권 쿠폰 목록")
+    @Builder.Default
     List<CouponResponseDto> amounts = new ArrayList<>();
 
     @Schema(description = "상품권 쿠폰 목록")
+    @Builder.Default
     List<CouponResponseDto> products = new ArrayList<>();
 }

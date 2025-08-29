@@ -19,6 +19,7 @@ import java.util.List;
 @Schema(description = "회원 루틴 응답 DTO")
 public class UserRoutineResponseDto {
     @Schema(description = "루틴 리스트")
+    @Builder.Default
     List<RoutineResponseDto> routines = new ArrayList<>();
 
     @Getter

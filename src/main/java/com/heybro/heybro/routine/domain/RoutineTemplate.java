@@ -21,6 +21,7 @@ public class RoutineTemplate {
     private UserType type; // 루틴 유형
 
     @OneToMany(mappedBy = "routineTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Routine> elementList = new ArrayList<>(); // 루틴 리스트
 
     public void updateElementList(List<Routine> elementList) { this.elementList = elementList; }

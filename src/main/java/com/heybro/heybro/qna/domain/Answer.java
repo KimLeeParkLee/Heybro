@@ -34,5 +34,6 @@ public class Answer {
     private Question question; // 질문
 
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<AnswerImage> answerImages = new ArrayList<>(); // 답변 이미지 목록
 }

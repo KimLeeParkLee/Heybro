@@ -25,5 +25,6 @@ public class OnboardingQuestionResponseDto {
     private int displayOrder;
 
     @Schema(description = "선택지 리스트")
+    @Builder.Default
     private List<OnboardingOptionsResponseDto> options = new ArrayList<>();
 }
