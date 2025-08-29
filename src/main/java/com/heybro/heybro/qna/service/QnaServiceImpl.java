@@ -1,18 +1,27 @@
 package com.heybro.heybro.qna.service;
 
 import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
+import com.heybro.heybro.common.s3.S3UploadService;
 import com.heybro.heybro.qna.domain.Answer;
 import com.heybro.heybro.qna.domain.Question;
 import com.heybro.heybro.qna.domain.QuestionImage;
+import com.heybro.heybro.qna.dto.request.QuestionRequestDto;
+import com.heybro.heybro.qna.dto.response.QuestionIdResponseDto;
 import com.heybro.heybro.qna.dto.response.QuestionImageResponseDto;
 import com.heybro.heybro.qna.dto.response.QuestionResponseDto;
 import com.heybro.heybro.qna.repository.AnswerRepository;
 import com.heybro.heybro.qna.repository.QuestionRepository;
+import com.heybro.heybro.user.domain.User;
+import com.heybro.heybro.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -22,6 +31,8 @@ import java.util.List;
 public class QnaServiceImpl implements QnaService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final UserRepository userRepository;
+    private final S3UploadService s3UploadService;
 
     private Sort getSort(String sort) {
         if (sort == null) {
@@ -58,7 +69,7 @@ public class QnaServiceImpl implements QnaService {
                 .answerCount(answers.size())
                 .viewCount(question.getViewCount())
                 .createdAt(question.getCreatedAt())
-                .category(question.getQuestionCategory())
+                .categories(question.getCategories().stream().toList())
                 .tags(question.getTags())
                 .questionImages(question.getQuestionImages() // List<QuestionImage> 가져오기
                         .stream()               // Stream<QuestionImage>으로 변환
@@ -68,5 +79,58 @@ public class QnaServiceImpl implements QnaService {
                 .answers(answers.stream().map(QuestionResponseDto.AnswerResponseDto::from) // 각 QuestionImage를 DTO로 변환
                         .toList())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public QuestionIdResponseDto createQuestion(QuestionRequestDto requestDto, List<MultipartFile> images, String email) {
+        // 1. 유저 정보 조회
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 이메일을 가진 유저를 찾을 수 없습니다: " + email));
+
+        // 2. Question 엔티티 생성
+        Question question = Question.builder()
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .createdAt(LocalDateTime.now())
+                .tags(requestDto.getTags())
+                .categories(requestDto.getCategories())
+                .user(user)
+                .build();
+        String thumbnailImageUrl = null;
+
+        // 3. 이미지 파일 처리
+        if (images != null && !images.isEmpty()) {
+            for (int i = 0; i < images.size(); i++) {
+                MultipartFile image = images.get(i);
+                try {
+                    String imageUrl = s3UploadService.saveFile(image);
+
+                    if (i == 0) {
+                        thumbnailImageUrl = imageUrl;
+                    }
+
+                    QuestionImage questionImage = QuestionImage.builder()
+                            .questionImage(imageUrl)
+                            .sortOrder(i + 1)
+                            .question(question)
+                            .build();
+                    question.addQuestionImage(questionImage);
+                } catch (IOException e) {
+                    throw new RuntimeException("이미지 파일 저장에 실패했습니다.", e);
+                }
+            }
+        }
+
+        // 썸네일 URL이 있다면 Question 객체에 설정
+        if (thumbnailImageUrl != null) {
+            question.updateThumbnail(thumbnailImageUrl);
+        }
+
+        // 4. Question 엔티티 저장 (QuestionImage는 Cascade 옵션으로 자동 저장)
+        Question savedQuestion = questionRepository.save(question);
+
+        // 5. 생성된 Question의 ID를 DTO로 감싸서 반환
+        return new QuestionIdResponseDto(savedQuestion.getId());
     }
 }

@@ -1,12 +1,19 @@
 package com.heybro.heybro.qna.controller;
 
+import com.heybro.heybro.qna.dto.request.QuestionRequestDto;
+import com.heybro.heybro.qna.dto.response.QuestionIdResponseDto;
 import com.heybro.heybro.qna.dto.response.QuestionResponseDto;
 import com.heybro.heybro.qna.service.QnaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,5 +37,13 @@ public class QnaController {
     @GetMapping("/{question_id}")
     public QuestionResponseDto getQuestion(@PathVariable Long question_id) {
         return qnaService.getQuestion(question_id);
+    }
+
+    @Operation(summary = "질문 작성")
+    @PostMapping(consumes = {"multipart/form-data"})
+    public QuestionIdResponseDto createQuestion(@RequestPart("requestDto") QuestionRequestDto requestDto, @RequestPart("images") List<MultipartFile> images,
+                                                @AuthenticationPrincipal UserDetails userDetails) {
+
+        return qnaService.createQuestion(requestDto, images, userDetails.getUsername());
     }
 }

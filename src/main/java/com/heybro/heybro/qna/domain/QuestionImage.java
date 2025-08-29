@@ -27,6 +27,10 @@ public class QuestionImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question; // 회원
+
+    public void updateQuestion(Question question) {
+        this.question = question;
+    }
 }
 
 
