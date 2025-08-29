@@ -1,6 +1,7 @@
 package com.heybro.heybro.qna.dto.response;
 
 import com.heybro.heybro.qna.domain.*;
+import com.heybro.heybro.qna.dto.request.TagRequestDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,7 +49,7 @@ public class QuestionResponseDto {
 
     @Schema(description = "태그 목록")
     @Builder.Default
-    private List<Tag> tags = new ArrayList<>();
+    private List<TagRequestDto> tags = new ArrayList<>();
 
     @Schema(description = "질문 이미지 목록")
     @Builder.Default

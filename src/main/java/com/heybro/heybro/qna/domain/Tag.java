@@ -21,4 +21,6 @@ public class Tag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question; // 질문
+
+    public void updateQuestion(Question question) { this.question = question; }
 }

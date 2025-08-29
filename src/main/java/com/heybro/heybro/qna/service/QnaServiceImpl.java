@@ -5,7 +5,9 @@ import com.heybro.heybro.common.s3.S3UploadService;
 import com.heybro.heybro.qna.domain.Answer;
 import com.heybro.heybro.qna.domain.Question;
 import com.heybro.heybro.qna.domain.QuestionImage;
+import com.heybro.heybro.qna.domain.Tag;
 import com.heybro.heybro.qna.dto.request.QuestionRequestDto;
+import com.heybro.heybro.qna.dto.request.TagRequestDto;
 import com.heybro.heybro.qna.dto.response.QuestionIdResponseDto;
 import com.heybro.heybro.qna.dto.response.QuestionImageResponseDto;
 import com.heybro.heybro.qna.dto.response.QuestionResponseDto;
@@ -70,7 +72,7 @@ public class QnaServiceImpl implements QnaService {
                 .viewCount(question.getViewCount())
                 .createdAt(question.getCreatedAt())
                 .categories(question.getCategories().stream().toList())
-                .tags(question.getTags())
+                .tags(question.getTags().stream().map(TagRequestDto::from).toList())
                 .questionImages(question.getQuestionImages() // List<QuestionImage> 가져오기
                         .stream()               // Stream<QuestionImage>으로 변환
                         .sorted(Comparator.comparing(QuestionImage::getSortOrder)) // sortOrder 순으로 오름차순 정렬
@@ -93,10 +95,17 @@ public class QnaServiceImpl implements QnaService {
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
                 .createdAt(LocalDateTime.now())
-                .tags(requestDto.getTags())
                 .categories(requestDto.getCategories())
                 .user(user)
                 .build();
+
+        // 태그 처리
+        if (requestDto.getTags() != null) {
+            for (Tag tag : requestDto.getTags()) {
+                question.addTag(tag); // addTag에서 question 필드 자동 설정
+            }
+        }
+
         String thumbnailImageUrl = null;
 
         // 3. 이미지 파일 처리
@@ -126,6 +135,7 @@ public class QnaServiceImpl implements QnaService {
         if (thumbnailImageUrl != null) {
             question.updateThumbnail(thumbnailImageUrl);
         }
+
 
         // 4. Question 엔티티 저장 (QuestionImage는 Cascade 옵션으로 자동 저장)
         Question savedQuestion = questionRepository.save(question);

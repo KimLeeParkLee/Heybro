@@ -56,4 +56,9 @@ public class Question {
     }
 
     public void updateThumbnail(String thumbnail) { this.thumbnail = thumbnail; }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+        tag.updateQuestion(this); // Tag 객체의 question 필드 설정
+    }
 }
