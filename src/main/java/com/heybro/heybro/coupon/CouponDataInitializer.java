@@ -28,7 +28,7 @@ public class CouponDataInitializer implements CommandLineRunner {
                 .couponType(CouponType.AMOUNT)
                 .price(1000)
                 .code(generateCouponCode())
-                .detailImage("https://drive.google.com/file/d/1sC-OY-bZ4n-YE4HZgnCS_Dqodvwnhotv/view?usp=sharing")
+                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/0339a8b9-bd94-42da-b8fa-5688076c651c.png")
                 .build());
 
         couponRepository.save(Coupon.builder()
@@ -36,7 +36,7 @@ public class CouponDataInitializer implements CommandLineRunner {
                 .couponType(CouponType.AMOUNT)
                 .price(3000)
                 .code(generateCouponCode())
-                .detailImage("https://drive.google.com/file/d/1sC-OY-bZ4n-YE4HZgnCS_Dqodvwnhotv/view?usp=sharing")
+                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/0339a8b9-bd94-42da-b8fa-5688076c651c.png")
                 .build());
 
         couponRepository.save(Coupon.builder()
@@ -44,7 +44,7 @@ public class CouponDataInitializer implements CommandLineRunner {
                 .couponType(CouponType.AMOUNT)
                 .price(5000)
                 .code(generateCouponCode())
-                .detailImage("https://drive.google.com/file/d/1sC-OY-bZ4n-YE4HZgnCS_Dqodvwnhotv/view?usp=sharing")
+                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/0339a8b9-bd94-42da-b8fa-5688076c651c.png")
                 .build());
 
         couponRepository.save(Coupon.builder()
@@ -52,7 +52,7 @@ public class CouponDataInitializer implements CommandLineRunner {
                 .couponType(CouponType.AMOUNT)
                 .price(10000)
                 .code(generateCouponCode())
-                .detailImage("https://drive.google.com/file/d/1sC-OY-bZ4n-YE4HZgnCS_Dqodvwnhotv/view?usp=sharingE")
+                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/0339a8b9-bd94-42da-b8fa-5688076c651c.png")
                 .build());
 
         // 상품권 저장하기
