@@ -30,6 +30,7 @@ public class S3UploadService {
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(savedFileName) // S3 버킷에 저장될 파일의 전체 경로
+                .contentType(multipartFile.getContentType())
                 .build();
 
         // 파일 업로드
