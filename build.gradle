@@ -40,6 +40,9 @@ dependencies {
 	// WebClient 사용을 위한 WebFlux (비동기 HTTP 클라이언트)
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+	// Amazon S3
+	implementation 'software.amazon.awssdk:s3:2.25.47'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
