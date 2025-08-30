@@ -13,11 +13,11 @@ import com.heybro.heybro.qna.repository.AnswerRepository;
 import com.heybro.heybro.qna.repository.QuestionRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -33,6 +33,7 @@ public class QnaServiceImpl implements QnaService {
     private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
     private final S3UploadService s3UploadService;
+    private final QuestionViewService questionViewService;
 
     private Sort getSort(String sort) {
         if (sort == null) {
@@ -53,13 +54,19 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public QuestionResponseDto getQuestion(Long questionId) {
+        // 1. 조회수 증가 로직을 별도 트랜잭션으로 실행
+        questionViewService.incrementViewCount(questionId);
+
+        // 2. 질문 정보 조회 (조회수 증가 후)
         Question question = questionRepository.findById(questionId).orElseThrow(
                 () -> new ResourceNotFoundException("해당 아이디를 가진 질문을 찾을 수 없습니다: " + questionId)
         );
 
         List<Answer> answers = answerRepository.findAllByQuestion(question);
 
+        // 3. DTO로 변환하여 반환 (중복 증가 문제 해결)
         return QuestionResponseDto.builder()
                 .questionId(questionId)
                 .title(question.getTitle())
@@ -71,12 +78,12 @@ public class QnaServiceImpl implements QnaService {
                 .createdAt(question.getCreatedAt())
                 .categories(question.getCategories().stream().toList())
                 .tags(question.getTags().stream().map(TagRequestDto::from).toList())
-                .questionImages(question.getQuestionImages() // List<QuestionImage> 가져오기
-                        .stream()               // Stream<QuestionImage>으로 변환
-                        .sorted(Comparator.comparing(QuestionImage::getSortOrder)) // sortOrder 순으로 오름차순 정렬
-                        .map(QuestionImageResponseDto::from) // 각 QuestionImage를 DTO로 변환
+                .questionImages(question.getQuestionImages()
+                        .stream()
+                        .sorted(Comparator.comparing(QuestionImage::getSortOrder))
+                        .map(QuestionImageResponseDto::from)
                         .toList())
-                .answers(answers.stream().map(QuestionResponseDto.AnswerResponseDto::from) // 각 QuestionImage를 DTO로 변환
+                .answers(answers.stream().map(QuestionResponseDto.AnswerResponseDto::from)
                         .toList())
                 .build();
     }
