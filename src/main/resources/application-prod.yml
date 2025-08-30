@@ -102,3 +102,8 @@ aws:
       secret-key: ${S3_SECRET_KEY}
     region:
       static: ap-northeast-2
+
+facepp:
+  api:
+    key: ${FACEPP_API_KEY}
+    secret: ${FACEPP_API_SECRET}
