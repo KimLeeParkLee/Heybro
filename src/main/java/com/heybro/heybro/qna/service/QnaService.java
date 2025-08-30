@@ -1,5 +1,6 @@
 package com.heybro.heybro.qna.service;
 
+import com.heybro.heybro.qna.dto.request.AnswerRequestDto;
 import com.heybro.heybro.qna.dto.request.QuestionRequestDto;
 import com.heybro.heybro.qna.dto.response.QuestionIdResponseDto;
 import com.heybro.heybro.qna.dto.response.QuestionResponseDto;
@@ -15,4 +16,6 @@ public interface QnaService {
     QuestionResponseDto getQuestion(Long questionId);
 
     QuestionIdResponseDto createQuestion(QuestionRequestDto requestDto, List<MultipartFile> images, String email);
+
+    QuestionIdResponseDto createAnswer(Long questionId, AnswerRequestDto requestDto, List<MultipartFile> images, String email);
 }

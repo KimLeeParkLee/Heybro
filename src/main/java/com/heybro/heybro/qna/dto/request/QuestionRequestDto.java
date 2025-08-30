@@ -24,7 +24,7 @@ public class QuestionRequestDto {
     @Schema(description = "내용")
     private String content;
 
-    @Schema(description = "질문 제목")
+    @Schema(description = "질문 카테고리")
     @ElementCollection(targetClass = QuestionCategory.class, fetch = FetchType.LAZY)
     @CollectionTable(name = "question_category", joinColumns = @JoinColumn(name = "question_id"))
     @Enumerated(EnumType.STRING)

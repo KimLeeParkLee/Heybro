@@ -1,5 +1,6 @@
 package com.heybro.heybro.qna.controller;
 
+import com.heybro.heybro.qna.dto.request.AnswerRequestDto;
 import com.heybro.heybro.qna.dto.request.QuestionRequestDto;
 import com.heybro.heybro.qna.dto.response.QuestionIdResponseDto;
 import com.heybro.heybro.qna.dto.response.QuestionResponseDto;
@@ -45,5 +46,13 @@ public class QnaController {
                                                 @AuthenticationPrincipal UserDetails userDetails) {
 
         return qnaService.createQuestion(requestDto, images, userDetails.getUsername());
+    }
+
+    @Operation(summary = "답변 작성")
+    @PostMapping(path = "/{question_id}/answers", consumes = {"multipart/form-data"})
+    public QuestionIdResponseDto createAnswer(@PathVariable Long question_id, @RequestPart("requestDto") AnswerRequestDto requestDto, @RequestPart("images") List<MultipartFile> images,
+                                              @AuthenticationPrincipal UserDetails userDetails) {
+
+        return qnaService.createAnswer(question_id, requestDto, images, userDetails.getUsername());
     }
 }

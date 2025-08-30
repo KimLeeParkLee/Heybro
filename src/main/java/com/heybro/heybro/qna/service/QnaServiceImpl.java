@@ -2,10 +2,8 @@ package com.heybro.heybro.qna.service;
 
 import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.s3.S3UploadService;
-import com.heybro.heybro.qna.domain.Answer;
-import com.heybro.heybro.qna.domain.Question;
-import com.heybro.heybro.qna.domain.QuestionImage;
-import com.heybro.heybro.qna.domain.Tag;
+import com.heybro.heybro.qna.domain.*;
+import com.heybro.heybro.qna.dto.request.AnswerRequestDto;
 import com.heybro.heybro.qna.dto.request.QuestionRequestDto;
 import com.heybro.heybro.qna.dto.request.TagRequestDto;
 import com.heybro.heybro.qna.dto.response.QuestionIdResponseDto;
@@ -86,7 +84,7 @@ public class QnaServiceImpl implements QnaService {
     @Override
     @Transactional
     public QuestionIdResponseDto createQuestion(QuestionRequestDto requestDto, List<MultipartFile> images, String email) {
-        // 1. 유저 정보 조회
+        // 1. 회원 정보 조회
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 이메일을 가진 유저를 찾을 수 없습니다: " + email));
 
@@ -142,5 +140,49 @@ public class QnaServiceImpl implements QnaService {
 
         // 5. 생성된 Question의 ID를 DTO로 감싸서 반환
         return new QuestionIdResponseDto(savedQuestion.getId());
+    }
+
+    @Override
+    public QuestionIdResponseDto createAnswer(Long questionId, AnswerRequestDto requestDto, List<MultipartFile> images, String email) {
+        // 1. 회원 정보 조회
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 이메일을 가진 유저를 찾을 수 없습니다: " + email));
+
+        // 2. 질문 정보 조회
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 아이디를 가진 질문을 찾을 수 없습니다: " + questionId));
+
+        // 3. Question 엔티티 생성
+        Answer answer = Answer.builder()
+                .content(requestDto.getContent())
+                .createdAt(LocalDateTime.now())
+                .user(user)
+                .question(question)
+                .build();
+
+        // 4. 이미지 파일 처리
+        if (images != null && !images.isEmpty()) {
+            for (int i = 0; i < images.size(); i++) {
+                MultipartFile image = images.get(i);
+                try {
+                    String imageUrl = s3UploadService.saveFile(image);
+
+                    AnswerImage answerImage = AnswerImage.builder()
+                            .answerImage(imageUrl)
+                            .sortOrder(i + 1)
+                            .answer(answer)
+                            .build();
+                    answer.addAnswerImage(answerImage);
+                } catch (IOException e) {
+                    throw new RuntimeException("이미지 파일 저장에 실패했습니다.", e);
+                }
+            }
+        }
+
+        // 4. Question 엔티티 저장 (QuestionImage는 Cascade 옵션으로 자동 저장)
+        Answer savedAnswer = answerRepository.save(answer);
+
+        // 5. 생성된 Question의 ID를 DTO로 감싸서 반환q
+        return new QuestionIdResponseDto(savedAnswer.getQuestion().getId());
     }
 }

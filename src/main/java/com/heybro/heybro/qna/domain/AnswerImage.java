@@ -23,4 +23,6 @@ public class AnswerImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_id")
     private Answer answer; // 회원
+
+    public void updateAnswer(Answer answer) { this.answer = answer; }
 }

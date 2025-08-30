@@ -5,14 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/request/AnswerRequestDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/controller/QnaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/controller/QnaController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/domain/QuestionImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/domain/QuestionImage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/repository/AnswerImageRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/repository/QuestionImageRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/domain/Answer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/domain/Answer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/domain/AnswerImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/domain/AnswerImage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/request/QuestionRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/request/QuestionRequestDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/service/QnaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/service/QnaService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/service/QnaServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/service/QnaServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +152,8 @@
       <workItem from="1756384615176" duration="698000" />
       <workItem from="1756429181138" duration="17546000" />
       <workItem from="1756470429953" duration="3916000" />
-      <workItem from="1756475862211" duration="3984000" />
+      <workItem from="1756475862211" duration="7611000" />
+      <workItem from="1756528933184" duration="2420000" />
     </task>
     <servers />
   </component>
