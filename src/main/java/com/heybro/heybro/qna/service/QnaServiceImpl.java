@@ -3,19 +3,20 @@ package com.heybro.heybro.qna.service;
 import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.s3.S3UploadService;
 import com.heybro.heybro.qna.domain.*;
+import com.heybro.heybro.qna.dto.QuestionSearchCondition;
 import com.heybro.heybro.qna.dto.request.AnswerRequestDto;
 import com.heybro.heybro.qna.dto.request.QuestionRequestDto;
 import com.heybro.heybro.qna.dto.request.TagRequestDto;
-import com.heybro.heybro.qna.dto.response.QuestionIdResponseDto;
-import com.heybro.heybro.qna.dto.response.QuestionImageResponseDto;
-import com.heybro.heybro.qna.dto.response.QuestionResponseDto;
+import com.heybro.heybro.qna.dto.response.*;
 import com.heybro.heybro.qna.repository.AnswerRepository;
 import com.heybro.heybro.qna.repository.QuestionRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,22 +36,27 @@ public class QnaServiceImpl implements QnaService {
     private final S3UploadService s3UploadService;
     private final QuestionViewService questionViewService;
 
-    private Sort getSort(String sort) {
-        if (sort == null) {
-            return Sort.by(Sort.Direction.DESC, "createdAt");
-        }
-        switch (sort) {
-            case "view_desc":
-                return Sort.by(Sort.Direction.DESC, "viewCount");
-            case "view_asc":
-                return Sort.by(Sort.Direction.ASC, "viewCount");
-            case "created_desc":
-                return Sort.by(Sort.Direction.DESC, "createdAt");
-            case "created_asc":
-                return Sort.by(Sort.Direction.ASC, "createdAt");
-            default:
-                return Sort.by(Sort.Direction.DESC, "createdAt");
-        }
+    @Override
+    public CustomPageResponse<QuestionListResponseDto> getQuestions(QuestionCategory category, String search, String sort, Pageable pageable) {
+        // 1. 검색 조건에 맞는 질문 페이지를 조회
+        QuestionSearchCondition condition = new QuestionSearchCondition(category, search, sort);
+        Page<Question> questionPage = questionRepository.searchQuestions(condition, pageable);
+
+        // 2. 각 질문에 대한 답변 목록을 조회하고 DTO로 변환
+        List<QuestionListResponseDto> dtoList = questionPage.getContent().stream()
+                .map(question -> {
+                    List<Answer> answers = answerRepository.findAllByQuestion(question);
+                    return QuestionListResponseDto.from(question, answers);
+                })
+                .toList();
+
+        // 3. CustomPageResponse 로 반환 (원하는 필드만 담음)
+        return new CustomPageResponse<>(
+                dtoList,
+                questionPage.isLast(),
+                questionPage.getSize(),
+                questionPage.getNumber()
+        );
     }
 
     @Override
@@ -150,6 +156,7 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
+    @Transactional
     public QuestionIdResponseDto createAnswer(Long questionId, AnswerRequestDto requestDto, List<MultipartFile> images, String email) {
         // 1. 회원 정보 조회
         User user = userRepository.findByEmail(email)
