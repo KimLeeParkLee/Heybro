@@ -1,0 +1,6 @@
+# Gradle build cache
+.gradle
+/build
+
+# QueryDSL generated sources
+/src/main/generated
