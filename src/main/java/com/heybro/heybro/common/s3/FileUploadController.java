@@ -1,5 +1,6 @@
 package com.heybro.heybro.common.s3;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "파일 업로드", description = "파일 업로드 API")
 public class FileUploadController {
 
     private final S3UploadService s3UploadService;

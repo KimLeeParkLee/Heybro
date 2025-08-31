@@ -2,7 +2,9 @@ package com.heybro.heybro.skin.service;
 
 import com.heybro.heybro.skin.dto.request.DeviceRequestDto;
 import com.heybro.heybro.skin.dto.response.FaceppResponseDto;
+import com.heybro.heybro.skin.dto.response.FaceppSkinTypeResponseDto;
 import com.heybro.heybro.skin.dto.response.SkinAnalysisDataResponseDto;
+import com.heybro.heybro.skin.dto.response.SkinTypeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -17,41 +19,176 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class SkinAnalysisService {
-
     @Value("${facepp.api.key}")
     private String apiKey;
 
     @Value("${facepp.api.secret}")
     private String apiSecret;
 
-    private final String FACEPP_API_URL = "https://api-us.faceplusplus.com/skinstatus/v2/skinstatus";
+    private final String FACEPP_API_URL = "https://api-us.faceplusplus.com/facepp/v1/skinanalyze";
 
-    private final RestTemplate restTemplate; // Bean으로 주입받음
+    private final RestTemplate restTemplate;
 
     public SkinAnalysisDataResponseDto analyzeWithFacePlusPlus(MultipartFile image, DeviceRequestDto device) {
-        // 1. Face++ API로 보낼 요청 준비
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("api_key", apiKey);
         body.add("api_secret", apiSecret);
-        // 필요한 속성들을 명시적으로 요청 (문서 참고)
-        body.add("return_attributes", "skinstatus");
-        body.add("return_attributes", "skinstatus,beauty,facequality");
 
         try {
             body.add("image_file", new ByteArrayResource(image.getBytes()) {
                 @Override
-                public String getFilename() {
-                    return image.getOriginalFilename();
-                }
+                public String getFilename() { return image.getOriginalFilename(); }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException("이미지 파일 처리 중 오류 발생", e);
+        }
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        ResponseEntity<FaceppResponseDto> responseEntity = restTemplate.postForEntity(FACEPP_API_URL, requestEntity, FaceppResponseDto.class);
+        FaceppResponseDto faceppResponse = responseEntity.getBody();
+
+        if (faceppResponse == null || faceppResponse.getResult() == null) {
+            throw new RuntimeException("Face++ API에서 분석 결과를 받지 못했습니다.");
+        }
+
+        return buildSkinAnalysisData(faceppResponse.getResult());
+    }
+
+    private SkinAnalysisDataResponseDto buildSkinAnalysisData(FaceppResponseDto.ResultData resultData) {
+        // 1. Get raw values for core metrics
+        double acneRaw = resultData.getAcne() != null ? resultData.getAcne().getValue() : 0;
+        double blackheadRaw = resultData.getBlackhead() != null ? resultData.getBlackhead().getValue() : 0;
+        double skinSpotRaw = resultData.getSkinSpot() != null ? resultData.getSkinSpot().getValue() : 0;
+        double darkCircleRaw = resultData.getDarkCircle() != null ? resultData.getDarkCircle().getValue() : 0;
+
+        double poresLeftCheek = resultData.getPores_left_cheek() != null ? resultData.getPores_left_cheek().getValue() : 0;
+        double poresForehead = resultData.getPores_forehead() != null ? resultData.getPores_forehead().getValue() : 0;
+        double poresJaw = resultData.getPores_jaw() != null ? resultData.getPores_jaw().getValue() : 0;
+        double poresRightCheek = resultData.getPores_right_cheek() != null ? resultData.getPores_right_cheek().getValue() : 0;
+        double averagePoreRaw = (poresLeftCheek + poresForehead + poresJaw + poresRightCheek) / 4.0;
+
+        double foreheadWrinkle = resultData.getForehead_wrinkle() != null ? resultData.getForehead_wrinkle().getValue() : 0;
+        double crowsFeet = resultData.getCrows_feet() != null ? resultData.getCrows_feet().getValue() : 0;
+        double eyeFinelines = resultData.getEye_finelines() != null ? resultData.getEye_finelines().getValue() : 0;
+        double glabellaWrinkle = resultData.getGlabella_wrinkle() != null ? resultData.getGlabella_wrinkle().getValue() : 0;
+        double nasolabialFold = resultData.getNasolabial_fold() != null ? resultData.getNasolabial_fold().getValue() : 0;
+        double averageWrinkleRaw = (foreheadWrinkle + crowsFeet + eyeFinelines + glabellaWrinkle + nasolabialFold) / 5.0;
+
+        // 2. Determine oiliness and hydration based on skin type
+        int apiSkinType = resultData.getSkinType() != null ? resultData.getSkinType().getSkinType() : 2; // Default to normal
+        double oilinessRaw = 0;
+        double hydrationRaw = 0; // Represents lack of hydration
+
+        switch (apiSkinType) {
+            case 0: // oily
+                oilinessRaw = 0.8;
+                hydrationRaw = 0.4;
+                break;
+            case 1: // dry
+                oilinessRaw = 0.2;
+                hydrationRaw = 0.8;
+                break;
+            case 3: // combination
+                oilinessRaw = 0.6;
+                hydrationRaw = 0.6;
+                break;
+            case 2: // normal
+            default:
+                oilinessRaw = 0.4;
+                hydrationRaw = 0.4;
+                break;
+        }
+
+        // 3. Create MetricDetail objects with severity scores (higher = worse)
+        SkinAnalysisDataResponseDto.Metrics metrics = SkinAnalysisDataResponseDto.Metrics.builder()
+                .acne(createMetricDetail(acneRaw))
+                .poreVisibility(createMetricDetail(averagePoreRaw))
+                .blackhead(createMetricDetail(blackheadRaw))
+                .wrinkle(createMetricDetail(averageWrinkleRaw))
+                .oiliness(createMetricDetail(oilinessRaw))
+                .hydration(createMetricDetail(hydrationRaw))
+                .redness(createMetricDetail(0)) // Still no data for redness
+                .build();
+
+        // 4. Calculate Final Score (higher = better)
+        int finalScore = ( (100 - metrics.getAcne().getScore()) +
+                           (100 - metrics.getBlackhead().getScore()) +
+                           (100 - metrics.getPoreVisibility().getScore()) +
+                           (100 - (int)Math.round(skinSpotRaw * 100)) +
+                           (100 - metrics.getWrinkle().getScore()) +
+                           (100 - (int)Math.round(darkCircleRaw * 100)) +
+                           (100 - metrics.getOiliness().getScore()) +
+                           (100 - metrics.getHydration().getScore()) ) / 8;
+
+        // 5. Build and return DTO
+        return SkinAnalysisDataResponseDto.builder()
+                .measurement_id("msr_" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
+                .provider("facepp")
+                .model_version("facepp-v1-skinanalyze")
+                .quality(new SkinAnalysisDataResponseDto.Quality())
+                .metrics(metrics)
+                .skin_type(determineSkinType(apiSkinType, metrics))
+                .by_region(null)
+                .cached(false)
+                .final_score(finalScore)
+                .build();
+    }
+
+    private SkinAnalysisDataResponseDto.MetricDetail createMetricDetail(double score) {
+        int roundedScore = (int) Math.round(score * 100);
+        return SkinAnalysisDataResponseDto.MetricDetail.builder()
+                .score(roundedScore)
+                .level(calculateLevel(roundedScore))
+                .confidence(0.9)
+                .build();
+    }
+
+    private String calculateLevel(int score) {
+        if (score < 34) return "low";
+        if (score < 67) return "medium";
+        return "high";
+    }
+
+    private List<String> determineSkinType(int apiSkinType, SkinAnalysisDataResponseDto.Metrics metrics) {
+        String primarySkinType;
+
+        switch (apiSkinType) {
+            case 0: primarySkinType = "oily"; break;
+            case 1: primarySkinType = "dry"; break;
+            case 3: primarySkinType = "combination"; break;
+            case 2: default: primarySkinType = "normal"; break;
+        }
+        List<String> finalSkinTypes = new ArrayList<>();
+        finalSkinTypes.add(primarySkinType);
+        if (metrics.getAcne().getScore() > 50) {
+            finalSkinTypes.add("acne-prone");
+        }
+        return finalSkinTypes;
+    }
+
+    public SkinTypeResponseDto analyzeSkinTypeOnly(MultipartFile image) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("api_key", apiKey);
+        body.add("api_secret", apiSecret);
+
+        try {
+            body.add("image_file", new ByteArrayResource(image.getBytes()) {
+                @Override
+                public String getFilename() { return image.getOriginalFilename(); }
             });
         } catch (IOException e) {
             throw new RuntimeException("이미지 파일 처리 중 오류 발생", e);
@@ -59,88 +196,45 @@ public class SkinAnalysisService {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        // 2. Face++ API 호출 및 응답 받기
-        ResponseEntity<FaceppResponseDto> responseEntity = restTemplate.postForEntity(FACEPP_API_URL, requestEntity, FaceppResponseDto.class);
-        FaceppResponseDto faceppResponse = responseEntity.getBody();
+        ResponseEntity<FaceppSkinTypeResponseDto> responseEntity = restTemplate.postForEntity(FACEPP_API_URL, requestEntity, FaceppSkinTypeResponseDto.class);
+        FaceppSkinTypeResponseDto faceppResponse = responseEntity.getBody();
 
-        if (faceppResponse == null || faceppResponse.getFaces() == null || faceppResponse.getFaces().isEmpty()) {
-            throw new RuntimeException("Face++ API에서 얼굴을 감지하지 못했습니다.");
+        if (faceppResponse == null || faceppResponse.getResult() == null || faceppResponse.getResult().getSkinType() == null) {
+            throw new RuntimeException("Face++ API에서 피부 타입 분석 결과를 받지 못했습니다.");
         }
 
-        FaceppResponseDto.Attributes attributes = faceppResponse.getFaces().get(0).getAttributes();
+        FaceppSkinTypeResponseDto.SkinTypeObject apiSkinTypeData = faceppResponse.getResult().getSkinType();
 
-        return buildSkinAnalysisData(attributes);
-    }
-
-    // 매핑 로직을 별도 메서드로 분리
-    private SkinAnalysisDataResponseDto buildSkinAnalysisData(FaceppResponseDto.Attributes attributes) {
-        FaceppResponseDto.SkinStatus skinStatus = attributes.getSkinstatus();
-
-        // Quality 객체 생성 및 값 설정
-        SkinAnalysisDataResponseDto.Quality quality = new SkinAnalysisDataResponseDto.Quality();
-        if (attributes.getFacequality() != null) {
-            // Face++의 illumination 값을 0~100 스케일로 변환 (문서 기준: 0~255)
-            quality.setLighting_score((int) (attributes.getFacequality().getOrDefault("illumination", 0.0) / 255.0 * 100.0));
+        String primarySkinType;
+        switch (apiSkinTypeData.getSkinType()) {
+            case 0:
+                primarySkinType = "oily";
+                break;
+            case 1:
+                primarySkinType = "dry";
+                break;
+            case 3:
+                primarySkinType = "combination";
+                break;
+            case 2:
+            default:
+                primarySkinType = "normal";
+                break;
         }
-        if (attributes.getBeauty() != null) {
-            // makeup 값이 일정 수준 이상이면 true로 판단
-            quality.setMakeup_detected(attributes.getBeauty().getOrDefault("makeup", 0.0) > 50);
-        }
 
-        SkinAnalysisDataResponseDto.Metrics metrics = new SkinAnalysisDataResponseDto.Metrics();
+        SkinTypeResponseDto.SkinTypeResponseDtoBuilder responseDtoBuilder = SkinTypeResponseDto.builder()
+                .skinType(primarySkinType);
 
-        // 각 지표를 채우는 로직
-        metrics.setOiliness(createMetricDetail(skinStatus.getOiliness()));
-        metrics.setHydration(createMetricDetail(skinStatus.getHydration()));
-        metrics.setRedness(createMetricDetail(skinStatus.getRedness()));
-        metrics.setPore_visibility(createMetricDetail(skinStatus.getPore()));
-        metrics.setAcne(createMetricDetail(skinStatus.getAcne()));
-        metrics.setWrinkle(createMetricDetail(skinStatus.getWrinkle()));
+        Map<String, SkinTypeResponseDto.Detail> detailsMap = new java.util.LinkedHashMap<>();
+        apiSkinTypeData.getDetails().forEach((key, value) -> {
+            SkinTypeResponseDto.Detail detail = SkinTypeResponseDto.Detail.builder()
+                    .value(value.getValue())
+                    .confidence(value.getConfidence())
+                    .build();
+            detailsMap.put(key, detail);
+        });
+        responseDtoBuilder.details(detailsMap);
 
-        // 최종 응답 DTO 빌드
-        return SkinAnalysisDataResponseDto.builder()
-                .measurement_id("msr_" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
-                .provider("facepp")
-                .model_version("facepp-2025-08")
-                //.createdAt(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)) // 주석 해제
-                .quality(quality) // 완성된 quality 객체 설정
-                .metrics(metrics)
-                .skin_type(determineSkinType(metrics))
-                .by_region(null)
-                .cached(false)
-                .build();
-    }
-
-    // Face++ 점수(0~100)를 score, level, confidence로 변환하는 헬퍼 메서드
-    private SkinAnalysisDataResponseDto.MetricDetail createMetricDetail(double score) {
-        SkinAnalysisDataResponseDto.MetricDetail detail = new SkinAnalysisDataResponseDto.MetricDetail();
-        detail.setScore((int) Math.round(score));
-        detail.setLevel(calculateLevel((int) Math.round(score)));
-        // Face++가 신뢰도를 제공하지 않는 경우, 고정값 또는 다른 로직으로 설정
-        detail.setConfidence(0.85); // 예시 고정값
-        return detail;
-    }
-
-    // 점수를 low/medium/high 구간으로 변환하는 헬퍼 메서드
-    private String calculateLevel(int score) {
-        if (score < 34) {
-            return "low";
-        } else if (score < 67) {
-            return "medium";
-        } else {
-            return "high";
-        }
-    }
-
-    // 지표를 기반으로 피부 타입을 추정하는 로직 (예시)
-    private List<String> determineSkinType(SkinAnalysisDataResponseDto.Metrics metrics) {
-        if (metrics.getOiliness().getScore() > 60 && metrics.getHydration().getScore() < 50) {
-            return List.of("oily", "dehydrated");
-        } else if (metrics.getOiliness().getScore() > 60) {
-            return List.of("oily");
-        } else {
-            return List.of("normal");
-        }
-        // ... 더 정교한 로직 추가 가능
+        return responseDtoBuilder.build();
     }
 }

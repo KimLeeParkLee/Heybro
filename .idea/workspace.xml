@@ -5,15 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/config/RestTemplateConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/dto/response/FaceppResponseDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/dto/response/FaceppSkinTypeResponseDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/dto/response/SkinTypeResponseDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/s3/FileUploadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/s3/FileUploadController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/controller/SkinAnalysisController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/controller/SkinAnalysisController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/dto/request/DeviceRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/dto/request/DeviceRequestDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/dto/response/FaceppResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/dto/response/FaceppResponseDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/dto/response/SkinAnalysisDataResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/dto/response/SkinAnalysisDataResponseDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/service/SkinAnalysisService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/service/SkinAnalysisService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-prod.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,6 +74,9 @@
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
   </component>
@@ -83,34 +88,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.heybro [build].executor": "Run",
-    "Gradle.heybro [clean].executor": "Run",
-    "Gradle.heybro 빌드.executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.HeybroApplication.executor": "Run",
-    "git-widget-placeholder": "<알 수 없음>",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/User/Desktop/heybro",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "모듈",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "vcs.Git",
-    "vue.rearranger.settings.migration": "true",
-    "애플리케이션.HeybroApplication.executor": "Run"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.heybro [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.heybro [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.heybro 빌드.executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.HeybroApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;backend&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/User/Desktop/heybro&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;모듈&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
+    &quot;애플리케이션.HeybroApplication.executor&quot;: &quot;Run&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -221,7 +226,10 @@
       <workItem from="1756470429953" duration="3916000" />
       <workItem from="1756475862211" duration="7611000" />
       <workItem from="1756528933184" duration="14982000" />
-      <workItem from="1756552456516" duration="1093000" />
+      <workItem from="1756552456516" duration="1466000" />
+      <workItem from="1756553966744" duration="11552000" />
+      <workItem from="1756621700823" duration="1001000" />
+      <workItem from="1756648785188" duration="4501000" />
     </task>
     <servers />
   </component>
