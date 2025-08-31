@@ -5,19 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/voice/controller/VoiceController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/voice/dto/request/GeminiRequestDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/voice/dto/request/TextRequestDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/voice/dto/response/GeminiResponseDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/voice/dto/response/TextResponseDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/voice/service/GeminiService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/voice/service/VoiceService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/config/FirebaseConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/config/FirebaseConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-prod.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/heybro/heybro/HeybroApplicationTests.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -247,7 +236,7 @@
       <workItem from="1756553966744" duration="11552000" />
       <workItem from="1756621700823" duration="1001000" />
       <workItem from="1756648785188" duration="10937000" />
-      <workItem from="1756660001347" duration="1684000" />
+      <workItem from="1756660001347" duration="2864000" />
     </task>
     <servers />
   </component>
