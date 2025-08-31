@@ -107,3 +107,6 @@ facepp:
   api:
     key: ${FACEPP_API_KEY}
     secret: ${FACEPP_API_SECRET}
+
+fcm:
+  service-account-key-path: "classpath:heybro-9382a-firebase-adminsdk-fbsvc-8f681b5667.json"
