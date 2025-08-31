@@ -3,6 +3,7 @@ package com.heybro.heybro.common.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,8 +63,6 @@ public class JwtUtil {
     public String getEmailFromToken(String token) {
         return getClaims(token).getSubject();
     }
-
-    
 
     private Claims getClaims(String token) {
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();

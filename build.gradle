@@ -79,6 +79,7 @@ sourceSets {
 
 tasks.withType(JavaCompile) {
 	options.getGeneratedSourceOutputDirectory().set(file(generated))
+	options.compilerArgs << "-Xlint:deprecation"
 }
 
 clean.doLast {

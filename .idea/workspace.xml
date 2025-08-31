@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +124,7 @@
       <recent name="C:\Users\User\Desktop\heybro\src\main\resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.HeybroApplication">
+  <component name="RunManager" selected="Gradle.heybro [build]">
     <configuration name="heybro [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -236,7 +236,7 @@
       <workItem from="1756553966744" duration="11552000" />
       <workItem from="1756621700823" duration="1001000" />
       <workItem from="1756648785188" duration="10937000" />
-      <workItem from="1756660001347" duration="2864000" />
+      <workItem from="1756660001347" duration="4078000" />
     </task>
     <servers />
   </component>
