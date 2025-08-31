@@ -110,3 +110,7 @@ facepp:
 
 fcm:
   service-account-key-path: "classpath:heybro-9382a-firebase-adminsdk-fbsvc-8f681b5667.json"
+
+google:
+  gemini:
+    api-key: "AIzaSyDav5_WpSDnaLOo_hvctdR4rPjFtZcoZRQ"
