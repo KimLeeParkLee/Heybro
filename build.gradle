@@ -74,6 +74,7 @@ def generated = 'src/main/generated'
 
 sourceSets {
 	main.java.srcDirs += [ generated ]
+	main.resources.srcDirs = ["src/main/resources"]
 }
 
 tasks.withType(JavaCompile) {

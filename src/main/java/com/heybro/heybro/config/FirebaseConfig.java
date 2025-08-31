@@ -3,23 +3,25 @@ package com.heybro.heybro.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 
 @Configuration
 public class FirebaseConfig {
 
+    @Value("${fcm.service-account-key-path}")
+    private String serviceAccountKeyPath;
+
     @Bean
     public FirebaseApp initializeFirebase() throws IOException {
-        String serviceAccountPath = "C:/Users/User/Desktop/heybro/src/main/resources/heybro-9382a-firebase-adminsdk-fbsvc-8f681b5667.json";
-
-        FileInputStream serviceAccount = new FileInputStream(serviceAccountPath);
+        ClassPathResource resource = new ClassPathResource(serviceAccountKeyPath);
 
         FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
                 .build();
 
         if (FirebaseApp.getApps().isEmpty()) {

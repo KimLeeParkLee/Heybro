@@ -109,7 +109,7 @@ facepp:
     secret: ${FACEPP_API_SECRET}
 
 fcm:
-  service-account-key-path: "classpath:heybro-9382a-firebase-adminsdk-fbsvc-8f681b5667.json"
+  service-account-key-path: "heybro-9382a-firebase-adminsdk-fbsvc-8f681b5667.json"
 
 google:
   gemini:
