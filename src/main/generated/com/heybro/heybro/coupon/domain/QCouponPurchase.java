@@ -24,11 +24,17 @@ public class QCouponPurchase extends EntityPathBase<CouponPurchase> {
 
     public final QCoupon coupon;
 
+    public final StringPath giftCode = createString("giftCode");
+
+    public final EnumPath<GiftStatus> giftStatus = createEnum("giftStatus", GiftStatus.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final BooleanPath isUsed = createBoolean("isUsed");
 
     public final DatePath<java.time.LocalDate> purchaseDate = createDate("purchaseDate", java.time.LocalDate.class);
+
+    public final com.heybro.heybro.user.domain.QUser sender;
 
     public final DatePath<java.time.LocalDate> usedAt = createDate("usedAt", java.time.LocalDate.class);
 
@@ -53,6 +59,7 @@ public class QCouponPurchase extends EntityPathBase<CouponPurchase> {
     public QCouponPurchase(Class<? extends CouponPurchase> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.coupon = inits.isInitialized("coupon") ? new QCoupon(forProperty("coupon")) : null;
+        this.sender = inits.isInitialized("sender") ? new com.heybro.heybro.user.domain.QUser(forProperty("sender")) : null;
         this.user = inits.isInitialized("user") ? new com.heybro.heybro.user.domain.QUser(forProperty("user")) : null;
     }
 

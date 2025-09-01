@@ -5,8 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/domain/GiftStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/dto/response/CouponGiftCodeResponseDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/CouponDataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/CouponDataInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/controller/CouponController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/controller/CouponController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/domain/Coupon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/domain/Coupon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/domain/CouponPurchase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/domain/CouponPurchase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/dto/response/CouponResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/dto/response/CouponResponseDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/service/CouponService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/service/CouponService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/service/CouponServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/coupon/service/CouponServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/voice/controller/VoiceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/voice/controller/VoiceController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +133,7 @@
       <recent name="C:\Users\User\Desktop\heybro\src\main\resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.heybro [build]">
+  <component name="RunManager" selected="Spring Boot.HeybroApplication">
     <configuration name="heybro [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -236,7 +245,8 @@
       <workItem from="1756553966744" duration="11552000" />
       <workItem from="1756621700823" duration="1001000" />
       <workItem from="1756648785188" duration="10937000" />
-      <workItem from="1756660001347" duration="4078000" />
+      <workItem from="1756660001347" duration="5087000" />
+      <workItem from="1756688454572" duration="4368000" />
     </task>
     <servers />
   </component>

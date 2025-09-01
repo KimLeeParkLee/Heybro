@@ -19,6 +19,9 @@ public class CouponPurchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 쿠폰 구매 내역 식별키
 
+    @Column(unique = true)
+    private String giftCode; // 쿠폰 번호
+
     private boolean isUsed; // 사용 여부
 
     private LocalDate usedAt; // 사용 날짜
@@ -31,5 +34,11 @@ public class CouponPurchase {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user; // 회원
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    private User sender; // 보내는 사람
+
+    private GiftStatus giftStatus; // 선물 상태
 }

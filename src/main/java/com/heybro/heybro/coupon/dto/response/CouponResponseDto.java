@@ -19,7 +19,7 @@ public class CouponResponseDto {
     @Schema(description = "쿠폰 이름")
     private String name;
 
-    @Schema(description = "쿠폰 이름")
+    @Schema(description = "쿠폰 타입")
     private CouponType couponType;
 
     @Schema(description = "상세 사진")

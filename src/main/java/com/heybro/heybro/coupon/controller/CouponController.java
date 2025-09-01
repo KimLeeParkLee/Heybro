@@ -1,12 +1,12 @@
 package com.heybro.heybro.coupon.controller;
 
+import com.heybro.heybro.coupon.dto.response.CouponGiftCodeResponseDto;
 import com.heybro.heybro.coupon.dto.response.CouponListResponseDto;
 import com.heybro.heybro.coupon.dto.response.CouponResponseDto;
 import com.heybro.heybro.coupon.service.CouponService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +34,11 @@ public class CouponController {
     @PostMapping("/{coupon_id}/purchase")
     public void purchaseCoupon(@PathVariable Long coupon_id, @AuthenticationPrincipal UserDetails userDetails) {
         couponService.purchaseCoupon(coupon_id, userDetails.getUsername());
+    }
+
+    @Operation(summary = "쿠폰 선물")
+    @PostMapping("/{coupon_id}/gift")
+    public CouponGiftCodeResponseDto giftCoupon(@PathVariable Long coupon_id, @AuthenticationPrincipal UserDetails userDetails) {
+        return couponService.giftCoupon(coupon_id, userDetails.getUsername());
     }
 }

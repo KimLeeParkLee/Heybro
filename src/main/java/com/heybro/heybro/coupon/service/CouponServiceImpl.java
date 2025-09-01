@@ -4,6 +4,8 @@ import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.coupon.domain.Coupon;
 import com.heybro.heybro.coupon.domain.CouponPurchase;
 import com.heybro.heybro.coupon.domain.CouponType;
+import com.heybro.heybro.coupon.domain.GiftStatus;
+import com.heybro.heybro.coupon.dto.response.CouponGiftCodeResponseDto;
 import com.heybro.heybro.coupon.dto.response.CouponListResponseDto;
 import com.heybro.heybro.coupon.dto.response.CouponPurchaseResponseDto;
 import com.heybro.heybro.coupon.dto.response.CouponResponseDto;
@@ -12,6 +14,7 @@ import com.heybro.heybro.coupon.repository.CouponRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +31,8 @@ public class CouponServiceImpl implements CouponService {
     private final CouponRepository couponRepository;
     private final CouponPurchaseRepository couponPurchaseRepository;
     private final UserRepository userRepository;
+
+    private final String COUPON_CODE_PREFIX = "BR";
 
     @Override
     public CouponListResponseDto getCoupons() {
@@ -78,6 +84,7 @@ public class CouponServiceImpl implements CouponService {
         );
 
         couponPurchaseRepository.save(CouponPurchase.builder()
+                .giftCode(generateCouponCode())
                 .purchaseDate(LocalDate.now())
                 .coupon(coupon)
                 .user(user)
@@ -112,5 +119,42 @@ public class CouponServiceImpl implements CouponService {
         }
 
         return CouponPurchaseResponseDto.builder().usableCoupons(usableCoupons).usedCoupons(usedCoupons).build();
+    }
+
+    @Override
+    @Transactional
+    public CouponGiftCodeResponseDto giftCoupon(Long couponId, String email) {
+        User sender = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(() -> new IllegalArgumentException("쿠폰을 찾을 수 없습니다."));
+
+        String giftCode = generateCouponCode();
+
+        // 2. CouponPurchase 객체 생성 (선물용)
+        CouponPurchase gift = CouponPurchase.builder()
+                .sender(sender)
+                .user(null) // 받는 사람은 아직 없음
+                .coupon(coupon)
+                .purchaseDate(LocalDate.now())
+                .giftCode(giftCode)
+                .giftStatus(GiftStatus.PENDING)
+                .isUsed(false)
+                .build();
+
+        // 3. DB에 저장
+        couponPurchaseRepository.save(gift);
+
+        // 4. 생성된 고유 코드를 Controller로 반환
+        return CouponGiftCodeResponseDto.builder().giftCode(giftCode).build();
+    }
+
+    private String generateCouponCode() {
+        Random random = new Random();
+        // 0부터 999999 사이의 숫자를 랜덤으로 생성
+        int number = random.nextInt(1000000);
+        // 6자리로 포맷팅 (앞자리가 비면 0으로 채움)
+        return String.format("%s%06d", COUPON_CODE_PREFIX, number);
     }
 }

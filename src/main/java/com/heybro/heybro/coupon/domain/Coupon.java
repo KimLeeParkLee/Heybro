@@ -4,7 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @AllArgsConstructor
@@ -21,8 +24,6 @@ public class Coupon {
     private CouponType couponType; // 쿠폰 타입
 
     private int price; // 가격
-
-    private String code; // 번호
 
     private String detailImage; // 상세 사진
 }

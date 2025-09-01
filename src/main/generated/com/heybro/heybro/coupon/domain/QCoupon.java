@@ -19,8 +19,6 @@ public class QCoupon extends EntityPathBase<Coupon> {
 
     public static final QCoupon coupon = new QCoupon("coupon");
 
-    public final StringPath code = createString("code");
-
     public final EnumPath<CouponType> couponType = createEnum("couponType", CouponType.class);
 
     public final StringPath detailImage = createString("detailImage");
