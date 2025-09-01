@@ -3,12 +3,12 @@ package com.heybro.heybro.skin.service;
 import com.heybro.heybro.skin.domain.SkinDiagnosis;
 import com.heybro.heybro.skin.dto.request.DeviceRequestDto;
 import com.heybro.heybro.skin.dto.response.FaceppResponseDto;
-import com.heybro.heybro.skin.dto.response.FaceppSkinTypeResponseDto;
 import com.heybro.heybro.skin.dto.response.SkinAnalysisDataResponseDto;
-import com.heybro.heybro.skin.dto.response.SkinTypeResponseDto;
+import com.heybro.heybro.skin.dto.response.SkinScoreResponseDto;
 import com.heybro.heybro.skin.repository.SkinDiagnosisRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -97,6 +97,30 @@ public class SkinAnalysisService {
         skinDiagnosisRepository.save(skinDiagnosis);
 
         return skinAnalysisData;
+    }
+
+    public SkinScoreResponseDto getSkinScore(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
+
+        Optional<SkinDiagnosis> oldestDiagnosisOpt = skinDiagnosisRepository.findFirstByUserOrderByDiagnosisDateAsc(user);
+        Optional<SkinDiagnosis> recentDiagnosisOpt = skinDiagnosisRepository.findFirstByUserOrderByDiagnosisDateDesc(user);
+
+        SkinScoreResponseDto.ScoreInfo oldestScoreInfo = oldestDiagnosisOpt.map(diagnosis -> SkinScoreResponseDto.ScoreInfo.builder()
+                .score(diagnosis.getFinalScore())
+                .diagnosisDate(diagnosis.getDiagnosisDate())
+                .build()).orElse(null);
+
+        SkinScoreResponseDto.ScoreInfo recentScoreInfo = recentDiagnosisOpt.map(diagnosis -> SkinScoreResponseDto.ScoreInfo.builder()
+                .score(diagnosis.getFinalScore())
+                .diagnosisDate(diagnosis.getDiagnosisDate())
+                .build()).orElse(null);
+
+        return SkinScoreResponseDto.builder()
+                .oldestScore(oldestScoreInfo)
+                .recentScore(recentScoreInfo)
+                .scoreChange(oldestScoreInfo.getScore() - recentScoreInfo.getScore())
+                .build();
     }
 
     private SkinAnalysisDataResponseDto buildSkinAnalysisData(FaceppResponseDto.ResultData resultData) {
@@ -209,66 +233,5 @@ public class SkinAnalysisService {
             finalSkinTypes.add("acne-prone");
         }
         return finalSkinTypes;
-    }
-
-    public SkinTypeResponseDto analyzeSkinTypeOnly(MultipartFile image) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("api_key", apiKey);
-        body.add("api_secret", apiSecret);
-
-        try {
-            body.add("image_file", new ByteArrayResource(image.getBytes()) {
-                @Override
-                public String getFilename() { return image.getOriginalFilename(); }
-            });
-        } catch (IOException e) {
-            throw new RuntimeException("이미지 파일 처리 중 오류 발생", e);
-        }
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        ResponseEntity<FaceppSkinTypeResponseDto> responseEntity = restTemplate.postForEntity(FACEPP_API_URL, requestEntity, FaceppSkinTypeResponseDto.class);
-        FaceppSkinTypeResponseDto faceppResponse = responseEntity.getBody();
-
-        if (faceppResponse == null || faceppResponse.getResult() == null || faceppResponse.getResult().getSkinType() == null) {
-            throw new RuntimeException("Face++ API에서 피부 타입 분석 결과를 받지 못했습니다.");
-        }
-
-        FaceppSkinTypeResponseDto.SkinTypeObject apiSkinTypeData = faceppResponse.getResult().getSkinType();
-
-        String primarySkinType;
-        switch (apiSkinTypeData.getSkinType()) {
-            case 0:
-                primarySkinType = "oily";
-                break;
-            case 1:
-                primarySkinType = "dry";
-                break;
-            case 3:
-                primarySkinType = "combination";
-                break;
-            case 2:
-            default:
-                primarySkinType = "normal";
-                break;
-        }
-
-        SkinTypeResponseDto.SkinTypeResponseDtoBuilder responseDtoBuilder = SkinTypeResponseDto.builder()
-                .skinType(primarySkinType);
-
-        Map<String, SkinTypeResponseDto.Detail> detailsMap = new java.util.LinkedHashMap<>();
-        apiSkinTypeData.getDetails().forEach((key, value) -> {
-            SkinTypeResponseDto.Detail detail = SkinTypeResponseDto.Detail.builder()
-                    .value(value.getValue())
-                    .confidence(value.getConfidence())
-                    .build();
-            detailsMap.put(key, detail);
-        });
-        responseDtoBuilder.details(detailsMap);
-
-        return responseDtoBuilder.build();
     }
 }
