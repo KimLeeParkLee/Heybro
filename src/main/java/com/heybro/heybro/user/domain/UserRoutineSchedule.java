@@ -1,7 +1,10 @@
 package com.heybro.heybro.user.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -24,4 +27,6 @@ public class UserRoutineSchedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_routine_id")
     private UserRoutine userRoutine; // 회원 루틴 요소
+
+    public void updateScheduleTime(LocalTime newScheduleTime) { this.scheduleTime = newScheduleTime; }
 }

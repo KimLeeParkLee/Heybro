@@ -12,7 +12,9 @@ import com.heybro.heybro.onboarding.repository.UserOnboardingAnswerRepository;
 import com.heybro.heybro.routine.domain.DailyRoutineLog;
 import com.heybro.heybro.routine.domain.Routine;
 import com.heybro.heybro.routine.domain.RoutineTemplate;
+import com.heybro.heybro.routine.domain.TimeOfDay;
 import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
+import com.heybro.heybro.routine.repository.RoutineRepository;
 import com.heybro.heybro.routine.repository.RoutineTemplateRepository;
 import com.heybro.heybro.routine.service.RoutineLogService;
 import com.heybro.heybro.user.domain.User;
@@ -22,6 +24,7 @@ import com.heybro.heybro.user.domain.UserType;
 import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.repository.UserRoutineRepository;
+import com.heybro.heybro.user.repository.UserRoutineScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,6 +48,8 @@ public class OnboardingServiceImpl implements OnboardingService {
     private final UserRoutineRepository userRoutineRepository;
     private final RoutineTemplateRepository routineTemplateRepository;
     private final DailyRoutineLogRepository dailyRoutineLogRepository;
+    private final UserRoutineScheduleRepository userRoutineScheduleRepository;
+    private final RoutineRepository routineRepository;
 
     private final RoutineLogService routineLogService;
 
@@ -143,7 +149,29 @@ public class OnboardingServiceImpl implements OnboardingService {
         // UserRoutineElement에 CascadeType.ALL이 설정되어 있으므로, schedules도 함께 저장
         userRoutineRepository.saveAll(userRoutineElementsToSave);
 
-        // 10. DailyRoutineLog에 오늘 로그 저장하기
+        // 10. 루틴 알림 시간 설정
+        for (UserRoutine userRoutine : userRoutineElementsToSave) {
+            TimeOfDay timeOfDay = userRoutine.getRoutine().getTimeOfDay();
+            LocalTime notificationTime = null;
+            switch (timeOfDay) {
+                case MORNING:
+                    notificationTime = user.getWakeupTime();
+                    break;
+                case LUNCH:
+                    notificationTime = LocalTime.of(12, 0);
+                    break;
+                case EVENING:
+                    notificationTime = LocalTime.of(19, 0);
+                    break;
+            }
+
+            for (UserRoutineSchedule schedule : userRoutine.getSchedules()) {
+                schedule.updateScheduleTime(notificationTime);
+            }
+            userRoutineScheduleRepository.saveAll(userRoutine.getSchedules());
+        }
+
+        // 11. DailyRoutineLog에 오늘 로그 저장하기
         // (1) 먼저 오늘 날짜의 로그가 존재하는지 조회
         List<DailyRoutineLog> logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, LocalDate.now());
 
@@ -155,7 +183,7 @@ public class OnboardingServiceImpl implements OnboardingService {
 
         dailyRoutineLogRepository.saveAll(logs);
 
-        // 10. 최종 결과를 DTO로 변환하여 반환
+        // 12. 최종 결과를 DTO로 변환하여 반환
         return UserTypeResponseDto.from(finalUserType);
     }
 
