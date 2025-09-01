@@ -1,10 +1,14 @@
 package com.heybro.heybro.skin.service;
 
+import com.heybro.heybro.skin.domain.SkinDiagnosis;
 import com.heybro.heybro.skin.dto.request.DeviceRequestDto;
 import com.heybro.heybro.skin.dto.response.FaceppResponseDto;
 import com.heybro.heybro.skin.dto.response.FaceppSkinTypeResponseDto;
 import com.heybro.heybro.skin.dto.response.SkinAnalysisDataResponseDto;
 import com.heybro.heybro.skin.dto.response.SkinTypeResponseDto;
+import com.heybro.heybro.skin.repository.SkinDiagnosisRepository;
+import com.heybro.heybro.user.domain.User;
+import com.heybro.heybro.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -12,13 +16,17 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +45,16 @@ public class SkinAnalysisService {
 
     private final RestTemplate restTemplate;
 
+    private final SkinDiagnosisRepository skinDiagnosisRepository;
+    private final UserRepository userRepository;
+
+    @Transactional
     public SkinAnalysisDataResponseDto analyzeWithFacePlusPlus(MultipartFile image, DeviceRequestDto device) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        String username = userDetails.getUsername();
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -48,7 +65,9 @@ public class SkinAnalysisService {
         try {
             body.add("image_file", new ByteArrayResource(image.getBytes()) {
                 @Override
-                public String getFilename() { return image.getOriginalFilename(); }
+                public String getFilename() {
+                    return image.getOriginalFilename();
+                }
             });
         } catch (IOException e) {
             throw new RuntimeException("이미지 파일 처리 중 오류 발생", e);
@@ -62,7 +81,22 @@ public class SkinAnalysisService {
             throw new RuntimeException("Face++ API에서 분석 결과를 받지 못했습니다.");
         }
 
-        return buildSkinAnalysisData(faceppResponse.getResult());
+        SkinAnalysisDataResponseDto skinAnalysisData = buildSkinAnalysisData(faceppResponse.getResult());
+
+        SkinDiagnosis skinDiagnosis = SkinDiagnosis.builder()
+                .user(user)
+                .diagnosisDate(LocalDateTime.now())
+                .finalScore(skinAnalysisData.getFinal_score())
+                .oilinessScore(skinAnalysisData.getMetrics().getOiliness().getScore())
+                .hydrationScore(skinAnalysisData.getMetrics().getHydration().getScore())
+                .poreScore(skinAnalysisData.getMetrics().getPoreVisibility().getScore())
+                .acneSocre(skinAnalysisData.getMetrics().getAcne().getScore())
+                .skinType(String.join(",", skinAnalysisData.getSkin_type()))
+                .build();
+
+        skinDiagnosisRepository.save(skinDiagnosis);
+
+        return skinAnalysisData;
     }
 
     private SkinAnalysisDataResponseDto buildSkinAnalysisData(FaceppResponseDto.ResultData resultData) {
