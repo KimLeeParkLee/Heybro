@@ -35,8 +35,8 @@ public class NotificationScheduler {
             String deviceToken = schedule.getUserRoutine().getUser().getNotificationToken();
             if (deviceToken != null && !deviceToken.isEmpty()) {
                 String routineName = schedule.getUserRoutine().getRoutine().getName();
-                String title = "오늘의 루틴 알림";
-                String body = "오늘의 루틴을 실천할 시간입니다: " + routineName;
+                String title = "오늘의 루틴";
+                String body = "브로! 지금은 " + routineName + "할 시간이에요.";
 
                 FcmSendDto fcmSendDto = FcmSendDto.builder()
                         .targetToken(deviceToken)
