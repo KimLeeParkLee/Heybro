@@ -346,7 +346,7 @@ public class RoutineServiceImpl implements RoutineService {
     }
 
     @Override
-    public List<RoutineAddResponseDto> getAvailableRoutines(String email) {
+    public RoutineAddResponseDto getAvailableRoutines(String email) {
         User user = findUserByEmail(email);
 
         // 1. 사용자가 이미 가지고 있는 루틴 ID 목록을 조회
@@ -358,15 +358,20 @@ public class RoutineServiceImpl implements RoutineService {
 
         // 2. 사용자가 가진 루틴이 없으면 모든 루틴을, 있으면 해당 루틴을 제외하고 조회
         if (userRoutineIds.isEmpty()) {
-            availableRoutines = routineRepository.findAll();
+            availableRoutines = routineRepository.findByRoutineTemplateType(user.getUserType());
         } else {
-            availableRoutines = routineRepository.findByIdNotIn(userRoutineIds);
+            availableRoutines = routineRepository.findByRoutineTemplateTypeAndIdNotIn(user.getUserType(), userRoutineIds);
         }
 
-        // 3. 조회된 루틴 목록을 DTO로 변환하여 반환
-        return availableRoutines.stream()
+        // 3. 조회된 루틴 목록을 DTO 리스트로 변환
+        List<RoutineAddResponseDto.AvailableRoutineDto> dtoList = availableRoutines.stream()
                 .map(RoutineAddResponseDto.AvailableRoutineDto::from)
                 .collect(Collectors.toList());
+
+        // 4. 최종 DTO 객체로 감싸서 반환
+        return RoutineAddResponseDto.builder()
+                .routines(dtoList)
+                .build();
     }
 
     private User findUserByEmail(String email) {

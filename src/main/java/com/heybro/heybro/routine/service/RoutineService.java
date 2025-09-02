@@ -32,5 +32,5 @@ public interface RoutineService {
 
     void deleteRoutine(Long routineId, String email);
 
-    List<RoutineAddResponseDto> getAvailableRoutines(String email);
+    RoutineAddResponseDto getAvailableRoutines(String email);
 }

@@ -19,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,9 +60,9 @@ public class RoutineController {
         routineService.addRoutine(routine_id, requestDto, userDetails.getUsername());
     }
 
-    @Operation(summary = "추가할 루틴 조회")
+    @Operation(summary = "추가 가능한 루틴 목록 조회")
     @GetMapping("/available")
-    public List<RoutineAddResponseDto> getAvailableRoutines(@AuthenticationPrincipal UserDetails userDetails) {
+    public RoutineAddResponseDto getAvailableRoutines(@AuthenticationPrincipal UserDetails userDetails) {
         return routineService.getAvailableRoutines(userDetails.getUsername());
     }
 
