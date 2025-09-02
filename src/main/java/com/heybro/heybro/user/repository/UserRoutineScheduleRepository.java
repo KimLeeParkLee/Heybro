@@ -10,7 +10,5 @@ import java.util.List;
 
 @Repository
 public interface UserRoutineScheduleRepository extends JpaRepository<UserRoutineSchedule, Long> {
-    List<UserRoutineSchedule> findAllByDayOfWeekEquals(DayOfWeek today);
-
     List<UserRoutineSchedule> findAllByDayOfWeekEqualsAndScheduleTimeEquals(DayOfWeek dayOfWeek, LocalTime time);
 }

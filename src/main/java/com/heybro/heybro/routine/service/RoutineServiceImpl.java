@@ -1,15 +1,19 @@
 package com.heybro.heybro.routine.service;
 
 import com.heybro.heybro.routine.domain.*;
+import com.heybro.heybro.routine.dto.request.RoutineAddRequestDto;
+import com.heybro.heybro.routine.dto.request.RoutineModifyRequestDto;
 import com.heybro.heybro.routine.dto.response.*;
 import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
 import com.heybro.heybro.routine.repository.RoutineRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserRoutine;
 import com.heybro.heybro.user.domain.UserRoutineSchedule;
+import com.heybro.heybro.user.dto.response.RoutineAddResponseDto;
 import com.heybro.heybro.user.dto.response.UserRoutineResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.repository.UserRoutineRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +49,7 @@ public class RoutineServiceImpl implements RoutineService {
         if (date.isAfter(LocalDate.now())) {
             // (1) user 조회
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
             // (2) 조회한 user로 모든 UserRoutine 조회
             List<UserRoutine> userRoutines = userRoutineRepository.findAllByUser(user);
@@ -98,7 +102,7 @@ public class RoutineServiceImpl implements RoutineService {
         } else { // 과거~오늘까지 조회
             // (1) user 조회
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
             // (2) 해당 날짜의 모든 로그를 DailyRoutineLog에서 조회
             List<DailyRoutineLog> logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, date);
@@ -167,18 +171,18 @@ public class RoutineServiceImpl implements RoutineService {
     @Transactional
     public void completeUserRoutine(String email, Long routineId) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
         Routine routine = routineRepository.findById(routineId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 루틴을 찾을 수 없습니다."));
 
         // (1) DailyRoutineLog에서 회원, 루틴 아이디로 해당하는 루틴 찾기
-        DailyRoutineLog logs = dailyRoutineLogRepository.findAllByUserAndRoutine(user, routine);
+        DailyRoutineLog logs = dailyRoutineLogRepository.findByUserAndRoutineAndTaskDate(user, routine, LocalDate.now());
 
         // (2) 완료 상태로 변경
         logs.toggleCompletion();
 
-        // (3) 브로 포인트, 경험치 10씩 추가 
+        // (3) 브로 포인트, 경험치 10씩 추가
         user.earnPoints(10);
         user.updateExperience(10);
     }
@@ -187,7 +191,7 @@ public class RoutineServiceImpl implements RoutineService {
     @Override
     public AchievementSummaryResponseDto getSummaryAchievements(ViewType view, PeriodType period, LocalDate date, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
         List<DailyRoutineLog> logs;
 
@@ -222,7 +226,7 @@ public class RoutineServiceImpl implements RoutineService {
     @Override
     public AchievementListResponseDto getListAchievements(ViewType view, PeriodType period, LocalDate date, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
         LocalDate startDate;
         LocalDate endDate;
@@ -281,5 +285,102 @@ public class RoutineServiceImpl implements RoutineService {
                 .endDate(endDate)
                 .achievements(dailyAchievements)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void addRoutine(Long routineId, RoutineAddRequestDto requestDto, String email) {
+        User user = findUserByEmail(email);
+        Routine routine = findRoutineById(routineId);
+
+        // 이미 추가된 루틴인지 확인
+        if (userRoutineRepository.existsByUserAndRoutine(user, routine)) {
+            throw new IllegalArgumentException("이미 추가된 루틴입니다.");
+        }
+
+        UserRoutine userRoutine = UserRoutine.builder()
+                .user(user)
+                .routine(routine)
+                .build();
+
+        List<UserRoutineSchedule> schedules = requestDto.getRoutineInfos().stream()
+                .map(info -> UserRoutineSchedule.builder()
+                        .scheduleTime(info.getScheduleTime())
+                        .dayOfWeek(info.getDayOfWeek())
+                        .userRoutine(userRoutine)
+                        .build())
+                .toList();
+
+        userRoutine.getSchedules().addAll(schedules);
+        userRoutineRepository.save(userRoutine);
+    }
+
+    @Override
+    @Transactional
+    public void modifyRoutine(Long routineId, RoutineModifyRequestDto requestDto, String email) {
+        User user = findUserByEmail(email);
+        Routine routine = findRoutineById(routineId);
+        UserRoutine userRoutine = findUserRoutine(user, routine);
+
+        // 새로운 스케줄 리스트를 생성
+        List<UserRoutineSchedule> newSchedules = requestDto.getRoutineInfos().stream()
+                .map(info -> UserRoutineSchedule.builder()
+                        .scheduleTime(info.getScheduleTime())
+                        .dayOfWeek(info.getDayOfWeek())
+                        .userRoutine(userRoutine)
+                        .build())
+                .collect(Collectors.toList());
+
+        // 엔티티의 업데이트 메서드를 사용
+        userRoutine.updateSchedules(newSchedules);
+    }
+
+    @Override
+    @Transactional
+    public void deleteRoutine(Long routineId, String email) {
+        User user = findUserByEmail(email);
+        Routine routine = findRoutineById(routineId);
+        UserRoutine userRoutine = findUserRoutine(user, routine);
+
+        userRoutineRepository.delete(userRoutine);
+    }
+
+    @Override
+    public List<RoutineAddResponseDto> getAvailableRoutines(String email) {
+        User user = findUserByEmail(email);
+
+        // 1. 사용자가 이미 가지고 있는 루틴 ID 목록을 조회
+        List<Long> userRoutineIds = userRoutineRepository.findAllByUser(user).stream()
+                .map(userRoutine -> userRoutine.getRoutine().getId())
+                .toList();
+
+        List<Routine> availableRoutines;
+
+        // 2. 사용자가 가진 루틴이 없으면 모든 루틴을, 있으면 해당 루틴을 제외하고 조회
+        if (userRoutineIds.isEmpty()) {
+            availableRoutines = routineRepository.findAll();
+        } else {
+            availableRoutines = routineRepository.findByIdNotIn(userRoutineIds);
+        }
+
+        // 3. 조회된 루틴 목록을 DTO로 변환하여 반환
+        return availableRoutines.stream()
+                .map(RoutineAddResponseDto.AvailableRoutineDto::from)
+                .collect(Collectors.toList());
+    }
+
+    private User findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
+    }
+
+    private Routine findRoutineById(Long routineId) {
+        return routineRepository.findById(routineId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 루틴을 찾을 수 없습니다."));
+    }
+
+    private UserRoutine findUserRoutine(User user, Routine routine) {
+        return userRoutineRepository.findByUserAndRoutine(user, routine)
+                .orElseThrow(() -> new EntityNotFoundException("사용자에게 해당 루틴이 존재하지 않습니다."));
     }
 }

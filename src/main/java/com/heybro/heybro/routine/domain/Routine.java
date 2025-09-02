@@ -1,7 +1,10 @@
 package com.heybro.heybro.routine.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +28,7 @@ public class Routine {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "routine_template_id")
-    private RoutineTemplate routineTemplate; // 루틴
+    private RoutineTemplate routineTemplate; // 루틴 탬플랏
 
     @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

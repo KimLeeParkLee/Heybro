@@ -12,10 +12,10 @@ import com.heybro.heybro.qna.repository.AnswerRepository;
 import com.heybro.heybro.qna.repository.QuestionRepository;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,7 +99,7 @@ public class QnaServiceImpl implements QnaService {
     public QuestionIdResponseDto createQuestion(QuestionRequestDto requestDto, List<MultipartFile> images, String email) {
         // 1. 회원 정보 조회
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 이메일을 가진 유저를 찾을 수 없습니다: " + email));
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
         // 2. Question 엔티티 생성
         Question question = Question.builder()
@@ -160,7 +160,7 @@ public class QnaServiceImpl implements QnaService {
     public QuestionIdResponseDto createAnswer(Long questionId, AnswerRequestDto requestDto, List<MultipartFile> images, String email) {
         // 1. 회원 정보 조회
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 이메일을 가진 유저를 찾을 수 없습니다: " + email));
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
         // 2. 질문 정보 조회
         Question question = questionRepository.findById(questionId)

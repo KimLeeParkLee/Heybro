@@ -1,5 +1,6 @@
 package com.heybro.heybro.onboarding.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,9 +18,11 @@ public class OnboardingResultRequestDto {
     private List<AnswerDto> answers;
 
     @Schema(description = "기상 시간")
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime wakeupTime;
 
     @Schema(description = "취침 시간")
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime bedtime;
 
     @Getter

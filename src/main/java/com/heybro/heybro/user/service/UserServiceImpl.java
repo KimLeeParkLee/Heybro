@@ -1,17 +1,17 @@
 package com.heybro.heybro.user.service;
 
 import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
-import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.jwt.JwtUtil;
-import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
+import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.user.domain.User;
-
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
+import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.security.UserDetailsImpl;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -112,9 +112,8 @@ public class UserServiceImpl implements UserService {
                 TimeUnit.MILLISECONDS
         );
 
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException("해당 이메일을 가진 유저를 찾을 수 없습니다: " + email)
-        );
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
         return LoginResponseDto.builder()
                 .userId(user.getId())
