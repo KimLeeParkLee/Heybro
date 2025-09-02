@@ -69,12 +69,6 @@ public class RoutineController {
     @Operation(summary = "루틴 수정")
     @PutMapping("/{routine_id}")
     public void modifyRoutine(@PathVariable Long routine_id, @RequestBody RoutineModifyRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            log.info(">>>>>> Received routine_id: {}", routine_id);
-            log.info(">>>>>> Received DTO Content: {}", objectMapper.writeValueAsString(requestDto));
-        } catch (Exception e) {
-            log.error("DTO logging failed", e);
-        }
         routineService.modifyRoutine(routine_id, requestDto, userDetails.getUsername());
     }
 

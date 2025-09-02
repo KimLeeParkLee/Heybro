@@ -16,4 +16,6 @@ public interface UserRoutineRepository extends JpaRepository<UserRoutine, Long> 
     Optional<UserRoutine> findByUserAndRoutine(User user, Routine routine);
 
     boolean existsByUserAndRoutine(User user, Routine routine);
+
+    void deleteAllByUser(User user);
 }

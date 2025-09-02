@@ -30,6 +30,8 @@ public class QRoutine extends EntityPathBase<Routine> {
 
     public final StringPath name = createString("name");
 
+    public final ListPath<RecommendedProduct, QRecommendedProduct> recommendedProductList = this.<RecommendedProduct, QRecommendedProduct>createList("recommendedProductList", RecommendedProduct.class, QRecommendedProduct.class, PathInits.DIRECT2);
+
     public final QRoutineTemplate routineTemplate;
 
     public final EnumPath<TimeOfDay> timeOfDay = createEnum("timeOfDay", TimeOfDay.class);

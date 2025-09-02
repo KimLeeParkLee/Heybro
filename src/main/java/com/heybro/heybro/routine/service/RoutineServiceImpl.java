@@ -161,6 +161,10 @@ public class RoutineServiceImpl implements RoutineService {
                 .map(RoutineTipResponseDto::from)
                 .toList();
 
+        List<RecommendProductResponseDto> productDtos = routine.getRecommendedProductList().stream()
+                .map(RecommendedProduct::from)
+                .toList();
+
         return RoutineDetailResponseDto.builder()
                 .elements(elementDtos)
                 .tips(tipDtos)

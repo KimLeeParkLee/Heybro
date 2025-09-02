@@ -80,6 +80,13 @@ public class OnboardingServiceImpl implements OnboardingService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
+        // 이미 온보딩을 진행한 경우 기존 정보 삭제
+        if (user.getUserType() != null) {
+            userOnboardingAnswerRepository.deleteAllByUser(user);
+            userRoutineRepository.deleteAllByUser(user);
+            dailyRoutineLogRepository.deleteAllByUser(user);
+        }
+
         // 2. 요청으로 들어온 답변 DTO 리스트를 실제 Answer 엔티티 리스트로 변환
         List<UserOnboardingAnswer> answers = request.getAnswers().stream()
                 .map(answerDto -> {

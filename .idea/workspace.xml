@@ -5,11 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RecommendedProduct.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/dto/response/RecommendProductResponseDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/generated/com/heybro/heybro/routine/domain/QRoutine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/generated/com/heybro/heybro/routine/domain/QRoutine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/repository/UserOnboardingAnswerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/repository/UserOnboardingAnswerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/service/OnboardingServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/service/OnboardingServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/RoutineDataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/RoutineDataInitializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/controller/RoutineController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/controller/RoutineController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/repository/RoutineRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/repository/RoutineRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/service/RoutineService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/service/RoutineService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/Routine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/Routine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/dto/response/RoutineDetailResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/dto/response/RoutineDetailResponseDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/repository/DailyRoutineLogRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/repository/DailyRoutineLogRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/service/RoutineServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/service/RoutineServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/repository/UserRoutineRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/repository/UserRoutineRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,8 +134,11 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\User\Desktop\heybro\src\main\resources" />
     </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.heybro.heybro.routine.domain" />
+    </key>
   </component>
-  <component name="RunManager" selected="Gradle.heybro [build]">
+  <component name="RunManager" selected="Spring Boot.HeybroApplication">
     <configuration name="heybro [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -243,7 +254,7 @@
       <workItem from="1756688454572" duration="20431000" />
       <workItem from="1756774888042" duration="16168000" />
       <workItem from="1756812912460" duration="1648000" />
-      <workItem from="1756825927553" duration="1214000" />
+      <workItem from="1756825927553" duration="7241000" />
     </task>
     <servers />
   </component>

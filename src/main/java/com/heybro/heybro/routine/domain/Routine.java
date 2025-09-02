@@ -26,6 +26,10 @@ public class Routine {
 
     private String iconImage; // 아이콘 url
 
+    @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<RecommendedProduct> recommendedProductList = new ArrayList<>(); // 추천 상품 목록
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "routine_template_id")
     private RoutineTemplate routineTemplate; // 루틴 탬플랏

@@ -25,7 +25,6 @@ public class RoutineDataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        // routineRepository 대신 routineTemplateRepository로 확인
         if (routineTemplateRepository.count() > 0) {
             return;
         }
@@ -35,7 +34,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
                     .type(userType)
                     .build();
 
-            List<Routine> routines = createInitialRoutines(); // 메서드 이름 명확하게 변경
+            List<Routine> routines = createInitialRoutines();
             for (Routine routine : routines) {
                 routine.updateRoutineTemplate(routineTemplate);
                 setBidirectionalReferences(routine); // 양방향 참조 설정
@@ -89,6 +88,13 @@ public class RoutineDataInitializer implements CommandLineRunner {
                         RoutineElement.builder().step(1).name("토너 덜어내기").content("세안 후 화장솜이나 손바닥에 토너를 적당히 덜어주세요.").detailImage("https://drive.google.com/uc?export=view&id=1Mn27Us_0_7gaZcywBGfn8TYLj-wPVHUG").build(),
                         RoutineElement.builder().step(2).name("피부결 따라 닦아내기").content("피부결을 따라 부드럽게 닦아내거나 두드려 흡수시킵니다.").detailImage("https://drive.google.com/uc?export=view&id=1xmvvHTnfqgp1_dxwyuMf9sYuGIfttCnJ").build(),
                         RoutineElement.builder().step(3).name("목과 귀밑에 바르기").content("남은 토너는 목이나 귀밑까지 발라주세요.").detailImage("https://drive.google.com/uc?export=view&id=1Qj-AAXxzjDUHXcxGEaepBtwvmbhBlJZz").build()
+                ))
+                .recommendedProductList(Collections.singletonList(
+                        RecommendedProduct.builder()
+                                .name("맨즈 브라운 올인원 로션")
+                                .image("https://drive.google.com/file/d/1yDbnmT622_k9uezmXwuy45fmB18AUBhd/view?usp=sharing")
+                                .link("https://heybromall.com/product/detail.html?product_no=36&cate_no=42&display_group=1")
+                                .build()
                 ))
                 .build());
 
@@ -276,6 +282,12 @@ public class RoutineDataInitializer implements CommandLineRunner {
         if (routine.getTipList() != null) {
             for (RoutineTip tip : routine.getTipList()) {
                 tip.updateRoutine(routine);
+            }
+        }
+        // Routine <-> RecommendedProduct 연결
+        if (routine.getRecommendedProductList() != null) {
+            for (RecommendedProduct product : routine.getRecommendedProductList()) {
+                product.updateRoutine(routine);
             }
         }
     }
