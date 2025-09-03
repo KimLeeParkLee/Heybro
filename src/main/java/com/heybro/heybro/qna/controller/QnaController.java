@@ -19,9 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,10 +44,9 @@ public class QnaController {
 
     @Operation(summary = "질문 작성")
     @PostMapping
-    public QuestionIdResponseDto createQuestion(@RequestPart("requestDto") QuestionRequestDto requestDto, @RequestPart(value = "images", required = false) Optional<List<MultipartFile>> images,
+    public QuestionIdResponseDto createQuestion(@RequestPart("requestDto") QuestionRequestDto requestDto, @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                                 @AuthenticationPrincipal UserDetails userDetails) {
-        List<MultipartFile> imageList = images.orElse(Collections.emptyList());
-        return qnaService.createQuestion(requestDto, imageList, userDetails.getUsername());
+        return qnaService.createQuestion(requestDto, images, userDetails.getUsername());
     }
 
     @Operation(summary = "답변 작성")
