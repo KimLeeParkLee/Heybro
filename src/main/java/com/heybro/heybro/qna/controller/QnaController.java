@@ -52,7 +52,7 @@ public class QnaController {
 
     @Operation(summary = "답변 작성")
     @PostMapping(path = "/{question_id}/answers", consumes = {"multipart/form-data"})
-    public QuestionIdResponseDto createAnswer(@PathVariable Long question_id, @RequestPart("requestDto") AnswerRequestDto requestDto, @RequestPart("images") List<MultipartFile> images,
+    public QuestionIdResponseDto createAnswer(@PathVariable Long question_id, @RequestPart("requestDto") AnswerRequestDto requestDto, @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                               @AuthenticationPrincipal UserDetails userDetails) {
 
         return qnaService.createAnswer(question_id, requestDto, images, userDetails.getUsername());
