@@ -2,7 +2,10 @@ package com.heybro.heybro.onboarding.domain;
 
 import com.heybro.heybro.user.domain.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @AllArgsConstructor

@@ -1,14 +1,10 @@
 package com.heybro.heybro.qna.domain;
 
-import com.heybro.heybro.user.domain.User;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor

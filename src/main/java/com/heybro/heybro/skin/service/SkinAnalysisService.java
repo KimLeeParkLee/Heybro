@@ -1,13 +1,13 @@
 package com.heybro.heybro.skin.service;
 
+import com.heybro.heybro.user.domain.User;
+import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.skin.domain.SkinDiagnosis;
 import com.heybro.heybro.skin.dto.request.DeviceRequestDto;
 import com.heybro.heybro.skin.dto.response.FaceppResponseDto;
 import com.heybro.heybro.skin.dto.response.SkinAnalysisDataResponseDto;
 import com.heybro.heybro.skin.dto.response.SkinScoreResponseDto;
 import com.heybro.heybro.skin.repository.SkinDiagnosisRepository;
-import com.heybro.heybro.user.domain.User;
-import com.heybro.heybro.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

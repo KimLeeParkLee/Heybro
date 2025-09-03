@@ -3,8 +3,6 @@ package com.heybro.heybro.qna.dto.response;
 import com.heybro.heybro.qna.domain.Answer;
 import com.heybro.heybro.qna.domain.Question;
 import com.heybro.heybro.qna.domain.QuestionCategory;
-import com.heybro.heybro.user.domain.UserType;
-import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
