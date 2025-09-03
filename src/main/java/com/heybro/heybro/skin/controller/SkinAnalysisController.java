@@ -22,10 +22,11 @@ public class SkinAnalysisController {
 
     @Operation(summary = "AI 피부 진단 실행")
     @PostMapping(path = "/analyze", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SkinAnalysisDataResponseDto analyzeSkin(
+    public SkinScoreResponseDto analyzeSkin(
             @RequestPart("image") MultipartFile image,
-            @RequestPart("device") DeviceRequestDto device) {
-        return skinAnalysisService.analyzeWithFacePlusPlus(image, device);
+            @RequestPart("device") DeviceRequestDto device,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return skinAnalysisService.analyzeWithFacePlusPlus(image, device, userDetails.getUsername());
     }
 
     @Operation(summary = "AI 피부 진단 점수 조회")

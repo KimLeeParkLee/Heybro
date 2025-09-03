@@ -16,8 +16,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -49,11 +47,8 @@ public class SkinAnalysisService {
     private final UserRepository userRepository;
 
     @Transactional
-    public SkinAnalysisDataResponseDto analyzeWithFacePlusPlus(MultipartFile image, DeviceRequestDto device) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-        String username = userDetails.getUsername();
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+    public SkinScoreResponseDto analyzeWithFacePlusPlus(MultipartFile image, DeviceRequestDto device, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -96,7 +91,37 @@ public class SkinAnalysisService {
 
         skinDiagnosisRepository.save(skinDiagnosis);
 
-        return skinAnalysisData;
+        Optional<SkinDiagnosis> oldestDiagnosisOpt = skinDiagnosisRepository.findFirstByUserOrderByDiagnosisDateAsc(user);
+        Optional<SkinDiagnosis> previousRecentDiagnosisOpt = skinDiagnosisRepository.findFirstByUserOrderByDiagnosisDateDesc(user);
+
+        SkinScoreResponseDto.ScoreInfo oldestScoreInfo;
+        SkinScoreResponseDto.ScoreInfo recentScoreInfo;
+        int scoreChange;
+
+        if (oldestDiagnosisOpt.isEmpty() || oldestDiagnosisOpt.get().getId().equals(skinDiagnosis.getId())) { // First diagnosis
+            oldestScoreInfo = SkinScoreResponseDto.ScoreInfo.builder()
+                    .score(skinDiagnosis.getFinalScore())
+                    .diagnosisDate(skinDiagnosis.getDiagnosisDate())
+                    .build();
+            recentScoreInfo = null;
+            scoreChange = 0;
+        } else { // Subsequent diagnosis
+            oldestScoreInfo = SkinScoreResponseDto.ScoreInfo.builder()
+                    .score(oldestDiagnosisOpt.get().getFinalScore())
+                    .diagnosisDate(oldestDiagnosisOpt.get().getDiagnosisDate())
+                    .build();
+            recentScoreInfo = SkinScoreResponseDto.ScoreInfo.builder()
+                    .score(skinDiagnosis.getFinalScore())
+                    .diagnosisDate(skinDiagnosis.getDiagnosisDate())
+                    .build();
+            scoreChange = oldestScoreInfo.getScore() - recentScoreInfo.getScore();
+        }
+
+        return SkinScoreResponseDto.builder()
+                .oldestScore(oldestScoreInfo)
+                .recentScore(recentScoreInfo)
+                .scoreChange(scoreChange)
+                .build();
     }
 
     public SkinScoreResponseDto getSkinScore(String email) {
@@ -116,10 +141,21 @@ public class SkinAnalysisService {
                 .diagnosisDate(diagnosis.getDiagnosisDate())
                 .build()).orElse(null);
 
+        if (oldestDiagnosisOpt.isPresent() && recentDiagnosisOpt.isPresent() && oldestDiagnosisOpt.get().getId().equals(recentDiagnosisOpt.get().getId())) {
+            recentScoreInfo = null;
+        }
+
+        int scoreChange = 0;
+        if (oldestScoreInfo != null && recentScoreInfo != null) {
+            scoreChange = oldestScoreInfo.getScore() - recentScoreInfo.getScore();
+        } else if (oldestScoreInfo != null) {
+            scoreChange = 0;
+        }
+
         return SkinScoreResponseDto.builder()
                 .oldestScore(oldestScoreInfo)
                 .recentScore(recentScoreInfo)
-                .scoreChange(oldestScoreInfo.getScore() - recentScoreInfo.getScore())
+                .scoreChange(scoreChange)
                 .build();
     }
 
