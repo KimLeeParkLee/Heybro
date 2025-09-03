@@ -44,7 +44,7 @@ public class QnaController {
 
     @Operation(summary = "질문 작성")
     @PostMapping(consumes = {"multipart/form-data"})
-    public QuestionIdResponseDto createQuestion(@RequestPart("requestDto") QuestionRequestDto requestDto, @RequestParam("images") List<MultipartFile> images,
+    public QuestionIdResponseDto createQuestion(@RequestPart("requestDto") QuestionRequestDto requestDto, @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                                 @AuthenticationPrincipal UserDetails userDetails) {
 
         return qnaService.createQuestion(requestDto, images, userDetails.getUsername());
