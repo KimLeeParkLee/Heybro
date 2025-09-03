@@ -12,7 +12,6 @@ import com.heybro.heybro.user.dto.response.UserRoutineResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public interface RoutineService {
@@ -33,4 +32,6 @@ public interface RoutineService {
     void deleteRoutine(Long routineId, String email);
 
     RoutineAddResponseDto getAvailableRoutines(String email);
+
+    RoutineAddResponseDto getUnlockedRoutines(String email);
 }

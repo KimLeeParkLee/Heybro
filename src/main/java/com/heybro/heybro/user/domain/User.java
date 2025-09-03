@@ -1,7 +1,10 @@
 package com.heybro.heybro.user.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,6 +15,9 @@ import java.time.LocalTime;
 @Getter
 @Builder
 public class User {
+    private static final int MAX_LEVEL = 20;
+    private static final int EXP_PER_LEVEL = 50;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 회원 식별키
@@ -72,6 +78,11 @@ public class User {
 
     public void updateExperience(int experience) {
         this.experience += experience;
+
+        while (this.experience >= EXP_PER_LEVEL && this.broLevel < MAX_LEVEL) {
+            this.broLevel++;
+            this.experience -= EXP_PER_LEVEL;
+        }
     }
 
     public void updateWakeupTime(LocalTime wakeupTime) {

@@ -24,6 +24,9 @@ public class Routine {
     @Builder.Default
     private Integer level = 1;
 
+    @Builder.Default
+    private boolean isCommon = false;
+
     @Enumerated(EnumType.STRING)
     private TimeOfDay timeOfDay; // 루틴 시간대 (MORNING, LUNCH, EVENING)
 

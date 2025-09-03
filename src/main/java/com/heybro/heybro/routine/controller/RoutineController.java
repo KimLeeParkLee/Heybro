@@ -1,6 +1,5 @@
 package com.heybro.heybro.routine.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heybro.heybro.routine.domain.PeriodType;
 import com.heybro.heybro.routine.domain.ViewType;
 import com.heybro.heybro.routine.dto.request.RoutineAddRequestDto;
@@ -27,7 +26,6 @@ import java.time.LocalDate;
 @Slf4j
 public class RoutineController {
     private final RoutineService routineService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Operation(summary = "특정 날짜 회원의 루틴 목록 조회")
     @GetMapping("/routine-logs")
@@ -64,6 +62,12 @@ public class RoutineController {
     @GetMapping("/available")
     public RoutineAddResponseDto getAvailableRoutines(@AuthenticationPrincipal UserDetails userDetails) {
         return routineService.getAvailableRoutines(userDetails.getUsername());
+    }
+
+    @Operation(summary = "레벨업 후 추가 가능한 루틴 목록 조회")
+    @GetMapping("/unlocked")
+    public RoutineAddResponseDto getUnlockedRoutines(@AuthenticationPrincipal UserDetails userDetails) {
+        return routineService.getUnlockedRoutines(userDetails.getUsername());
     }
 
     @Operation(summary = "루틴 수정")

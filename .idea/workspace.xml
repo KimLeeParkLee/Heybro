@@ -7,8 +7,17 @@
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/generated/com/heybro/heybro/routine/domain/QRoutine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/generated/com/heybro/heybro/routine/domain/QRoutine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/RoutineDataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/RoutineDataInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/service/OnboardingServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/service/OnboardingServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/controller/RoutineController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/controller/RoutineController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/DailyRoutineLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/DailyRoutineLog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/Routine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/Routine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineElement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineElement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineTemplate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineTip.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/domain/RoutineTip.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/repository/RoutineRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/repository/RoutineRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/service/RoutineService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/service/RoutineService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/service/RoutineServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/service/RoutineServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -246,7 +255,7 @@
       <workItem from="1756774888042" duration="16168000" />
       <workItem from="1756812912460" duration="1648000" />
       <workItem from="1756825927553" duration="7406000" />
-      <workItem from="1756859943420" duration="5108000" />
+      <workItem from="1756859943420" duration="14681000" />
     </task>
     <servers />
   </component>
@@ -263,16 +272,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/User.java</url>
-          <line>67</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

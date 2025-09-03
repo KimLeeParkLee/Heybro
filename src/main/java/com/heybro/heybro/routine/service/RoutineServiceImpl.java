@@ -189,6 +189,8 @@ public class RoutineServiceImpl implements RoutineService {
         // (3) 브로 포인트, 경험치 10씩 추가
         user.earnPoints(10);
         user.updateExperience(10);
+
+
     }
 
     // 단일 루틴 달성률 조회 시 월별, 일별만 가능
@@ -378,6 +380,35 @@ public class RoutineServiceImpl implements RoutineService {
                 .build();
     }
 
+    @Override
+    public RoutineAddResponseDto getUnlockedRoutines(String email) {
+        User user = findUserByEmail(email);
+
+        // 1. 사용자가 이미 가지고 있는 루틴 ID 목록을 조회
+        List<Long> userRoutineIds = userRoutineRepository.findAllByUser(user).stream()
+                .map(userRoutine -> userRoutine.getRoutine().getId())
+                .toList();
+
+        List<Routine> unlockedRoutines;
+
+        // 2. 사용자가 가진 루틴이 없으면 레벨에 맞는 모든 루틴을, 있으면 해당 루틴을 제외하고 조회
+        if (userRoutineIds.isEmpty()) {
+            unlockedRoutines = routineRepository.findByRoutineTemplateTypeAndLevelLessThanEqual(user.getUserType(), user.getBroLevel());
+        } else {
+            unlockedRoutines = routineRepository.findByRoutineTemplateTypeAndLevelLessThanEqualAndIdNotIn(user.getUserType(), user.getBroLevel(), userRoutineIds);
+        }
+
+        // 3. 조회된 루틴 목록을 DTO 리스트로 변환
+        List<RoutineAddResponseDto.AvailableRoutineDto> dtoList = unlockedRoutines.stream()
+                .map(RoutineAddResponseDto.AvailableRoutineDto::from)
+                .collect(Collectors.toList());
+
+        // 4. 최종 DTO 객체로 감싸서 반환
+        return RoutineAddResponseDto.builder()
+                .routines(dtoList)
+                .build();
+    }
+
     private User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
@@ -392,4 +423,5 @@ public class RoutineServiceImpl implements RoutineService {
         return userRoutineRepository.findByUserAndRoutine(user, routine)
                 .orElseThrow(() -> new EntityNotFoundException("사용자에게 해당 루틴이 존재하지 않습니다."));
     }
+
 }

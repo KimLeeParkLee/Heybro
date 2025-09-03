@@ -120,21 +120,26 @@ public class OnboardingServiceImpl implements OnboardingService {
         user.updateWakeupTime(request.getWakeupTime());
         user.updateBedtime(request.getBedtime());
 
-        // 9. 회원 유형에 맞는 루틴 생성해주기
-        // (1) 온보딩 검사로 나온 회원 유형의 루틴 검색
-        RoutineTemplate routineTemplate = routineTemplateRepository.findByType(finalUserType);
+        // 9. 레벨 1 루틴 및 공통 루틴 추가
+        // (1) 레벨 1 & 사용자 타입에 맞는 루틴 조회
+        List<Routine> level1Routines = routineRepository.findByLevelAndRoutineTemplateType(1, finalUserType);
 
-        // (2) 검색한 루틴의 루틴 요소
-        List<Routine> routines = routineTemplate.getElementList();
+        // (2) 공통 루틴 조회
+        List<Routine> commonRoutines = routineRepository.findByIsCommonTrue();
 
-        // (3) 회원 루틴 요소 및 기본 스케줄 생성
-        List<UserRoutine> userRoutineElementsToSave = new ArrayList<>();
+        // (3) 두 리스트를 합치고 중복 제거
+        Set<Routine> routinesToAddSet = new HashSet<>(level1Routines);
+        routinesToAddSet.addAll(commonRoutines);
+        List<Routine> routinesToAdd = new ArrayList<>(routinesToAddSet);
 
-        for (Routine elementTemplate : routines) {
-            // 먼저 UserRoutineElement 객체 생성
-            UserRoutine userElement = UserRoutine.builder()
+
+        // (4) 회원 루틴 및 기본 스케줄 생성
+        List<UserRoutine> userRoutinesToSave = new ArrayList<>();
+
+        for (Routine routine : routinesToAdd) {
+            UserRoutine userRoutine = UserRoutine.builder()
                     .user(user)
-                    .routine(elementTemplate)
+                    .routine(routine)
                     .schedules(new ArrayList<>()) // 양방향 연관관계를 위해 빈 리스트로 초기화
                     .build();
 
@@ -143,21 +148,20 @@ public class OnboardingServiceImpl implements OnboardingService {
                 UserRoutineSchedule schedule = UserRoutineSchedule.builder()
                         .dayOfWeek(day)       // 요일 설정
                         .scheduleTime(null)   // 시간은 null로 설정
-                        .userRoutine(userElement) // 부모인 userElement와 연결
+                        .userRoutine(userRoutine) // 부모인 userElement와 연결
                         .build();
 
                 // userElement의 schedules 리스트에 생성된 스케줄 추가
-                userElement.getSchedules().add(schedule);
+                userRoutine.getSchedules().add(schedule);
             }
-            userRoutineElementsToSave.add(userElement);
+            userRoutinesToSave.add(userRoutine);
         }
 
-        // (4) 생성된 모든 회원 루틴 요소들을 DB에 한 번에 저장
-        // UserRoutineElement에 CascadeType.ALL이 설정되어 있으므로, schedules도 함께 저장
-        userRoutineRepository.saveAll(userRoutineElementsToSave);
+        // (5) 생성된 모든 회원 루틴 요소들을 DB에 한 번에 저장
+        userRoutineRepository.saveAll(userRoutinesToSave);
 
         // 10. 루틴 알림 시간 설정
-        for (UserRoutine userRoutine : userRoutineElementsToSave) {
+        for (UserRoutine userRoutine : userRoutinesToSave) {
             TimeOfDay timeOfDay = userRoutine.getRoutine().getTimeOfDay();
             LocalTime notificationTime = null;
             switch (timeOfDay) {
@@ -179,16 +183,7 @@ public class OnboardingServiceImpl implements OnboardingService {
         }
 
         // 11. DailyRoutineLog에 오늘 로그 저장하기
-        // (1) 먼저 오늘 날짜의 로그가 존재하는지 조회
-        List<DailyRoutineLog> logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, LocalDate.now());
-
-        // (2) 로그가 존재하지 않으면 즉시 생성
-        if (logs.isEmpty()) {
-            routineLogService.createLogsForUser(user, LocalDate.now());
-            logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, LocalDate.now());
-        }
-
-        dailyRoutineLogRepository.saveAll(logs);
+        routineLogService.createLogsForUser(user, LocalDate.now());
 
         // 12. 최종 결과를 DTO로 변환하여 반환
         return UserTypeResponseDto.from(finalUserType);
