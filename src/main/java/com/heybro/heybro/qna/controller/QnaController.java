@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -46,7 +47,9 @@ public class QnaController {
     @PostMapping
     public QuestionIdResponseDto createQuestion(@RequestPart("requestDto") QuestionRequestDto requestDto, @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                                 @AuthenticationPrincipal UserDetails userDetails) {
-
+        if (images == null) {
+            images = Collections.emptyList();
+        }
         return qnaService.createQuestion(requestDto, images, userDetails.getUsername());
     }
 
