@@ -124,12 +124,17 @@ public class QnaServiceImpl implements QnaService {
             for (int i = 0; i < images.size(); i++) {
                 MultipartFile image = images.get(i);
 
+                // 로그 찍기
+                log.info("images[{}] 확인: isEmpty={}, originalFilename='{}'", i, image.isEmpty(), image.getOriginalFilename());
+
                 if (image == null || image.isEmpty() || image.getOriginalFilename() == null || image.getOriginalFilename().isBlank()) {
+                    log.warn("images[{}] 파일이 비어있거나 잘못됨, 건너뜀", i);
                     continue;
                 }
 
                 try {
                     String imageUrl = s3UploadService.saveFile(image);
+                    log.info("images[{}] 업로드 완료: {}", i, imageUrl);
 
                     if (i == 0) {
                         thumbnailImageUrl = imageUrl;
