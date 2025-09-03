@@ -50,7 +50,8 @@ public class User {
 
     private LocalTime bedtime; // 취침 시간
 
-    private String profileImage; // 프로필 사진
+    @Builder.Default
+    private String profileImage = "https://drive.google.com/file/d/1HkRMMWYo0bWc8qWbkEDL5xCcr1GQ1rJu/view?usp=sharing"; // 프로필 사진
 
     private boolean privacyConsent; // 개인정보 동의 여부
 
