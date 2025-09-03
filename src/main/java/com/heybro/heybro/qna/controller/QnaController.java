@@ -12,9 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,7 +44,7 @@ public class QnaController {
 
     @Operation(summary = "질문 작성")
     @PostMapping(consumes = {"multipart/form-data"})
-    public QuestionIdResponseDto createQuestion(@RequestPart("requestDto") QuestionRequestDto requestDto, @RequestPart("images") List<MultipartFile> images,
+    public QuestionIdResponseDto createQuestion(@RequestPart("requestDto") QuestionRequestDto requestDto, @RequestParam("images") List<MultipartFile> images,
                                                 @AuthenticationPrincipal UserDetails userDetails) {
 
         return qnaService.createQuestion(requestDto, images, userDetails.getUsername());
