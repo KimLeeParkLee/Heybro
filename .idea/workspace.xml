@@ -6,32 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/domain/UserOnboardingAnswer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/domain/UserOnboardingAnswer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/service/OnboardingServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/service/OnboardingServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/point/domain/PointHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/point/domain/PointHistory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/domain/QuestionImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/domain/QuestionImage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/response/QuestionListResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/response/QuestionListResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/domain/UserRoutine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/UserRoutine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/domain/UserRoutineSchedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/UserRoutineSchedule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/domain/UserType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/domain/UserType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/dto/request/LoginRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/dto/request/LoginRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/dto/request/UserRegistrationRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/dto/request/UserRegistrationRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/dto/response/EmailValidationResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/dto/response/EmailValidationResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/dto/response/LoginResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/dto/response/LoginResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/dto/response/RoutineAddResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/dto/response/RoutineAddResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/dto/response/UserRoutineResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/dto/response/UserRoutineResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/dto/response/UserTypeResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/dto/response/UserTypeResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/repository/UserRoutineRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/repository/UserRoutineRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/repository/UserRoutineScheduleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/repository/UserRoutineScheduleRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/security/UserDetailsImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/security/UserDetailsImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/service/UserDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/service/UserDetailsServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/routine/user/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/service/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/repository/SkinDiagnosisRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/repository/SkinDiagnosisRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/service/SkinAnalysisService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/skin/service/SkinAnalysisService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/controller/QnaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/controller/QnaController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +127,7 @@
       <recent name="com.heybro.heybro.routine.domain" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.HeybroApplication">
+  <component name="RunManager" selected="Gradle.heybro [build]">
     <configuration name="heybro [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -270,7 +245,7 @@
       <workItem from="1756812912460" duration="1648000" />
       <workItem from="1756825927553" duration="7406000" />
       <workItem from="1756859943420" duration="23175000" />
-      <workItem from="1756890095412" duration="2388000" />
+      <workItem from="1756890095412" duration="3078000" />
     </task>
     <servers />
   </component>
