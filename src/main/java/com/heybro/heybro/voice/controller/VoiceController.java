@@ -20,7 +20,7 @@ public class VoiceController {
     private final VoiceService voiceService;
 
     @PostMapping("/chat-text")
-    public ResponseEntity<TextResponseDto> handleTextChat(@RequestBody TextRequestDto requestDto) {
+        public ResponseEntity<TextResponseDto> handleTextChat(@RequestBody TextRequestDto requestDto) {
         String aiResponse = voiceService.processTextCommand(requestDto.userText());
         return ResponseEntity.ok(new TextResponseDto(aiResponse));
     }

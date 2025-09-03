@@ -43,8 +43,8 @@ public class QnaController {
     }
 
     @Operation(summary = "질문 작성")
-    @PostMapping(consumes = {"multipart/form-data"})
-    public QuestionIdResponseDto createQuestion(@RequestParam("requestDto") QuestionRequestDto requestDto, @RequestParam(value = "images", required = false) List<MultipartFile> images,
+    @PostMapping
+    public QuestionIdResponseDto createQuestion(@RequestPart("requestDto") QuestionRequestDto requestDto, @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                                 @AuthenticationPrincipal UserDetails userDetails) {
 
         return qnaService.createQuestion(requestDto, images, userDetails.getUsername());
@@ -52,7 +52,7 @@ public class QnaController {
 
     @Operation(summary = "답변 작성")
     @PostMapping(path = "/{question_id}/answers", consumes = {"multipart/form-data"})
-    public QuestionIdResponseDto createAnswer(@PathVariable Long question_id, @RequestParam("requestDto") AnswerRequestDto requestDto, @RequestParam(value = "images", required = false) List<MultipartFile> images,
+    public QuestionIdResponseDto createAnswer(@PathVariable Long question_id, @RequestPart("requestDto") AnswerRequestDto requestDto, @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                               @AuthenticationPrincipal UserDetails userDetails) {
 
         return qnaService.createAnswer(question_id, requestDto, images, userDetails.getUsername());
