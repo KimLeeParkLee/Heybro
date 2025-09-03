@@ -123,6 +123,11 @@ public class QnaServiceImpl implements QnaService {
         if (images != null && !images.isEmpty()) {
             for (int i = 0; i < images.size(); i++) {
                 MultipartFile image = images.get(i);
+                
+                if (image.isEmpty()) {
+                    continue;
+                }
+
                 try {
                     String imageUrl = s3UploadService.saveFile(image);
 
@@ -178,6 +183,11 @@ public class QnaServiceImpl implements QnaService {
         if (images != null && !images.isEmpty()) {
             for (int i = 0; i < images.size(); i++) {
                 MultipartFile image = images.get(i);
+
+                if (image.isEmpty()) {
+                    continue;
+                }
+
                 try {
                     String imageUrl = s3UploadService.saveFile(image);
 
