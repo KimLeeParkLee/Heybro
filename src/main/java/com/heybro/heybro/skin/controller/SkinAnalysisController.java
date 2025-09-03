@@ -29,7 +29,7 @@ public class SkinAnalysisController {
     }
 
     @Operation(summary = "AI 피부 진단 점수 조회")
-    @GetMapping("/analyze")
+    @GetMapping("/scores")
     public SkinScoreResponseDto getSkinScore(@AuthenticationPrincipal UserDetails userDetails) {
         return skinAnalysisService.getSkinScore(userDetails.getUsername());
     }
