@@ -49,4 +49,10 @@ public class UserController {
     public CouponPurchaseResponseDto getPurchasesByUser(@AuthenticationPrincipal UserDetails userDetails) {
         return couponService.findPurchasesByUser(userDetails.getUsername());
     }
+
+    @Operation(summary = "닉네임 중복 검증")
+    @GetMapping("/check-nickname")
+    public boolean getPurchasesByUser(@RequestParam("nickname") String nickname) {
+        return userService.isNicknameAvailable(nickname);
+    }
 }

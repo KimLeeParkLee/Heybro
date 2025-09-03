@@ -186,4 +186,9 @@ public class UserServiceImpl implements UserService {
                 .userType(userRepository.findUserTypeByEmail(email))
                 .build();
     }
+
+    @Override
+    public boolean isNicknameAvailable(String nickname) {
+        return userRepository.findByNickname(nickname) != null;
+    }
 }

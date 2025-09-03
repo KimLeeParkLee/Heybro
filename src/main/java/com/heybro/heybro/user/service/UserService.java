@@ -22,4 +22,6 @@ public interface UserService {
     AccessTokenResponseDto reissueAccessToken(String refreshToken);
 
     UserTypeResponseDto getUserType(String email);
+
+    boolean isNicknameAvailable(String nickname);
 }
