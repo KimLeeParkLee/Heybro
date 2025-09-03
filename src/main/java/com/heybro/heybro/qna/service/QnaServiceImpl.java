@@ -124,8 +124,8 @@ public class QnaServiceImpl implements QnaService {
             for (int i = 0; i < images.size(); i++) {
                 MultipartFile image = images.get(i);
 
-                if (image.isEmpty()) {
-                    continue;
+                if (image == null || image.isEmpty() || image.getOriginalFilename() == null) {
+                    continue; // 파일이 없거나 잘못된 경우 skip
                 }
 
                 try {
@@ -184,8 +184,8 @@ public class QnaServiceImpl implements QnaService {
             for (int i = 0; i < images.size(); i++) {
                 MultipartFile image = images.get(i);
 
-                if (image.isEmpty()) {
-                    continue;
+                if (image == null || image.isEmpty() || image.getOriginalFilename() == null) {
+                    continue; // 파일이 없거나 잘못된 경우 skip
                 }
 
                 try {
