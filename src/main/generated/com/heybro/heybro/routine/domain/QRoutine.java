@@ -28,6 +28,8 @@ public class QRoutine extends EntityPathBase<Routine> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final NumberPath<Integer> level = createNumber("level", Integer.class);
+
     public final StringPath name = createString("name");
 
     public final ListPath<RecommendedProduct, QRecommendedProduct> recommendedProductList = this.<RecommendedProduct, QRecommendedProduct>createList("recommendedProductList", RecommendedProduct.class, QRecommendedProduct.class, PathInits.DIRECT2);

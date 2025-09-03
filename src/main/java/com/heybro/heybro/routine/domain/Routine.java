@@ -21,6 +21,9 @@ public class Routine {
 
     private String name; // 루틴 이름
 
+    @Builder.Default
+    private Integer level = 1;
+
     @Enumerated(EnumType.STRING)
     private TimeOfDay timeOfDay; // 루틴 시간대 (MORNING, LUNCH, EVENING)
 
@@ -45,4 +48,5 @@ public class Routine {
 
     public void updateRoutineTemplate(RoutineTemplate routineTemplate) {
         this.routineTemplate = routineTemplate;
-    }}
+    }
+}
