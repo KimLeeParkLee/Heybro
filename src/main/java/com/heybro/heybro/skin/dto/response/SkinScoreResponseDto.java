@@ -17,5 +17,8 @@ public class SkinScoreResponseDto {
     public static class ScoreInfo {
         private int score;
         private LocalDateTime diagnosisDate;
+        private int oilinessScore;
+        private int hydrationScore;
+        private int rednessScore;
     }
 }

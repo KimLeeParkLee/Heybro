@@ -102,6 +102,9 @@ public class SkinAnalysisService {
             oldestScoreInfo = SkinScoreResponseDto.ScoreInfo.builder()
                     .score(skinDiagnosis.getFinalScore())
                     .diagnosisDate(skinDiagnosis.getDiagnosisDate())
+                    .oilinessScore(skinDiagnosis.getOilinessScore())
+                    .hydrationScore(skinDiagnosis.getHydrationScore())
+                    .rednessScore(skinDiagnosis.getAcneSocre())
                     .build();
             recentScoreInfo = null;
             scoreChange = 0;
@@ -109,10 +112,16 @@ public class SkinAnalysisService {
             oldestScoreInfo = SkinScoreResponseDto.ScoreInfo.builder()
                     .score(oldestDiagnosisOpt.get().getFinalScore())
                     .diagnosisDate(oldestDiagnosisOpt.get().getDiagnosisDate())
+                    .oilinessScore(oldestDiagnosisOpt.get().getOilinessScore())
+                    .hydrationScore(oldestDiagnosisOpt.get().getHydrationScore())
+                    .rednessScore(oldestDiagnosisOpt.get().getAcneSocre())
                     .build();
             recentScoreInfo = SkinScoreResponseDto.ScoreInfo.builder()
                     .score(skinDiagnosis.getFinalScore())
                     .diagnosisDate(skinDiagnosis.getDiagnosisDate())
+                    .oilinessScore(skinDiagnosis.getOilinessScore())
+                    .hydrationScore(skinDiagnosis.getHydrationScore())
+                    .rednessScore(skinDiagnosis.getAcneSocre())
                     .build();
             scoreChange = oldestScoreInfo.getScore() - recentScoreInfo.getScore();
         }
@@ -134,11 +143,17 @@ public class SkinAnalysisService {
         SkinScoreResponseDto.ScoreInfo oldestScoreInfo = oldestDiagnosisOpt.map(diagnosis -> SkinScoreResponseDto.ScoreInfo.builder()
                 .score(diagnosis.getFinalScore())
                 .diagnosisDate(diagnosis.getDiagnosisDate())
+                .oilinessScore(diagnosis.getOilinessScore())
+                .hydrationScore(diagnosis.getHydrationScore())
+                .rednessScore(diagnosis.getAcneSocre())
                 .build()).orElse(null);
 
         SkinScoreResponseDto.ScoreInfo recentScoreInfo = recentDiagnosisOpt.map(diagnosis -> SkinScoreResponseDto.ScoreInfo.builder()
                 .score(diagnosis.getFinalScore())
                 .diagnosisDate(diagnosis.getDiagnosisDate())
+                .oilinessScore(diagnosis.getOilinessScore())
+                .hydrationScore(diagnosis.getHydrationScore())
+                .rednessScore(diagnosis.getAcneSocre())
                 .build()).orElse(null);
 
         if (oldestDiagnosisOpt.isPresent() && recentDiagnosisOpt.isPresent() && oldestDiagnosisOpt.get().getId().equals(recentDiagnosisOpt.get().getId())) {
