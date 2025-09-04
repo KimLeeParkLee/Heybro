@@ -21,6 +21,11 @@ public class SuccessResponseAdvice implements ResponseBodyAdvice<Object> {
         if (returnType.getParameterType().equals(ApiResponse.class)) {
             return false;
         }
+
+        if (returnType.getContainingClass().getSimpleName().equals("VoiceController")) {
+            return false;
+        }
+
         return true;
     }
 
