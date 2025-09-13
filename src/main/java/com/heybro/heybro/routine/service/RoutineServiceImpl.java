@@ -52,7 +52,7 @@ public class RoutineServiceImpl implements RoutineService {
                     .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
             // (2) 조회한 user로 모든 UserRoutine 조회
-            List<UserRoutine> userRoutines = userRoutineRepository.findAllByUser(user);
+            List<UserRoutine> userRoutines = userRoutineRepository.findAllByUserWithDetails(user);
 
             // 응답할 Dto의 루틴 리스트
             List<UserRoutineResponseDto.RoutineResponseDto> routineResponseDtoList = new ArrayList<>();
@@ -105,7 +105,7 @@ public class RoutineServiceImpl implements RoutineService {
                     .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
             // (2) 해당 날짜의 모든 로그를 DailyRoutineLog에서 조회
-            List<DailyRoutineLog> logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, date);
+            List<DailyRoutineLog> logs = dailyRoutineLogRepository.findAllByUserAndTaskDateWithRoutine(user, date);
 
             // 만약 오늘 날짜인데 로그가 없으면 즉시 생성
             if (logs.isEmpty() && date.isEqual(LocalDate.now())) {
@@ -149,7 +149,7 @@ public class RoutineServiceImpl implements RoutineService {
 
     @Override
     public RoutineDetailResponseDto getRoutines(Long routineId) {
-        Routine routine = routineRepository.findById(routineId)
+        Routine routine = routineRepository.findByIdWithDetails(routineId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 루틴을 찾을 수 없습니다."));
 
         List<RoutineElementResponseDto> elementDtos = routine.getElementList().stream()
@@ -208,7 +208,7 @@ public class RoutineServiceImpl implements RoutineService {
             LocalDate endDate = date.withDayOfMonth(date.lengthOfMonth());
 
             // DailyRoutineLog에서 date에 해당하는 달의 routine log 가져오기
-            logs = dailyRoutineLogRepository.findAllByUserAndTaskDateBetween(user, startDate, endDate);
+            logs = dailyRoutineLogRepository.findAllByUserAndTaskDateBetweenWithRoutine(user, startDate, endDate);
         } else { // PeriodType.DATE인 경우 : 일 루틴 달성률 조회
             // DailyRoutineLog에서 date에 해당하는 달의 routine log 가져오기
             logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, date);
@@ -249,7 +249,7 @@ public class RoutineServiceImpl implements RoutineService {
         }
 
         // DailyRoutineLog에서 date에 해당하는 달 또는 주의 routine log 가져오기
-        List<DailyRoutineLog> logs = dailyRoutineLogRepository.findAllByUserAndTaskDateBetween(user, startDate, endDate);
+        List<DailyRoutineLog> logs = dailyRoutineLogRepository.findAllByUserAndTaskDateBetweenWithRoutine(user, startDate, endDate);
 
         // 가져온 로그들을 날짜(taskDate)별로 그룹화
         Map<LocalDate, List<DailyRoutineLog>> logsByDate = logs.stream()

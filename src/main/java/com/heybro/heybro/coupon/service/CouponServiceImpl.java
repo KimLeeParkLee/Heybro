@@ -96,7 +96,7 @@ public class CouponServiceImpl implements CouponService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
-        List<CouponPurchase> coupons = couponPurchaseRepository.findAllByUserOrderByPurchaseDateDesc(user);
+        List<CouponPurchase> coupons = couponPurchaseRepository.findAllByUserWithCoupon(user);
         List<CouponResponseDto> usableCoupons = new ArrayList<>();
         List<CouponResponseDto> usedCoupons = new ArrayList<>();
 

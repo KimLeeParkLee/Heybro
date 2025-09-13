@@ -44,6 +44,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                                 .where(answer.question.eq(question))
                 ))
                 .from(question)
+                .leftJoin(question.categories).fetchJoin()
                 .where(
                         categoryEq(condition.getCategory()),
                         searchContains(condition.getSearch())
@@ -51,6 +52,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 .orderBy(sort(condition.getSort()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .distinct()
                 .fetch();
 
         long total = queryFactory

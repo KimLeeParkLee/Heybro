@@ -51,7 +51,7 @@ public class OnboardingServiceImpl implements OnboardingService {
 
     @Override
     public List<OnboardingQuestionResponseDto> findOnboardingQuestions() {
-        List<OnboardingQuestion> questions = onboardingQuestionRepository.findAll();
+        List<OnboardingQuestion> questions = onboardingQuestionRepository.findAllWithDetails();
 
         return questions.stream()
                 .map(question -> OnboardingQuestionResponseDto.builder()
