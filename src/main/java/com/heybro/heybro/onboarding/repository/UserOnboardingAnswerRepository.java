@@ -7,7 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserOnboardingAnswerRepository extends JpaRepository<UserOnboardingAnswer, Long> {
-    boolean existsByUser(User user);
-
     void deleteAllByUser(User user);
 }

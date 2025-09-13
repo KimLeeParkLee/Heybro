@@ -1,5 +1,6 @@
 package com.heybro.heybro.notification.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,8 +10,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Fcm 요청 DTO")
 public class FcmSendDto {
-    private String targetToken; // 알림을 받을 대상의 FCM 토큰
+    @Schema(description = "FCM 토큰")
+    private String targetToken;
+
+    @Schema(description = "제목")
     private String title;
+
+    @Schema(description = "내용")
     private String body;
 }

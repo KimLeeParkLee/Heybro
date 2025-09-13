@@ -1,5 +1,6 @@
-package com.heybro.heybro.common.s3;
+package com.heybro.heybro.common.s3.controller;
 
+import com.heybro.heybro.common.s3.service.S3UploadService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

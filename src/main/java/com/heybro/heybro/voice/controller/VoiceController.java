@@ -1,5 +1,6 @@
 package com.heybro.heybro.voice.controller;
 
+import com.heybro.heybro.common.advice.NoApiResponse;
 import com.heybro.heybro.common.response.ApiResponse;
 import com.heybro.heybro.voice.dto.request.TextRequestDto;
 import com.heybro.heybro.voice.service.VoiceService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@NoApiResponse
 @RestController
 @RequestMapping("/voice")
 @RequiredArgsConstructor

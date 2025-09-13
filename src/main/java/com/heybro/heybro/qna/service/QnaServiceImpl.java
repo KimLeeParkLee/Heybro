@@ -1,7 +1,7 @@
 package com.heybro.heybro.qna.service;
 
 import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
-import com.heybro.heybro.common.s3.S3UploadService;
+import com.heybro.heybro.common.s3.service.S3UploadService;
 import com.heybro.heybro.qna.domain.*;
 import com.heybro.heybro.qna.dto.QuestionSearchCondition;
 import com.heybro.heybro.qna.dto.request.AnswerRequestDto;

@@ -8,7 +8,6 @@ import com.heybro.heybro.auth.service.OAuth2LoginServiceImpl;
 import com.heybro.heybro.common.jwt.JwtUtil;
 import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.response.ApiResponse;
-import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
@@ -68,6 +67,7 @@ public class AuthController {
         }
 
         String refreshToken = requestDto.getRefreshToken();
+
         // Refresh Token 유효성 검증
         if (!jwtUtil.validateToken(refreshToken)) {
             throw new IllegalArgumentException("유효하지 않은 Refresh Token 입니다.");
@@ -80,7 +80,7 @@ public class AuthController {
             throw new IllegalArgumentException("Refresh Token이 일치하지 않습니다.");
         }
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         // 새로운 Access Token 생성
         String newAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(email);

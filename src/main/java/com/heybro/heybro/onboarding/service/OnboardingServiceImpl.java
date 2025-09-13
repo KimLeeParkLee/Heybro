@@ -13,7 +13,6 @@ import com.heybro.heybro.routine.domain.Routine;
 import com.heybro.heybro.routine.domain.TimeOfDay;
 import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
 import com.heybro.heybro.routine.repository.RoutineRepository;
-import com.heybro.heybro.routine.repository.RoutineTemplateRepository;
 import com.heybro.heybro.routine.service.RoutineLogService;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserRoutine;
@@ -44,7 +43,6 @@ public class OnboardingServiceImpl implements OnboardingService {
     private final UserOnboardingAnswerRepository userOnboardingAnswerRepository;
     private final UserRepository userRepository;
     private final UserRoutineRepository userRoutineRepository;
-    private final RoutineTemplateRepository routineTemplateRepository;
     private final DailyRoutineLogRepository dailyRoutineLogRepository;
     private final UserRoutineScheduleRepository userRoutineScheduleRepository;
     private final RoutineRepository routineRepository;

@@ -1,5 +1,6 @@
 package com.heybro.heybro.common.advice;
 
+import com.heybro.heybro.common.advice.NoApiResponse;
 import com.heybro.heybro.common.response.ApiResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -16,13 +17,14 @@ public class SuccessResponseAdvice implements ResponseBodyAdvice<Object> {
      */
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
-        // 이미 ApiResponse 형태로 감싸져 있다면 중복으로 감싸지 않도록 false를 반환
-        // 예를 들어, 예외 처리 핸들러에서 이미 ApiResponse.error()를 반환한 경우에 해당
-        if (returnType.getParameterType().equals(ApiResponse.class)) {
+        // @NoApiResponse 어노테이션이 클래스나 메서드에 붙어있으면 Advice 적용 제외
+        if (returnType.getContainingClass().isAnnotationPresent(NoApiResponse.class) ||
+            returnType.hasMethodAnnotation(NoApiResponse.class)) {
             return false;
         }
 
-        if (returnType.getContainingClass().getSimpleName().equals("VoiceController")) {
+        // 이미 ApiResponse 형태로 감싸져 있다면 중복으로 감싸지 않도록 false를 반환
+        if (returnType.getParameterType().isAssignableFrom(ApiResponse.class)) {
             return false;
         }
 

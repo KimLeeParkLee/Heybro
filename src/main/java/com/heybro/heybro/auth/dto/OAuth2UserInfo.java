@@ -1,10 +1,14 @@
 package com.heybro.heybro.auth.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
+@AllArgsConstructor
+@Schema(description = "OAuth2 회원 정보 DTO")
 public class OAuth2UserInfo {
     @Schema(description = "provider")
     private final String provider;
@@ -17,12 +21,4 @@ public class OAuth2UserInfo {
 
     @Schema(description = "name")
     private final String name;
-
-    @Builder
-    public OAuth2UserInfo(String provider, String providerId, String email, String name) {
-        this.provider = provider;
-        this.providerId = providerId;
-        this.email = email;
-        this.name = name;
-    }
 }
