@@ -1,6 +1,9 @@
 package com.heybro.heybro.qna.dto.response;
 
-import com.heybro.heybro.qna.domain.*;
+import com.heybro.heybro.qna.domain.Answer;
+import com.heybro.heybro.qna.domain.AnswerImage;
+import com.heybro.heybro.qna.domain.Question;
+import com.heybro.heybro.qna.domain.QuestionCategory;
 import com.heybro.heybro.qna.dto.request.TagRequestDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -58,6 +61,23 @@ public class QuestionResponseDto {
     @Schema(description = "답변 목록")
     @Builder.Default
     private List<AnswerResponseDto> answers = new ArrayList<>();
+
+    public static QuestionResponseDto from(Question question, List<Answer> answers) {
+        return QuestionResponseDto.builder()
+                .questionId(question.getId())
+                .title(question.getTitle())
+                .content(question.getContent())
+                .userId(question.getUser().getId())
+                .nickname(question.getUser().getNickname())
+                .answerCount(answers.size())
+                .viewCount(question.getViewCount())
+                .createdAt(question.getCreatedAt())
+                .categories(question.getCategories())
+                .tags(question.getTags().stream().map(TagRequestDto::from).toList())
+                .questionImages(question.getQuestionImages().stream().map(QuestionImageResponseDto::from).toList())
+                .answers(answers.stream().map(AnswerResponseDto::from).toList())
+                .build();
+    }
 
     @Getter
     @Builder

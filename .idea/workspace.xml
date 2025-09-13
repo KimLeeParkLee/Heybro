@@ -6,21 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/dto/OAuth2UserInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/dto/OAuth2UserInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/advice/FailResponseAdvice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/advice/FailResponseAdvice.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/advice/SuccessResponseAdvice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/advice/SuccessResponseAdvice.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/jwt/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/jwt/JwtUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/response/ApiResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/response/ApiResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/s3/FileUploadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/s3/controller/FileUploadController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/s3/S3UploadService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/s3/service/S3UploadService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/config/QueryDslConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/config/QueryDslConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/notification/dto/request/FcmSendDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/notification/dto/request/FcmSendDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/dto/request/OnboardingResultRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/dto/request/OnboardingResultRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/repository/UserOnboardingAnswerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/repository/UserOnboardingAnswerRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/service/OnboardingServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/service/OnboardingServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/QuestionSearchCondition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/QuestionSearchCondition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/request/TagRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/request/TagRequestDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/response/QuestionListResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/response/QuestionListResponseDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/response/QuestionResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/dto/response/QuestionResponseDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/repository/AnswerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/repository/AnswerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/repository/QuestionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/repository/QuestionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/repository/QuestionRepositoryCustom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/repository/QuestionRepositoryCustom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/repository/QuestionRepositoryCustomImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/repository/QuestionRepositoryCustomImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/service/QnaServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/qna/service/QnaServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/voice/controller/VoiceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/voice/controller/VoiceController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -264,7 +258,7 @@
       <workItem from="1756980925370" duration="4626000" />
       <workItem from="1757312328843" duration="785000" />
       <workItem from="1757485820046" duration="1713000" />
-      <workItem from="1757732615083" duration="3492000" />
+      <workItem from="1757732615083" duration="9109000" />
     </task>
     <servers />
   </component>

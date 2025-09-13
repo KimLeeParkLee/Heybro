@@ -1,22 +1,12 @@
 package com.heybro.heybro.qna.dto.response;
 
-import com.heybro.heybro.qna.domain.Answer;
-import com.heybro.heybro.qna.domain.Question;
-import com.heybro.heybro.qna.domain.QuestionCategory;
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Schema(description = "질문 목록 응답 DTO")
 public class QuestionListResponseDto {
     @Schema(description = "질문 식별키")
@@ -25,35 +15,37 @@ public class QuestionListResponseDto {
     @Schema(description = "제목")
     private String title;
 
-    @Schema(description = "제목")
+    @Schema(description = "내용")
     private String content;
 
-    @Schema(description = "질문 식별키")
-    private LocalDateTime createdAt;
+    @Schema(description = "작성자 ID")
+    private Long userId;
 
-    @Schema(description = "질문 식별키")
-    private int answerCount;
+    @Schema(description = "작성자 닉네임")
+    private String nickname;
 
-    @Schema(description = "질문 식별키")
+    @Schema(description = "조회수")
     private int viewCount;
 
-    @Schema(description = "질문 식별키")
+    @Schema(description = "작성일시")
+    private LocalDateTime createdAt;
+
+    @Schema(description = "대표 사진")
     private String thumbnail;
 
-    @Schema(description = "질문 식별키")
-    @Builder.Default
-    private List<QuestionCategory> categories = new ArrayList<>();
+    @Schema(description = "답변 개수")
+    private long answerCount;
 
-    public static QuestionListResponseDto from(Question question, List<Answer> answer) {
-        return QuestionListResponseDto.builder()
-                .questionId(question.getId())
-                .title(question.getTitle())
-                .content(question.getContent())
-                .createdAt(question.getCreatedAt())
-                .answerCount(answer != null ? answer.size() : 0)
-                .viewCount(question.getViewCount())
-                .thumbnail(question.getThumbnail())
-                .categories(question.getCategories())
-                .build();
+    @QueryProjection
+    public QuestionListResponseDto(Long questionId, String title, String content, Long userId, String nickname, int viewCount, LocalDateTime createdAt, String thumbnail, long answerCount) {
+        this.questionId = questionId;
+        this.title = title;
+        this.content = content;
+        this.userId = userId;
+        this.nickname = nickname;
+        this.viewCount = viewCount;
+        this.createdAt = createdAt;
+        this.thumbnail = thumbnail;
+        this.answerCount = answerCount;
     }
 }

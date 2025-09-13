@@ -6,8 +6,10 @@ import com.heybro.heybro.qna.domain.*;
 import com.heybro.heybro.qna.dto.QuestionSearchCondition;
 import com.heybro.heybro.qna.dto.request.AnswerRequestDto;
 import com.heybro.heybro.qna.dto.request.QuestionRequestDto;
-import com.heybro.heybro.qna.dto.request.TagRequestDto;
-import com.heybro.heybro.qna.dto.response.*;
+import com.heybro.heybro.qna.dto.response.CustomPageResponse;
+import com.heybro.heybro.qna.dto.response.QuestionIdResponseDto;
+import com.heybro.heybro.qna.dto.response.QuestionListResponseDto;
+import com.heybro.heybro.qna.dto.response.QuestionResponseDto;
 import com.heybro.heybro.qna.repository.AnswerRepository;
 import com.heybro.heybro.qna.repository.QuestionRepository;
 import com.heybro.heybro.user.domain.User;
@@ -23,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -40,19 +41,13 @@ public class QnaServiceImpl implements QnaService {
     public CustomPageResponse<QuestionListResponseDto> getQuestions(QuestionCategory category, String search, String sort, Pageable pageable) {
         // 1. 검색 조건에 맞는 질문 페이지를 조회
         QuestionSearchCondition condition = new QuestionSearchCondition(category, search, sort);
-        Page<Question> questionPage = questionRepository.searchQuestions(condition, pageable);
 
-        // 2. 각 질문에 대한 답변 목록을 조회하고 DTO로 변환
-        List<QuestionListResponseDto> dtoList = questionPage.getContent().stream()
-                .map(question -> {
-                    List<Answer> answers = answerRepository.findAllByQuestion(question);
-                    return QuestionListResponseDto.from(question, answers);
-                })
-                .toList();
+        // 2. Repository에서 DTO로 직접 페이지 조회
+        Page<QuestionListResponseDto> questionPage = questionRepository.searchQuestions(condition, pageable);
 
         // 3. CustomPageResponse 로 반환 (원하는 필드만 담음)
         return new CustomPageResponse<>(
-                dtoList,
+                questionPage.getContent(),
                 questionPage.isLast(),
                 questionPage.getSize(),
                 questionPage.getNumber()
@@ -65,33 +60,16 @@ public class QnaServiceImpl implements QnaService {
         // 1. 조회수 증가 로직을 별도 트랜잭션으로 실행
         questionViewService.incrementViewCount(questionId);
 
-        // 2. 질문 정보 조회 (조회수 증가 후)
-        Question question = questionRepository.findById(questionId).orElseThrow(
+        // 2. 질문과 관련된 대부분의 정보를 Fetch Join으로 한 번에 조회
+        Question question = questionRepository.findByIdWithDetails(questionId).orElseThrow(
                 () -> new ResourceNotFoundException("해당 아이디를 가진 질문을 찾을 수 없습니다: " + questionId)
         );
 
-        List<Answer> answers = answerRepository.findAllByQuestion(question);
+        // 3. 답변과 답변 작성자 정보를 Fetch Join으로 한 번에 조회
+        List<Answer> answers = answerRepository.findAnswersByQuestionIdWithUser(questionId);
 
-        // 3. DTO로 변환하여 반환 (중복 증가 문제 해결)
-        return QuestionResponseDto.builder()
-                .questionId(questionId)
-                .title(question.getTitle())
-                .content(question.getContent())
-                .userId(question.getUser().getId())
-                .nickname(question.getUser().getNickname())
-                .answerCount(answers.size())
-                .viewCount(question.getViewCount())
-                .createdAt(question.getCreatedAt())
-                .categories(question.getCategories().stream().toList())
-                .tags(question.getTags().stream().map(TagRequestDto::from).toList())
-                .questionImages(question.getQuestionImages()
-                        .stream()
-                        .sorted(Comparator.comparing(QuestionImage::getSortOrder))
-                        .map(QuestionImageResponseDto::from)
-                        .toList())
-                .answers(answers.stream().map(QuestionResponseDto.AnswerResponseDto::from)
-                        .toList())
-                .build();
+        // 4. DTO 변환
+        return QuestionResponseDto.from(question, answers);
     }
 
     @Override
@@ -156,7 +134,6 @@ public class QnaServiceImpl implements QnaService {
         if (thumbnailImageUrl != null) {
             question.updateThumbnail(thumbnailImageUrl);
         }
-
 
         // 4. Question 엔티티 저장 (QuestionImage는 Cascade 옵션으로 자동 저장)
         Question savedQuestion = questionRepository.save(question);
