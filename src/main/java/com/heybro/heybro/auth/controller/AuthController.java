@@ -1,6 +1,5 @@
 package com.heybro.heybro.auth.controller;
 
-import com.heybro.heybro.auth.dto.request.AppleLoginRequest;
 import com.heybro.heybro.auth.dto.request.OAuth2LoginRequestDto;
 import com.heybro.heybro.auth.dto.request.RefreshTokenRequestDto;
 import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
@@ -62,8 +61,8 @@ public class AuthController {
 
     @Operation(summary = "애플 소셜 로그인 (네이티브 전용)")
     @PostMapping("/apple")
-    public ResponseEntity<?> appleLogin(@RequestBody AppleLoginRequest request) {
-        Object result = oAuth2LoginServiceImpl.loginWithIdentityToken("apple", request.getToken());
+    public ResponseEntity<?> appleLogin(@RequestBody OAuth2LoginRequestDto request) {
+        Object result = oAuth2LoginServiceImpl.loginWithIdentityToken("apple", request.getAccessToken());
         return createSocialLoginResponse(result);
     }
 
