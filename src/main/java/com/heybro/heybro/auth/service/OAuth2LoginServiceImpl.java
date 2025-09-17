@@ -2,7 +2,6 @@ package com.heybro.heybro.auth.service;
 
 import com.heybro.heybro.auth.client.OAuth2Client;
 import com.heybro.heybro.auth.dto.OAuth2UserInfo;
-import com.heybro.heybro.auth.dto.request.OAuth2LoginRequestDto;
 import com.heybro.heybro.auth.dto.response.OAuth2SignUpResponseDto;
 import com.heybro.heybro.common.jwt.JwtUtil;
 import com.heybro.heybro.user.domain.User;
@@ -33,48 +32,18 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
     private long refreshTokenExpiration;
 
     @Override
-    public Mono<Object> oauth2Login(OAuth2LoginRequestDto requestDto) {
-        OAuth2Client oAuth2Client = oAuth2Clients.get(requestDto.getProvider().toLowerCase());
+    public Mono<Object> loginWithAccessToken(String provider, String accessToken) {
+        OAuth2Client oAuth2Client = oAuth2Clients.get(provider.toLowerCase());
 
         if (oAuth2Client == null) {
-            return Mono.error(new IllegalArgumentException("Unsupported provider: " + requestDto.getProvider()));
+            return Mono.error(new IllegalArgumentException("Unsupported provider: " + provider));
         }
 
-        return oAuth2Client.getAccessToken(requestDto.getOauthToken())
-                .flatMap(accessToken -> oAuth2Client.getUserInfoByToken(accessToken))
+        // 액세스 토큰으로 바로 사용자 정보 요청
+        return oAuth2Client.getUserInfoByToken(accessToken)
                 .flatMap(userInfo -> {
                     UserUpsertResult result = upsertUser(userInfo);
-                    User user = result.user();
-
-                    if (result.isNewUser()) {
-                        return Mono.just(OAuth2SignUpResponseDto.builder()
-                                .email(user.getEmail())
-                                .provider(user.getProvider())
-                                .build());
-                    } else {
-                        String serviceAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(user.getEmail());
-                        String serviceRefreshToken = jwtUtil.createRefreshToken(user.getEmail());
-
-                        redisTemplate.opsForValue().set(
-                                user.getEmail(),
-                                serviceRefreshToken,
-                                refreshTokenExpiration,
-                                TimeUnit.MILLISECONDS
-                        );
-
-                        return Mono.just(LoginResponseDto.builder()
-                                .userId(user.getId())
-                                .nickname(user.getNickname())
-                                .gender(user.getGender())
-                                .birthDate(user.getBirthDate())
-                                .notificationEnabled(user.isNotificationEnabled())
-                                .broPoint(user.getBroPoint())
-                                .broLevel(user.getBroLevel())
-                                .experience(user.getExperience())
-                                .accessToken(serviceAccessToken)
-                                .refreshToken(serviceRefreshToken)
-                                .build());
-                    }
+                    return Mono.just(createLoginResponse(result));
                 });
     }
 
@@ -115,6 +84,40 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
 
         OAuth2UserInfo userInfo = oAuth2Client.getUserInfoByIdentityToken(identityToken);
         UserUpsertResult result = upsertUser(userInfo);
+        User user = result.user();
+
+        if (result.isNewUser()) {
+            return OAuth2SignUpResponseDto.builder()
+                    .email(user.getEmail())
+                    .provider(user.getProvider())
+                    .build();
+        } else {
+            String serviceAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(user.getEmail());
+            String serviceRefreshToken = jwtUtil.createRefreshToken(user.getEmail());
+
+            redisTemplate.opsForValue().set(
+                    user.getEmail(),
+                    serviceRefreshToken,
+                    refreshTokenExpiration,
+                    TimeUnit.MILLISECONDS
+            );
+
+            return LoginResponseDto.builder()
+                    .userId(user.getId())
+                    .nickname(user.getNickname())
+                    .gender(user.getGender())
+                    .birthDate(user.getBirthDate())
+                    .notificationEnabled(user.isNotificationEnabled())
+                    .broPoint(user.getBroPoint())
+                    .broLevel(user.getBroLevel())
+                    .experience(user.getExperience())
+                    .accessToken(serviceAccessToken)
+                    .refreshToken(serviceRefreshToken)
+                    .build();
+        }
+    }
+
+    private Object createLoginResponse(UserUpsertResult result) {
         User user = result.user();
 
         if (result.isNewUser()) {

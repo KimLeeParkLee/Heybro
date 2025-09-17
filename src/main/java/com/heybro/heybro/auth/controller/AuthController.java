@@ -46,32 +46,25 @@ public class AuthController {
         return userService.login(loginRequestDto, response);
     }
 
-    @Operation(summary = "소셜 로그인(Kakao, Google)")
-    @PostMapping("/oauth2/authorization")
-    public Object oauth2Login(@RequestBody OAuth2LoginRequestDto requestDto) {
-        Object result = oAuth2LoginServiceImpl.oauth2Login(requestDto).block();
-
-        if (result instanceof OAuth2SignUpResponseDto) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
-        } else if (result instanceof LoginResponseDto) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.internalServerError().body(ApiResponse.error("Unexpected response type", 500));
-        }
+    @Operation(summary = "카카오 소셜 로그인 (네이티브 전용)")
+    @PostMapping("/kakao")
+    public ResponseEntity<?> kakaoLogin(@RequestBody OAuth2LoginRequestDto request) {
+        Object result = oAuth2LoginServiceImpl.loginWithAccessToken("kakao", request.getAccessToken()).block();
+        return createSocialLoginResponse(result);
     }
 
-    @Operation(summary = "소셜 로그인(Apple)")
-    @PostMapping("/oauth2/apple")
-    public Object appleLogin(@RequestBody AppleLoginRequest request) {
-        Object result = oAuth2LoginServiceImpl.loginWithIdentityToken("apple", request.getToken());
+    @Operation(summary = "구글 소셜 로그인 (네이티브 전용)")
+    @PostMapping("/google")
+    public ResponseEntity<?> googleLogin(@RequestBody OAuth2LoginRequestDto request) {
+        Object result = oAuth2LoginServiceImpl.loginWithAccessToken("google", request.getAccessToken()).block();
+        return createSocialLoginResponse(result);
+    }
 
-        if (result instanceof OAuth2SignUpResponseDto) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
-        } else if (result instanceof LoginResponseDto) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.internalServerError().body(ApiResponse.error("Unexpected response type", 500));
-        }
+    @Operation(summary = "애플 소셜 로그인 (네이티브 전용)")
+    @PostMapping("/apple")
+    public ResponseEntity<?> appleLogin(@RequestBody AppleLoginRequest request) {
+        Object result = oAuth2LoginServiceImpl.loginWithIdentityToken("apple", request.getToken());
+        return createSocialLoginResponse(result);
     }
 
     @Operation(summary = "access token 재발행")
@@ -118,5 +111,15 @@ public class AuthController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    private ResponseEntity<?> createSocialLoginResponse(Object result) {
+        if (result instanceof OAuth2SignUpResponseDto) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        } else if (result instanceof LoginResponseDto) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.internalServerError().body(ApiResponse.error("Unexpected response type", 500));
+        }
     }
 }

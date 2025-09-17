@@ -44,11 +44,6 @@ public class AppleOAuth2Client implements OAuth2Client {
     }
 
     @Override
-    public Mono<String> getAccessToken(String authorizationCode) {
-        return Mono.error(new UnsupportedOperationException("Apple login does not use authorization code."));
-    }
-
-    @Override
     public Mono<OAuth2UserInfo> getUserInfoByToken(String oauthToken) {
         return Mono.error(new UnsupportedOperationException("Apple login does not use access token to get user info."));
     }
@@ -85,7 +80,6 @@ public class AppleOAuth2Client implements OAuth2Client {
             KeyFactory keyFactory = KeyFactory.getInstance(key.getKty());
             PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
 
-            // Correct usage for jjwt 0.12.x
             return Jwts.parser()
                     .verifyWith(publicKey)
                     .requireIssuer(iss)

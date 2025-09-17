@@ -1,11 +1,8 @@
 package com.heybro.heybro.auth.service;
 
-import com.heybro.heybro.auth.dto.request.OAuth2LoginRequestDto;
-import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
-@Service
 public interface OAuth2LoginService {
-    Object oauth2Login(OAuth2LoginRequestDto requestDto);
-
+    Mono<Object> loginWithAccessToken(String provider, String accessToken);
     Object loginWithIdentityToken(String provider, String identityToken);
 }

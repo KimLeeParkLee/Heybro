@@ -10,9 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Schema(description = "소셜 로그인 요청 DTO")
 public class OAuth2LoginRequestDto {
-    @Schema(description = "provider")
-    private String provider;
-
-    @Schema(description = "oauth token")
-    private String oauthToken;
+    @Schema(description = "access token")
+    private String accessToken;
 }
