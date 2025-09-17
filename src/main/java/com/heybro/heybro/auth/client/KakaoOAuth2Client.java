@@ -29,8 +29,6 @@ public class KakaoOAuth2Client implements OAuth2Client {
         return "kakao";
     }
 
-    // --- getAccessToken(String authorizationCode) 메소드 전체 삭제 ---
-
     @Override
     public Mono<OAuth2UserInfo> getUserInfoByToken(String accessToken) {
         log.info("[KakaoOAuth2Client] Requesting user info with access token");
@@ -49,7 +47,12 @@ public class KakaoOAuth2Client implements OAuth2Client {
                 .map(userInfo -> {
                     String providerId = Objects.requireNonNull(userInfo).get("id").asText();
                     JsonNode kakaoAccount = userInfo.get("kakao_account");
-                    String email = kakaoAccount.has("email") ? kakaoAccount.get("email").asText() : null;
+
+                    String email = null;
+                    if (kakaoAccount != null && kakaoAccount.has("email")) {
+                        email = kakaoAccount.get("email").asText();
+                    }
+                    
                     String name = userInfo.get("properties").get("nickname").asText();
 
                     return OAuth2UserInfo.builder()
