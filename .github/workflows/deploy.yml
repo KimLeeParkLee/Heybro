@@ -53,4 +53,5 @@ jobs:
               -e "S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}" \
               -e "FACEPP_API_KEY=${{ secrets.FACEPP_API_KEY }}" \
               -e "FACEPP_API_SECRET=${{ secrets.FACEPP_API_SECRET }}" \
+              -e "APPLE_CLIENT_ID=${{ secrets.APPLE_CLIENT_ID }}" \
               rladbsk/heybro-backend:latest

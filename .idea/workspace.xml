@@ -6,15 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/client/GoogleOAuth2Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/client/GoogleOAuth2Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/client/KakaoOAuth2Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/client/KakaoOAuth2Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/client/OAuth2Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/client/OAuth2Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/service/OAuth2LoginService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/service/OAuth2LoginService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/service/OAuth2LoginServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/auth/service/OAuth2LoginServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-prod.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -262,7 +253,7 @@
       <workItem from="1757849278140" duration="2421000" />
       <workItem from="1757905955822" duration="290000" />
       <workItem from="1758080027876" duration="437000" />
-      <workItem from="1758116677375" duration="2746000" />
+      <workItem from="1758116677375" duration="3908000" />
     </task>
     <servers />
   </component>
@@ -279,5 +270,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/jwt/JwtUtil.java</url>
+          <line>67</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
