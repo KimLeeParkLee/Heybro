@@ -40,6 +40,11 @@ public class GoogleOAuth2Client implements OAuth2Client {
     private String userInfoUri;
 
     @Override
+    public String getProvider() {
+        return "google";
+    }
+
+    @Override
     public Mono<String> getAccessToken(String authorizationCode) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");

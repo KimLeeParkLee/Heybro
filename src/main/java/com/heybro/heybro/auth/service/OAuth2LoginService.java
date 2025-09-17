@@ -6,4 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface OAuth2LoginService {
     Object oauth2Login(OAuth2LoginRequestDto requestDto);
+
+    Object loginWithIdentityToken(String provider, String identityToken);
 }

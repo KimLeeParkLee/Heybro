@@ -104,4 +104,47 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
     }
 
     private record UserUpsertResult(User user, boolean isNewUser) {}
+
+    @Override
+    public Object loginWithIdentityToken(String provider, String identityToken) {
+        OAuth2Client oAuth2Client = oAuth2Clients.get(provider.toLowerCase());
+
+        if (oAuth2Client == null) {
+            throw new IllegalArgumentException("Unsupported provider: " + provider);
+        }
+
+        OAuth2UserInfo userInfo = oAuth2Client.getUserInfoByIdentityToken(identityToken);
+        UserUpsertResult result = upsertUser(userInfo);
+        User user = result.user();
+
+        if (result.isNewUser()) {
+            return OAuth2SignUpResponseDto.builder()
+                    .email(user.getEmail())
+                    .provider(user.getProvider())
+                    .build();
+        } else {
+            String serviceAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(user.getEmail());
+            String serviceRefreshToken = jwtUtil.createRefreshToken(user.getEmail());
+
+            redisTemplate.opsForValue().set(
+                    user.getEmail(),
+                    serviceRefreshToken,
+                    refreshTokenExpiration,
+                    TimeUnit.MILLISECONDS
+            );
+
+            return LoginResponseDto.builder()
+                    .userId(user.getId())
+                    .nickname(user.getNickname())
+                    .gender(user.getGender())
+                    .birthDate(user.getBirthDate())
+                    .notificationEnabled(user.isNotificationEnabled())
+                    .broPoint(user.getBroPoint())
+                    .broLevel(user.getBroLevel())
+                    .experience(user.getExperience())
+                    .accessToken(serviceAccessToken)
+                    .refreshToken(serviceRefreshToken)
+                    .build();
+        }
+    }
 }

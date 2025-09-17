@@ -1,5 +1,6 @@
 package com.heybro.heybro.auth.controller;
 
+import com.heybro.heybro.auth.dto.request.AppleLoginRequest;
 import com.heybro.heybro.auth.dto.request.OAuth2LoginRequestDto;
 import com.heybro.heybro.auth.dto.request.RefreshTokenRequestDto;
 import com.heybro.heybro.auth.dto.response.AccessTokenResponseDto;
@@ -49,6 +50,20 @@ public class AuthController {
     @PostMapping("/oauth2/authorization")
     public Object oauth2Login(@RequestBody OAuth2LoginRequestDto requestDto) {
         Object result = oAuth2LoginServiceImpl.oauth2Login(requestDto).block();
+
+        if (result instanceof OAuth2SignUpResponseDto) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        } else if (result instanceof LoginResponseDto) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.internalServerError().body(ApiResponse.error("Unexpected response type", 500));
+        }
+    }
+
+    @Operation(summary = "소셜 로그인(Apple)")
+    @PostMapping("/oauth2/apple")
+    public Object appleLogin(@RequestBody AppleLoginRequest request) {
+        Object result = oAuth2LoginServiceImpl.loginWithIdentityToken("apple", request.getToken());
 
         if (result instanceof OAuth2SignUpResponseDto) {
             return ResponseEntity.status(HttpStatus.CREATED).body(result);

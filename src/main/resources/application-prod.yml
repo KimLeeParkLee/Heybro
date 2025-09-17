@@ -122,3 +122,9 @@ google:
         그 뒤에는 가장 중요한 팁 하나만 짧게 알려줘.
         사용자가 면도가 잘 안돼서 고민이면 → "브로, 면도가 잘 안돼서 고민이구나!" 하고 시작,
         면도 방법을 궁금해하면 → "브로, 면도하는 법이 궁금하구나!" 하고 시작.
+
+oauth2:
+  apple:
+    iss: https://appleid.apple.com
+    public-key-url: https://appleid.apple.com/auth/keys
+    client-id: ${APPLE_CLIENT_ID}
