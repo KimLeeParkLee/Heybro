@@ -97,4 +97,6 @@ public class User {
     public void updateProvider(String provider) { this.provider = provider; }
 
     public void updateProviderId(String providerId) { this.providerId = providerId; }
+
+    public void updateFcmToken(String notificationToken) { this.notificationToken = notificationToken; }
 }

@@ -2,6 +2,7 @@ package com.heybro.heybro.user.controller;
 
 import com.heybro.heybro.coupon.dto.response.CouponPurchaseResponseDto;
 import com.heybro.heybro.coupon.service.CouponService;
+import com.heybro.heybro.user.dto.request.FcmTokenUpdateRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
@@ -54,5 +55,11 @@ public class UserController {
     @GetMapping("/check-nickname")
     public boolean getPurchasesByUser(@RequestParam("nickname") String nickname) {
         return userService.isNicknameAvailable(nickname);
+    }
+
+    @Operation(summary = "FCM 토큰 업데이트")
+    @PatchMapping("/fcm-token")
+    public void updateFcmToken(@AuthenticationPrincipal UserDetails userDetails, @RequestBody FcmTokenUpdateRequestDto requestDto) {
+        userService.updateFcmToken(userDetails.getUsername(), requestDto.getFcmToken());
     }
 }

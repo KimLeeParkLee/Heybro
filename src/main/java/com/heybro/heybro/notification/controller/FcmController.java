@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/fcm")
 @RequiredArgsConstructor
-@Tag(name = "파일 업로드", description = "파일 업로드 API")
+@Tag(name = "알림", description = "알림 API")
 public class FcmController {
 
     private final FcmService fcmService;

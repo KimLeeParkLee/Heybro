@@ -24,4 +24,6 @@ public interface UserService {
     UserTypeResponseDto getUserType(String email);
 
     boolean isNicknameAvailable(String nickname);
+
+    void updateFcmToken(String email, String fcmToken);
 }
