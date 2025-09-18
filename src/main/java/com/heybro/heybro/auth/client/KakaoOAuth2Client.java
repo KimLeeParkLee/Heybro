@@ -20,7 +20,6 @@ public class KakaoOAuth2Client implements OAuth2Client {
     private final WebClient webClient;
     private static final Logger log = LoggerFactory.getLogger(KakaoOAuth2Client.class);
 
-    // user-info-uri만 남기고 모두 삭제
     @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri:}")
     private String userInfoUri;
 
@@ -48,18 +47,12 @@ public class KakaoOAuth2Client implements OAuth2Client {
                     String providerId = Objects.requireNonNull(userInfo).get("id").asText();
                     JsonNode kakaoAccount = userInfo.get("kakao_account");
 
-                    String email = null;
-                    if (kakaoAccount != null && kakaoAccount.has("email")) {
-                        email = kakaoAccount.get("email").asText();
-                    }
-                    
-                    String name = userInfo.get("properties").get("nickname").asText();
+                    String email = kakaoAccount.get("email").asText();
 
                     return OAuth2UserInfo.builder()
                             .provider("kakao")
                             .providerId(providerId)
                             .email(email)
-                            .name(name)
                             .build();
                 });
     }
