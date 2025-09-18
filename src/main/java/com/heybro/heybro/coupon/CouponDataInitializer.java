@@ -21,35 +21,49 @@ public class CouponDataInitializer implements CommandLineRunner {
 
         // 금액권 저장하기
         couponRepository.save(Coupon.builder()
-                .name("1000원 금액권")
-                .couponType(CouponType.AMOUNT)
-                .price(1000)
-                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/0339a8b9-bd94-42da-b8fa-5688076c651c.png")
-                .build());
-
-        couponRepository.save(Coupon.builder()
-                .name("3000원 금액권")
-                .couponType(CouponType.AMOUNT)
-                .price(3000)
-                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/0339a8b9-bd94-42da-b8fa-5688076c651c.png")
-                .build());
-
-        couponRepository.save(Coupon.builder()
-                .name("5000원 금액권")
+                .name("기프트카드 5천원권")
                 .couponType(CouponType.AMOUNT)
                 .price(5000)
-                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/0339a8b9-bd94-42da-b8fa-5688076c651c.png")
+                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C.webp")
                 .build());
 
         couponRepository.save(Coupon.builder()
-                .name("10000원 금액권")
+                .name("기프트카드 1만원권")
                 .couponType(CouponType.AMOUNT)
                 .price(10000)
-                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/0339a8b9-bd94-42da-b8fa-5688076c651c.png")
+                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/100000.webp")
+                .build());
+
+        couponRepository.save(Coupon.builder()
+                .name("기프트카드 2만원권")
+                .couponType(CouponType.AMOUNT)
+                .price(20000)
+                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/20000.webp")
+                .build());
+
+        couponRepository.save(Coupon.builder()
+                .name("기프트카드 3만원권")
+                .couponType(CouponType.AMOUNT)
+                .price(30000)
+                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/30000.webp")
+                .build());
+
+        couponRepository.save(Coupon.builder()
+                .name("기프트카드 5만원권")
+                .couponType(CouponType.AMOUNT)
+                .price(50000)
+                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/50000.webp")
+                .build());
+
+        couponRepository.save(Coupon.builder()
+                .name("기프트카드 10만원권")
+                .couponType(CouponType.AMOUNT)
+                .price(100000)
+                .detailImage("https://heybro-bucket.s3.ap-northeast-2.amazonaws.com/images/10000.webp")
                 .build());
 
         // 상품권 저장하기
-        couponRepository.save(Coupon.builder()
+        /*couponRepository.save(Coupon.builder()
                 .name("올인원 퍼퓸 파워바")
                 .couponType(CouponType.PRODUCT)
                 .price(13000)
@@ -82,6 +96,6 @@ public class CouponDataInitializer implements CommandLineRunner {
                 .couponType(CouponType.PRODUCT)
                 .price(28000)
                 .detailImage("https://drive.google.com/file/d/1yDbnmT622_k9uezmXwuy45fmB18AUBhd/view?usp=sharing")
-                .build());
+                .build());*/
     }
 }
