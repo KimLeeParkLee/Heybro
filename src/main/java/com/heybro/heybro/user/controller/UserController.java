@@ -6,6 +6,7 @@ import com.heybro.heybro.user.dto.request.FcmTokenUpdateRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
+import com.heybro.heybro.user.dto.response.UserRankingResponseDto;
 import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,5 +62,11 @@ public class UserController {
     @PatchMapping("/fcm-token")
     public void updateFcmToken(@AuthenticationPrincipal UserDetails userDetails, @RequestBody FcmTokenUpdateRequestDto requestDto) {
         userService.updateFcmToken(userDetails.getUsername(), requestDto.getFcmToken());
+    }
+
+    @Operation(summary = "랭킹 조회")
+    @GetMapping("/ranking")
+    public UserRankingResponseDto getRanking(@AuthenticationPrincipal UserDetails userDetails) {
+        return userService.getUserRankings(userDetails.getUsername());
     }
 }

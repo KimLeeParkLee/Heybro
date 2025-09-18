@@ -5,11 +5,10 @@ import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
+import com.heybro.heybro.user.dto.response.UserRankingResponseDto;
 import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Service;
 
-@Service
 public interface UserService {
     LoginResponseDto registerNewUser(UserRegistrationRequestDto requestDto);
 
@@ -26,4 +25,6 @@ public interface UserService {
     boolean isNicknameAvailable(String nickname);
 
     void updateFcmToken(String email, String fcmToken);
+
+    UserRankingResponseDto getUserRankings(String email);
 }

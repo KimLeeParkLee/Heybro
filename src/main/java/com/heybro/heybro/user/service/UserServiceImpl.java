@@ -8,6 +8,7 @@ import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
+import com.heybro.heybro.user.dto.response.UserRankingResponseDto;
 import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.security.UserDetailsImpl;
@@ -23,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -148,7 +150,6 @@ public class UserServiceImpl implements UserService {
 
         // refresh token 삭제
         redisTemplate.delete(jwtUtil.getEmailFromToken(accessToken));
-
     }
 
     @Override
@@ -200,4 +201,15 @@ public class UserServiceImpl implements UserService {
         user.updateFcmToken(fcmToken);
         userRepository.save(user);
     }
+
+    @Override
+    public UserRankingResponseDto getUserRankings(String email) {
+        List<com.heybro.heybro.user.repository.UserRankingProjection> top10Rankings = userRepository.findTop10UserRankingProjections();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
+
+        int myRanking = userRepository.findMyRanking(email);
+
+        return UserRankingResponseDto.from(top10Rankings, user, myRanking);    }
 }
