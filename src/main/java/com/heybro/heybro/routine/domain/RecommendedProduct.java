@@ -21,6 +21,7 @@ public class RecommendedProduct {
 
     private String image; // 상품 이미지
 
+    @Column(length = 2000)
     private String link; // 자사몰 링크
 
     @ManyToOne(fetch = FetchType.LAZY)

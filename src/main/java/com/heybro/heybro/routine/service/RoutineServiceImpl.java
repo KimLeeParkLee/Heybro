@@ -4,8 +4,7 @@ import com.heybro.heybro.routine.domain.*;
 import com.heybro.heybro.routine.dto.request.RoutineAddRequestDto;
 import com.heybro.heybro.routine.dto.request.RoutineModifyRequestDto;
 import com.heybro.heybro.routine.dto.response.*;
-import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
-import com.heybro.heybro.routine.repository.RoutineRepository;
+import com.heybro.heybro.routine.repository.*;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserRoutine;
 import com.heybro.heybro.user.domain.UserRoutineSchedule;
@@ -37,6 +36,9 @@ public class RoutineServiceImpl implements RoutineService {
     private final DailyRoutineLogRepository dailyRoutineLogRepository;
     private final RoutineLogService routineLogService;
     private final RoutineRepository routineRepository;
+    private final RoutineElementRepository routineElementRepository;
+    private final RecommendedProductRepository recommendedProductRepository;
+    private final RoutineTipRepository routineTipRepository;
 
     /**
      * 과거부터 오늘까지면 DailyRoutineLog에서 조회
@@ -149,25 +151,24 @@ public class RoutineServiceImpl implements RoutineService {
 
     @Override
     public RoutineDetailResponseDto getRoutines(Long routineId) {
-        Routine routine = routineRepository.findByIdWithDetails(routineId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 루틴을 찾을 수 없습니다."));
-
-        List<RoutineElementResponseDto> elementDtos = routine.getElementList().stream()
+        List<RoutineElementResponseDto> elementDtos = routineElementRepository.findByRoutineIdOrderByStepAsc(routineId).stream()
                 .sorted(Comparator.comparing(RoutineElement::getStep))
                 .map(RoutineElementResponseDto::from)
                 .toList();
 
-        List<RoutineTipResponseDto> tipDtos = routine.getTipList().stream()
+        List<RoutineTipResponseDto> tipDtos = routineTipRepository.findByRoutineId(routineId).stream()
                 .map(RoutineTipResponseDto::from)
                 .toList();
 
-        List<RecommendProductResponseDto> productDtos = routine.getRecommendedProductList().stream()
-                .map(RecommendedProduct::from)
+        List<RecommendProductResponseDto> productDtos = recommendedProductRepository.findByRoutineId(routineId)
+                .stream()
+                .map(RecommendProductResponseDto::from)
                 .toList();
 
         return RoutineDetailResponseDto.builder()
                 .elements(elementDtos)
                 .tips(tipDtos)
+                .products(productDtos)
                 .build();
     }
 

@@ -23,7 +23,7 @@ public class RoutineDetailResponseDto {
     @Builder.Default
     List<RoutineTipResponseDto> tips = new ArrayList<>();
 
-    @Schema(description = "루틴 팁 리스트")
+    @Schema(description = "추천 상품 리스트")
     @Builder.Default
     List<RecommendProductResponseDto> products = new ArrayList<>();
 }
