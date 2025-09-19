@@ -188,7 +188,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public NicknameAvailableResponseDto isNicknameAvailable(String nickname) {
-        return NicknameAvailableResponseDto.builder().isAvailable(userRepository.findByNickname(nickname) != null).build();
+        return NicknameAvailableResponseDto.builder().isAvailable(userRepository.findByNickname(nickname) == null).build();
     }
 
     @Override
