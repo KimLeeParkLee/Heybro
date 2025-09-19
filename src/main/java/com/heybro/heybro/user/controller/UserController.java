@@ -3,6 +3,7 @@ package com.heybro.heybro.user.controller;
 import com.heybro.heybro.coupon.dto.response.CouponPurchaseResponseDto;
 import com.heybro.heybro.coupon.service.CouponService;
 import com.heybro.heybro.user.dto.request.FcmTokenUpdateRequestDto;
+import com.heybro.heybro.user.dto.request.PasswordRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
 import com.heybro.heybro.user.dto.response.LoginResponseDto;
@@ -74,5 +75,11 @@ public class UserController {
     @DeleteMapping
     public void deleteUser(@AuthenticationPrincipal UserDetails userDetails) {
         userService.deleteUser(userDetails.getUsername());
+    }
+
+    @Operation(summary = "비밀번호 변경")
+    @PatchMapping("/password")
+    public void updatePassword(@RequestBody PasswordRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
+        userService.updatePassword(requestDto.getPassword(), userDetails.getUsername());
     }
 }

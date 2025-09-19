@@ -29,4 +29,6 @@ public interface UserService {
     UserRankingResponseDto getUserRankings(String email);
 
     void deleteUser(String email);
+
+    void updatePassword(String password, String email);
 }

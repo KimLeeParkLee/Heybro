@@ -99,4 +99,6 @@ public class User {
     public void updateProviderId(String providerId) { this.providerId = providerId; }
 
     public void updateFcmToken(String notificationToken) { this.notificationToken = notificationToken; }
+
+    public void updatePassword(String password) { this.password = password; }
 }
