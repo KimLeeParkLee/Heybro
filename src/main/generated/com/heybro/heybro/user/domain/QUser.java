@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -19,6 +20,8 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
+    public final ListPath<com.heybro.heybro.qna.domain.Answer, com.heybro.heybro.qna.domain.QAnswer> answers = this.<com.heybro.heybro.qna.domain.Answer, com.heybro.heybro.qna.domain.QAnswer>createList("answers", com.heybro.heybro.qna.domain.Answer.class, com.heybro.heybro.qna.domain.QAnswer.class, PathInits.DIRECT2);
+
     public final TimePath<java.time.LocalTime> bedtime = createTime("bedtime", java.time.LocalTime.class);
 
     public final DatePath<java.time.LocalDate> birthDate = createDate("birthDate", java.time.LocalDate.class);
@@ -26,6 +29,10 @@ public class QUser extends EntityPathBase<User> {
     public final NumberPath<Integer> broLevel = createNumber("broLevel", Integer.class);
 
     public final NumberPath<Integer> broPoint = createNumber("broPoint", Integer.class);
+
+    public final ListPath<com.heybro.heybro.coupon.domain.CouponPurchase, com.heybro.heybro.coupon.domain.QCouponPurchase> couponPurchases = this.<com.heybro.heybro.coupon.domain.CouponPurchase, com.heybro.heybro.coupon.domain.QCouponPurchase>createList("couponPurchases", com.heybro.heybro.coupon.domain.CouponPurchase.class, com.heybro.heybro.coupon.domain.QCouponPurchase.class, PathInits.DIRECT2);
+
+    public final ListPath<com.heybro.heybro.routine.domain.DailyRoutineLog, com.heybro.heybro.routine.domain.QDailyRoutineLog> dailyRoutineLogs = this.<com.heybro.heybro.routine.domain.DailyRoutineLog, com.heybro.heybro.routine.domain.QDailyRoutineLog>createList("dailyRoutineLogs", com.heybro.heybro.routine.domain.DailyRoutineLog.class, com.heybro.heybro.routine.domain.QDailyRoutineLog.class, PathInits.DIRECT2);
 
     public final StringPath email = createString("email");
 
@@ -45,9 +52,13 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath notificationToken = createString("notificationToken");
 
+    public final ListPath<com.heybro.heybro.onboarding.domain.UserOnboardingAnswer, com.heybro.heybro.onboarding.domain.QUserOnboardingAnswer> onboardingAnswers = this.<com.heybro.heybro.onboarding.domain.UserOnboardingAnswer, com.heybro.heybro.onboarding.domain.QUserOnboardingAnswer>createList("onboardingAnswers", com.heybro.heybro.onboarding.domain.UserOnboardingAnswer.class, com.heybro.heybro.onboarding.domain.QUserOnboardingAnswer.class, PathInits.DIRECT2);
+
     public final StringPath password = createString("password");
 
     public final StringPath phone = createString("phone");
+
+    public final ListPath<com.heybro.heybro.point.domain.PointHistory, com.heybro.heybro.point.domain.QPointHistory> pointHistories = this.<com.heybro.heybro.point.domain.PointHistory, com.heybro.heybro.point.domain.QPointHistory>createList("pointHistories", com.heybro.heybro.point.domain.PointHistory.class, com.heybro.heybro.point.domain.QPointHistory.class, PathInits.DIRECT2);
 
     public final BooleanPath privacyConsent = createBoolean("privacyConsent");
 
@@ -57,7 +68,15 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath providerId = createString("providerId");
 
+    public final ListPath<com.heybro.heybro.qna.domain.Question, com.heybro.heybro.qna.domain.QQuestion> questions = this.<com.heybro.heybro.qna.domain.Question, com.heybro.heybro.qna.domain.QQuestion>createList("questions", com.heybro.heybro.qna.domain.Question.class, com.heybro.heybro.qna.domain.QQuestion.class, PathInits.DIRECT2);
+
+    public final ListPath<com.heybro.heybro.coupon.domain.CouponPurchase, com.heybro.heybro.coupon.domain.QCouponPurchase> sentCoupons = this.<com.heybro.heybro.coupon.domain.CouponPurchase, com.heybro.heybro.coupon.domain.QCouponPurchase>createList("sentCoupons", com.heybro.heybro.coupon.domain.CouponPurchase.class, com.heybro.heybro.coupon.domain.QCouponPurchase.class, PathInits.DIRECT2);
+
+    public final ListPath<com.heybro.heybro.skin.domain.SkinDiagnosis, com.heybro.heybro.skin.domain.QSkinDiagnosis> skinDiagnoses = this.<com.heybro.heybro.skin.domain.SkinDiagnosis, com.heybro.heybro.skin.domain.QSkinDiagnosis>createList("skinDiagnoses", com.heybro.heybro.skin.domain.SkinDiagnosis.class, com.heybro.heybro.skin.domain.QSkinDiagnosis.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> totalBroPoint = createNumber("totalBroPoint", Long.class);
+
+    public final ListPath<UserRoutine, QUserRoutine> userRoutines = this.<UserRoutine, QUserRoutine>createList("userRoutines", UserRoutine.class, QUserRoutine.class, PathInits.DIRECT2);
 
     public final EnumPath<UserType> userType = createEnum("userType", UserType.class);
 

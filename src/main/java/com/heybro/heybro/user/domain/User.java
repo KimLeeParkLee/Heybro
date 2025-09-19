@@ -4,10 +4,19 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import com.heybro.heybro.coupon.domain.CouponPurchase;
+import com.heybro.heybro.onboarding.domain.UserOnboardingAnswer;
+import com.heybro.heybro.point.domain.PointHistory;
+import com.heybro.heybro.qna.domain.Answer;
+import com.heybro.heybro.qna.domain.Question;
+import com.heybro.heybro.routine.domain.DailyRoutineLog;
+import com.heybro.heybro.skin.domain.SkinDiagnosis;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -67,6 +76,42 @@ public class User {
     private String provider; // provider(Kakao, Google)
 
     private String providerId; // provider id
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<CouponPurchase> couponPurchases = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<CouponPurchase> sentCoupons = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserOnboardingAnswer> onboardingAnswers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<PointHistory> pointHistories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Answer> answers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Question> questions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<DailyRoutineLog> dailyRoutineLogs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserRoutine> userRoutines = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<SkinDiagnosis> skinDiagnoses = new ArrayList<>();
 
     public void updateUserType(UserType userType) { this.userType = userType; }
 
