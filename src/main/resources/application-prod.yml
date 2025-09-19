@@ -2,6 +2,7 @@ server:
   port: 8080
   servlet:
     context-path: /api
+  max-http-request-header-size: 40KB
 
 spring:
   # 데이터베이스 설정
