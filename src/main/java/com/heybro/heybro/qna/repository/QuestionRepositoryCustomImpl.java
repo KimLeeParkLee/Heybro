@@ -26,8 +26,27 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
 
     @Override
     public Page<QuestionListResponseDto> searchQuestions(QuestionSearchCondition condition, Pageable pageable) {
-        QAnswer answer = QAnswer.answer;
+        // 1단계: 조건에 맞는 Question의 ID 목록만 페이징하여 조회
+        List<Long> ids = queryFactory
+                .select(question.id)
+                .distinct()
+                .from(question)
+                .where(
+                        categoryEq(condition.getCategory()),
+                        searchContains(condition.getSearch())
+                )
+                .orderBy(sort(condition.getSort()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
+        // 조회된 ID가 없으면 빈 페이지를 즉시 반환
+        if (ids.isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, 0);
+        }
+
+        // 2단계: 조회된 ID 목록을 사용하여 IN 절로 DTO 데이터를 한 번에 조회
+        QAnswer answer = QAnswer.answer;
         List<QuestionListResponseDto> content = queryFactory
                 .select(new QQuestionListResponseDto(
                         question.id,
@@ -44,26 +63,21 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                                 .where(answer.question.eq(question))
                 ))
                 .from(question)
-                .leftJoin(question.categories).fetchJoin()
-                .where(
-                        categoryEq(condition.getCategory()),
-                        searchContains(condition.getSearch())
-                )
+                .where(question.id.in(ids))
                 .orderBy(sort(condition.getSort()))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .distinct()
                 .fetch();
 
-        long total = queryFactory
-                .selectFrom(question)
+        // 3단계: Count 쿼리 별도 실행
+        Long total = queryFactory
+                .select(question.count())
+                .from(question)
                 .where(
                         categoryEq(condition.getCategory()),
                         searchContains(condition.getSearch())
                 )
-                .fetchCount();
+                .fetchOne();
 
-        return new PageImpl<>(content, pageable, total);
+        return new PageImpl<>(content, pageable, total != null ? total : 0);
     }
 
     private BooleanExpression categoryEq(QuestionCategory category) {
