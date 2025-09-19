@@ -22,11 +22,11 @@ public class OnboardingResultRequestDto {
     private List<AnswerDto> answers = new ArrayList<>();
 
     @Schema(description = "기상 시간")
-    @JsonFormat(pattern = "HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime wakeupTime;
 
     @Schema(description = "취침 시간")
-    @JsonFormat(pattern = "HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime bedtime;
 
     @Getter
