@@ -27,4 +27,6 @@ public interface UserService {
     void updateFcmToken(String email, String fcmToken);
 
     UserRankingResponseDto getUserRankings(String email);
+
+    void deleteUser(String email);
 }

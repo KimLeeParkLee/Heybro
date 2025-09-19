@@ -69,4 +69,10 @@ public class UserController {
     public UserRankingResponseDto getRanking(@AuthenticationPrincipal UserDetails userDetails) {
         return userService.getUserRankings(userDetails.getUsername());
     }
+
+    @Operation(summary = "회원 탈퇴")
+    @DeleteMapping
+    public void deleteUser(@AuthenticationPrincipal UserDetails userDetails) {
+        userService.deleteUser(userDetails.getUsername());
+    }
 }

@@ -211,5 +211,14 @@ public class UserServiceImpl implements UserService {
 
         int myRanking = userRepository.findMyRanking(email);
 
-        return UserRankingResponseDto.from(top10Rankings, user, myRanking);    }
+        return UserRankingResponseDto.from(top10Rankings, user, myRanking);
+    }
+
+    @Override
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
+
+        userRepository.delete(user);
+    }
 }
