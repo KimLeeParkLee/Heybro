@@ -6,10 +6,7 @@ import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
-import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
-import com.heybro.heybro.user.dto.response.LoginResponseDto;
-import com.heybro.heybro.user.dto.response.UserRankingResponseDto;
-import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
+import com.heybro.heybro.user.dto.response.*;
 import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.security.UserDetailsImpl;
 import jakarta.persistence.EntityNotFoundException;
@@ -190,8 +187,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isNicknameAvailable(String nickname) {
-        return userRepository.findByNickname(nickname) != null;
+    public NicknameAvailableResponseDto isNicknameAvailable(String nickname) {
+        return NicknameAvailableResponseDto.builder().isAvailable(userRepository.findByNickname(nickname) != null).build();
     }
 
     @Override

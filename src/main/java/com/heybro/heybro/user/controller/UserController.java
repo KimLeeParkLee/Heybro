@@ -5,10 +5,7 @@ import com.heybro.heybro.coupon.service.CouponService;
 import com.heybro.heybro.user.dto.request.FcmTokenUpdateRequestDto;
 import com.heybro.heybro.user.dto.request.PasswordRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
-import com.heybro.heybro.user.dto.response.EmailValidationResponseDto;
-import com.heybro.heybro.user.dto.response.LoginResponseDto;
-import com.heybro.heybro.user.dto.response.UserRankingResponseDto;
-import com.heybro.heybro.user.dto.response.UserTypeResponseDto;
+import com.heybro.heybro.user.dto.response.*;
 import com.heybro.heybro.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -55,7 +52,7 @@ public class UserController {
 
     @Operation(summary = "닉네임 중복 검증")
     @GetMapping("/check-nickname")
-    public boolean getPurchasesByUser(@RequestParam("nickname") String nickname) {
+    public NicknameAvailableResponseDto getPurchasesByUser(@RequestParam("nickname") String nickname) {
         return userService.isNicknameAvailable(nickname);
     }
 
