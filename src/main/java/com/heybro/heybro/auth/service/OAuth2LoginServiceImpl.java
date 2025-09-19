@@ -113,6 +113,7 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
                     .experience(user.getExperience())
                     .accessToken(serviceAccessToken)
                     .refreshToken(serviceRefreshToken)
+                    .userType(user.getUserType())
                     .build();
         }
     }
@@ -147,6 +148,7 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
                     .experience(user.getExperience())
                     .accessToken(serviceAccessToken)
                     .refreshToken(serviceRefreshToken)
+                    .userType(user.getUserType())
                     .build();
         }
     }

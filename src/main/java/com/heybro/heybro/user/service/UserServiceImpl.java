@@ -128,6 +128,7 @@ public class UserServiceImpl implements UserService {
                 .experience(user.getExperience())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .userType(user.getUserType())
                 .build();
     }
 
