@@ -38,7 +38,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         categoryEq(condition.getCategory()),
                         searchContains(condition.getSearch())
                 )
-                .groupBy(question.id)
+                .groupBy(question.id, question.createdAt, question.viewCount)
                 .orderBy(getOrderSpecifiers(pageable.getSort()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
