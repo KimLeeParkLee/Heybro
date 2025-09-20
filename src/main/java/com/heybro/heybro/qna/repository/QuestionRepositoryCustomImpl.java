@@ -29,12 +29,12 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
         // 1단계: 조건에 맞는 Question의 ID 목록만 페이징하여 조회
         List<Long> ids = queryFactory
                 .select(question.id)
-                .distinct()
                 .from(question)
                 .where(
                         categoryEq(condition.getCategory()),
                         searchContains(condition.getSearch())
                 )
+                .groupBy(question.id)
                 .orderBy(sort(condition.getSort()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -69,7 +69,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
 
         // 3단계: Count 쿼리 별도 실행
         Long total = queryFactory
-                .select(question.count())
+                .select(question.countDistinct())
                 .from(question)
                 .where(
                         categoryEq(condition.getCategory()),
