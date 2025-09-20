@@ -33,29 +33,27 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
     public Page<QuestionListResponseDto> searchQuestions(QuestionSearchCondition condition, Pageable pageable) {
         // 1단계: ID와 정렬 기준 컬럼을 함께 조회 (Tuple 사용)
         List<Tuple> tuples = queryFactory
-                .select(question.id, question.createdAt, question.viewCount) // <--- 핵심 변경점 1
+                .select(question.id, question.createdAt, question.viewCount)
                 .from(question)
                 .where(
                         categoryEq(condition.getCategory()),
                         searchContains(condition.getSearch())
                 )
-                // .groupBy()는 더 이상 필요 없습니다.
                 .orderBy(getOrderSpecifiers(pageable.getSort()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        // 조회된 튜플 리스트에서 ID 목록만 추출
+        // 조회된 ID 목록만 추출
         List<Long> ids = tuples.stream()
                 .map(tuple -> tuple.get(question.id))
-                .toList(); // <--- 핵심 변경점 2
+                .toList();
 
-        // 조회된 ID가 없으면 빈 페이지를 즉시 반환
         if (ids.isEmpty()) {
             return new PageImpl<>(List.of(), pageable, 0);
         }
 
-        // 2단계: 조회된 ID 목록을 사용하여 IN 절로 DTO 데이터를 한 번에 조회
+        // 2단계: ID 기준으로 DTO 조회
         QAnswer answer = QAnswer.answer;
         List<QuestionListResponseDto> content = queryFactory
                 .select(new QQuestionListResponseDto(
@@ -74,12 +72,20 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 ))
                 .from(question)
                 .where(question.id.in(ids))
-                .orderBy(getOrderSpecifiers(pageable.getSort())) // 최종 반환 순서를 위해 여기도 정렬이 필요합니다.
                 .fetch();
 
-        // 3단계: Count 쿼리 별도 실행
+        // ids 순서를 content에도 반영
+        content = content.stream()
+                .sorted((a, b) -> {
+                    int idxA = ids.indexOf(a.getQuestionId());
+                    int idxB = ids.indexOf(b.getQuestionId());
+                    return Integer.compare(idxA, idxB);
+                })
+                .toList();
+
+        // 3단계: Count 쿼리
         Long total = queryFactory
-                .select(question.countDistinct())
+                .select(question.count())
                 .from(question)
                 .where(
                         categoryEq(condition.getCategory()),
@@ -98,7 +104,6 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
         return search != null ? question.title.containsIgnoreCase(search).or(question.content.containsIgnoreCase(search)) : null;
     }
 
-    // 이 메서드는 수정할 필요 없습니다.
     private OrderSpecifier<?>[] getOrderSpecifiers(Sort sort) {
         if (sort.isUnsorted()) {
             return new OrderSpecifier[]{new OrderSpecifier<>(Order.DESC, question.createdAt)};
