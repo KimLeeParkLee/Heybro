@@ -32,8 +32,8 @@ public class QnaController {
     @Operation(summary = "질문 목록 조회")
     @GetMapping
     public CustomPageResponse<QuestionListResponseDto> searchQuestions(@RequestParam(required = false) QuestionCategory category, @RequestParam(required = false) String search,
-                                                                       @RequestParam(required = false) String sort, @PageableDefault(size = 10) Pageable pageable) {
-        return qnaService.getQuestions(category, search, sort, pageable);
+                                                                       @PageableDefault(size = 10) Pageable pageable) {
+        return qnaService.getQuestions(category, search, pageable);
     }
 
     @Operation(summary = "질문 상세 조회")

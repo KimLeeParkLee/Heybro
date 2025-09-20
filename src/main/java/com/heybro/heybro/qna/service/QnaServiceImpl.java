@@ -38,9 +38,9 @@ public class QnaServiceImpl implements QnaService {
     private final QuestionViewService questionViewService;
 
     @Override
-    public CustomPageResponse<QuestionListResponseDto> getQuestions(QuestionCategory category, String search, String sort, Pageable pageable) {
+    public CustomPageResponse<QuestionListResponseDto> getQuestions(QuestionCategory category, String search, Pageable pageable) {
         // 1. 검색 조건에 맞는 질문 페이지를 조회
-        QuestionSearchCondition condition = new QuestionSearchCondition(category, search, sort);
+        QuestionSearchCondition condition = new QuestionSearchCondition(category, search);
 
         // 2. Repository에서 DTO로 직접 페이지 조회
         Page<QuestionListResponseDto> questionPage = questionRepository.searchQuestions(condition, pageable);

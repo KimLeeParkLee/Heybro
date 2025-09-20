@@ -9,5 +9,4 @@ import lombok.Data;
 public class QuestionSearchCondition {
     private QuestionCategory category;
     private String search;
-    private String sort;
 }

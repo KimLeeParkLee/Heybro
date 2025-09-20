@@ -5,16 +5,20 @@ import com.heybro.heybro.qna.domain.QuestionCategory;
 import com.heybro.heybro.qna.dto.QuestionSearchCondition;
 import com.heybro.heybro.qna.dto.response.QQuestionListResponseDto;
 import com.heybro.heybro.qna.dto.response.QuestionListResponseDto;
+import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.heybro.heybro.qna.domain.QQuestion.question;
@@ -35,7 +39,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                         searchContains(condition.getSearch())
                 )
                 .groupBy(question.id)
-                .orderBy(sort(condition.getSort()))
+                .orderBy(getOrderSpecifiers(pageable.getSort()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -64,7 +68,7 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
                 ))
                 .from(question)
                 .where(question.id.in(ids))
-                .orderBy(sort(condition.getSort()))
+                .orderBy(getOrderSpecifiers(pageable.getSort()))
                 .fetch();
 
         // 3단계: Count 쿼리 별도 실행
@@ -88,14 +92,23 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
         return search != null ? question.title.containsIgnoreCase(search).or(question.content.containsIgnoreCase(search)) : null;
     }
 
-    private OrderSpecifier<?> sort(String sort) {
-        if (sort == null) {
-            return question.createdAt.desc();
+    private OrderSpecifier<?>[] getOrderSpecifiers(Sort sort) {
+        // Sort 객체가 비어있으면 기본 정렬 (최신순) 적용
+        if (sort.isUnsorted()) {
+            return new OrderSpecifier[]{new OrderSpecifier<>(Order.DESC, question.createdAt)};
         }
-        return switch (sort) {
-            case "latest" -> question.createdAt.desc();
-            case "views" -> question.viewCount.desc();
-            default -> question.createdAt.desc();
-        };
+
+        List<OrderSpecifier<?>> orders = new ArrayList<>();
+        // Sort 객체에서 각 정렬 조건을 순회
+        sort.forEach(order -> {
+            Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+            String prop = order.getProperty(); // 정렬 기준 필드 이름 (예: "views", "createdAt")
+
+            // 정렬 기준 필드에 따라 적절한 Q-Type의 경로를 지정
+            PathBuilder pathBuilder = new PathBuilder<>(question.getType(), question.getMetadata());
+            orders.add(new OrderSpecifier(direction, pathBuilder.get(prop)));
+        });
+
+        return orders.toArray(OrderSpecifier[]::new);
     }
 }
