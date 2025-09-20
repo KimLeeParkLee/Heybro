@@ -112,6 +112,9 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
         sort.forEach(order -> {
             Order direction = order.isAscending() ? Order.ASC : Order.DESC;
             String prop = order.getProperty();
+            if (prop.equals("views")) {
+                prop = "viewCount";
+            }
             PathBuilder pathBuilder = new PathBuilder<>(question.getType(), question.getMetadata());
             orders.add(new OrderSpecifier(direction, pathBuilder.get(prop)));
         });
