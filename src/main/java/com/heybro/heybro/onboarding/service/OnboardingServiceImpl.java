@@ -128,7 +128,6 @@ public class OnboardingServiceImpl implements OnboardingService {
         routinesToAddSet.addAll(commonRoutines);
         List<Routine> routinesToAdd = new ArrayList<>(routinesToAddSet);
 
-
         // (4) 회원 루틴 및 기본 스케줄 생성
         List<UserRoutine> userRoutinesToSave = new ArrayList<>();
 
@@ -155,6 +154,7 @@ public class OnboardingServiceImpl implements OnboardingService {
 
         // (5) 생성된 모든 회원 루틴 요소들을 DB에 한 번에 저장
         userRoutineRepository.saveAll(userRoutinesToSave);
+        userRoutineRepository.flush();
 
         // 10. 루틴 알림 시간 설정
         for (UserRoutine userRoutine : userRoutinesToSave) {

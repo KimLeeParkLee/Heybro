@@ -190,8 +190,6 @@ public class RoutineServiceImpl implements RoutineService {
         // (3) 브로 포인트, 경험치 10씩 추가
         user.earnPoints(10);
         user.updateExperience(10);
-
-
     }
 
     // 단일 루틴 달성률 조회 시 월별, 일별만 가능
