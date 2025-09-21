@@ -7,9 +7,10 @@ import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserRoutine;
 import com.heybro.heybro.user.domain.UserRoutineSchedule;
 import com.heybro.heybro.user.repository.UserRoutineRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -24,7 +25,7 @@ public class RoutineLogServiceImpl implements RoutineLogService {
     private final UserRoutineRepository userRoutineRepository;
     private final DailyRoutineLogRepository dailyRoutineLogRepository;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createLogsForUser(User user, LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
 
