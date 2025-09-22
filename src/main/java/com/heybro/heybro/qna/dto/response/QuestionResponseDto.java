@@ -98,7 +98,7 @@ public class QuestionResponseDto {
         private String nickname;
 
         @Schema(description = "답변 작성일시")
-        private LocalDateTime createAt;
+        private LocalDateTime createdAt;
 
         @Schema(description = "답변 이미지 목록")
         @Builder.Default
@@ -110,7 +110,7 @@ public class QuestionResponseDto {
                     .content(answer.getContent())
                     .userId(answer.getUser().getId())
                     .nickname(answer.getUser().getNickname())
-                    .createAt(answer.getCreatedAt())
+                    .createdAt(answer.getCreatedAt())
                     .answerImages(answer.getAnswerImages()
                             .stream()
                             .sorted(Comparator.comparing(AnswerImage::getSortOrder)) // sortOrder 순으로 오름차순 정렬
