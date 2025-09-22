@@ -365,8 +365,8 @@ public class RoutineDataInitializer implements CommandLineRunner {
                 .iconImage("https://drive.google.com/file/d/18mX5LE-Eox8Jg9qamyIIF5OwOZDH2QbD/view?usp=sharing")
                 .tipList(createTips("자르기보다는 갈아서 관리하면 손상이 적습니다.", "취침 전 관리하면 흡수가 잘돼요."))
                 .elementList(Arrays.asList(
-                        RoutineElement.builder().step(1).name("길이 정돈하기").content("손톱깎이나 파일로 길이를 정돈합니다.").detailImage("https://ibb.co/gFv4rCt4").build(),
-                        RoutineElement.builder().step(2).name("오일/로션으로 보습").content("큐티클 오일이나 로션으로 보습합니다.").detailImage("https://ibb.co/G4H09374").build(),
+                        RoutineElement.builder().step(1).name("길이 정돈하기").content("손톱깎이나 파일로 길이를 정돈합니다.").detailImage("https://i.ibb.co/4gs1Fx41/Gemini-Generated-Image-wjb0sywjb0sywjb0.png").build(),
+                        RoutineElement.builder().step(2).name("오일/로션으로 보습").content("큐티클 오일이나 로션으로 보습합니다.").detailImage("https://i.ibb.co/FLHKXq6L/Gemini-Generated-Image-cjrr3rcjrr3rcjrr.png").build(),
                         RoutineElement.builder().step(3).name("코팅제로 보호하기").content("매니큐어/투명 코팅제로 보호막을 씌워줍니다.").detailImage("https://drive.google.com/file/d/1R-hpkifprg0Zvk5_Z-HI7xh0uP85Rj0A/view?usp=drive_link").build()
                 ))
                 .recommendedProductList(new ArrayList<>(Arrays.asList(
@@ -389,9 +389,9 @@ public class RoutineDataInitializer implements CommandLineRunner {
                 .iconImage("https://drive.google.com/file/d/1j5NQU-lNrf7nW2dCRaA6Ul03ni-Afk6p/view?usp=sharing")
                 .tipList(createTips("스트레칭은 10분 이내가 적당합니다.", "무리하지 말고 호흡에 맞춰 하세요."))
                 .elementList(Arrays.asList(
-                        RoutineElement.builder().step(1).name("목과 어깨 풀기").content("가볍게 목과 어깨를 돌려 풀어줍니다.").detailImage("https://ibb.co/rPPkqs9").build(),
-                        RoutineElement.builder().step(2).name("다리 근육 늘리기").content("허리를 숙여 다리 근육을 늘려줍니다.").detailImage("https://ibb.co/2Y1tKNtk").build(),
-                        RoutineElement.builder().step(3).name("전신 스트레칭").content("누운 상태에서 전신 스트레칭을 합니다.").detailImage("https://ibb.co/60XBNdd9").build()
+                        RoutineElement.builder().step(1).name("목과 어깨 풀기").content("가볍게 목과 어깨를 돌려 풀어줍니다.").detailImage("https://i.ibb.co/QBB9hd0/Chat-GPT-Image-2025-9-21-10-15-08.png").build(),
+                        RoutineElement.builder().step(2).name("다리 근육 늘리기").content("허리를 숙여 다리 근육을 늘려줍니다.").detailImage("https://i.ibb.co/vv6PzYPj/Chat-GPT-Image-2025-9-21-10-19-58.png").build(),
+                        RoutineElement.builder().step(3).name("전신 스트레칭").content("누운 상태에서 전신 스트레칭을 합니다.").detailImage("https://i.ibb.co/hFYfCqqQ/Gemini-Generated-Image-nnitgcnnitgcnnit.png").build()
                 ))
                 .build());
         routines.add(Routine.builder()
@@ -400,8 +400,8 @@ public class RoutineDataInitializer implements CommandLineRunner {
                 .iconImage("https://drive.google.com/file/d/1BhJP1boulSgaUM9sElEAceUA604yK1Zh/view?usp=sharing")
                 .tipList(createTips("눈가 전용 크림을 함께 쓰면 효과가 좋아요.", "너무 강하게 누르지 않도록 주의하세요."))
                 .elementList(Arrays.asList(
-                        RoutineElement.builder().step(1).name("눈썹 뼈 누르기").content("눈썹 아래 뼈를 지그시 눌러줍니다.").detailImage("https://ibb.co/PG888fWH").build(),
-                        RoutineElement.builder().step(2).name("눈꼬리/관자놀이 마사지").content("눈꼬리와 관자놀이를 원을 그리며 마사지합니다.").detailImage("https://ibb.co/7NzP5xNZ").build()
+                        RoutineElement.builder().step(1).name("눈썹 뼈 누르기").content("눈썹 아래 뼈를 지그시 눌러줍니다.").detailImage("https://i.ibb.co/GQjjjbMS/Chat-GPT-Image-2025-9-21-10-08-08.png").build(),
+                        RoutineElement.builder().step(2).name("눈꼬리/관자놀이 마사지").content("눈꼬리와 관자놀이를 원을 그리며 마사지합니다.").detailImage("https://i.ibb.co/93v6Lm31/Chat-GPT-Image-2025-9-21-10-03-03.png").build()
                 ))
                 .recommendedProductList(new ArrayList<>(Arrays.asList(
                         RecommendedProduct.builder()
