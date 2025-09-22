@@ -105,19 +105,34 @@ public class QuestionRepositoryCustomImpl implements QuestionRepositoryCustom {
     }
 
     private OrderSpecifier<?>[] getOrderSpecifiers(Sort sort) {
-        if (sort.isUnsorted()) {
-            return new OrderSpecifier[]{new OrderSpecifier<>(Order.DESC, question.createdAt)};
-        }
         List<OrderSpecifier<?>> orders = new ArrayList<>();
-        sort.forEach(order -> {
+
+        if (sort.isUnsorted()) {
+            orders.add(new OrderSpecifier<>(Order.DESC, question.createdAt));
+            return orders.toArray(OrderSpecifier[]::new);
+        }
+
+        for (Sort.Order order : sort) {
             Order direction = order.isAscending() ? Order.ASC : Order.DESC;
             String prop = order.getProperty();
-            if (prop.equals("views")) {
-                prop = "viewCount";
+
+            switch (prop) {
+                case "views":
+                    orders.add(new OrderSpecifier<>(direction, question.viewCount));
+                    break;
+                case "createdAt":
+                    orders.add(new OrderSpecifier<>(direction, question.createdAt));
+                    break;
+                default:
+                    // 지원하지 않는 정렬 속성은 무시
+                    break;
             }
-            PathBuilder pathBuilder = new PathBuilder<>(question.getType(), question.getMetadata());
-            orders.add(new OrderSpecifier(direction, pathBuilder.get(prop)));
-        });
+        }
+
+        if (orders.isEmpty()) {
+            orders.add(new OrderSpecifier<>(Order.DESC, question.createdAt));
+        }
+
         return orders.toArray(OrderSpecifier[]::new);
     }
 }
