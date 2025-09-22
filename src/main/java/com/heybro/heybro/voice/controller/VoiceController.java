@@ -4,6 +4,7 @@ import com.heybro.heybro.common.advice.NoApiResponse;
 import com.heybro.heybro.common.response.ApiResponse;
 import com.heybro.heybro.voice.dto.request.TextRequestDto;
 import com.heybro.heybro.voice.service.VoiceService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ public class VoiceController {
 
     private final VoiceService voiceService;
 
+    @Operation(summary = "톡봇 채팅")
     @PostMapping("/chat-text")
     public ApiResponse<String> handleTextChat(@RequestBody TextRequestDto requestDto) {
         String aiResponse = voiceService.processTextCommand(requestDto.userText());
