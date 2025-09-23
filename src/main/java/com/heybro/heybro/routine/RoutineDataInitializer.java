@@ -144,7 +144,7 @@ public class RoutineDataInitializer implements CommandLineRunner {
                 .iconImage("https://drive.google.com/file/d/17G9fijMamsQy8XZVG2Rqp8XAvJMuo8DY/view?usp=sharing")
                 .tipList(createTips("목까지 함께 발라야 관리가 완성돼요.", "아침에는 가벼운 로션, 저녁엔 영양 크림이 적합합니다."))
                 .elementList(Arrays.asList(
-                        RoutineElement.builder().step(1).name("로션/크림 덜어내기").content("손등만한 크기의 양을 손바닥에 덜어주세요.").detailImage("https://drive.google.com/uc?export=view&id=1gNbhLVf7Js7jDxZ-MisRwJwKylxLWkr").build(),
+                        RoutineElement.builder().step(1).name("로션/크림 덜어내기").content("손등만한 크기의 양을 손바닥에 덜어주세요.").detailImage("https://drive.usercontent.google.com/download?id=1gNbhLVf7Js7jDxZ-MisRwJwKylxLWkrn&export=view&authuser=0").build(),
                         RoutineElement.builder().step(2).name("얼굴에 펴 바르기").content("볼 → 이마 → 턱 순으로 바르며 고르게 펴 발라줍니다.").detailImage("https://drive.google.com/uc?export=view&id=1Loq7-WY9xiVv6Cib6he8fFXeWpRz5wSv").build(),
                         RoutineElement.builder().step(3).name("손으로 눌러 흡수시키기").content("손바닥으로 얼굴을 지그시 눌러 흡수시킵니다.").detailImage("https://drive.google.com/uc?export=view&id=1KsdhJYe_etYSf-0i1Rkxx1pH5tM0Z-1B").build()
                 ))
