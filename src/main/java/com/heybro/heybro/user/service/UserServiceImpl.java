@@ -46,11 +46,16 @@ public class UserServiceImpl implements UserService {
             throw new IllegalStateException("이미 가입된 이메일입니다.");
         }
 
+        String encodedPassword = null;
+        if (requestDto.getPassword() != null) {
+            encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+        }
+
         User user = User.builder()
                 .name(requestDto.getUserName())
                 .nickname(requestDto.getNickname())
                 .email(requestDto.getEmail())
-                .password(passwordEncoder.encode(requestDto.getPassword()))
+                .password(encodedPassword)
                 .gender(requestDto.getGender())
                 .birthDate(requestDto.getBirthDate())
                 .phone(requestDto.getPhone())
