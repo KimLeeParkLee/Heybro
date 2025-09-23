@@ -1,9 +1,5 @@
 package com.heybro.heybro.user.domain;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import com.heybro.heybro.coupon.domain.CouponPurchase;
 import com.heybro.heybro.onboarding.domain.UserOnboardingAnswer;
 import com.heybro.heybro.point.domain.PointHistory;
@@ -11,6 +7,10 @@ import com.heybro.heybro.qna.domain.Answer;
 import com.heybro.heybro.qna.domain.Question;
 import com.heybro.heybro.routine.domain.DailyRoutineLog;
 import com.heybro.heybro.skin.domain.SkinDiagnosis;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -73,7 +73,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserType userType; // 회원 유형
 
-    private String provider; // provider(Kakao, Google)
+    private String provider; // provider(Kakao, Google, Apple)
 
     private String providerId; // provider id
 

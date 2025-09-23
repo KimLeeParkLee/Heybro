@@ -43,4 +43,7 @@ public class UserRegistrationRequestDto {
 
     @Schema(description = "알림 설정 여부")
     private boolean notificationEnabled;
+
+    @Schema(description = "provider")
+    private String provider;
 }
