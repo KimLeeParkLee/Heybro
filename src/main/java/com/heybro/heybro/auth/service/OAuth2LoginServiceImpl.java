@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OAuth2LoginServiceImpl implements OAuth2LoginService {
     private final Map<String, OAuth2Client> oAuth2Clients;
@@ -39,40 +39,9 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
             return Mono.error(new IllegalArgumentException("Unsupported provider: " + provider));
         }
 
-        // 액세스 토큰으로 바로 사용자 정보 요청
         return oAuth2Client.getUserInfoByToken(accessToken)
-                .flatMap(userInfo -> {
-                    UserUpsertResult result = upsertUser(userInfo);
-                    return Mono.just(createLoginResponse(result));
-                });
+                .map(this::processSocialLogin);
     }
-
-    private UserUpsertResult upsertUser(OAuth2UserInfo userInfo) {
-        Optional<User> userOptional = userRepository.findByEmail(userInfo.getEmail());
-
-        User user;
-        boolean isNewUser = false;
-
-        if (userOptional.isPresent()) {
-            user = userOptional.get();
-            if (user.getProvider() == null) {
-                user.updateProvider(userInfo.getProvider());
-                user.updateProviderId(userInfo.getProviderId());
-            }
-        } else {
-            isNewUser = true;
-            user = User.builder()
-                    .email(userInfo.getEmail())
-                    .name(userInfo.getName())
-                    .provider(userInfo.getProvider())
-                    .providerId(userInfo.getProviderId())
-                    .build();
-        }
-        userRepository.save(user);
-        return new UserUpsertResult(user, isNewUser);
-    }
-
-    private record UserUpsertResult(User user, boolean isNewUser) {}
 
     @Override
     public Object loginWithIdentityToken(String provider, String identityToken) {
@@ -83,50 +52,14 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
         }
 
         OAuth2UserInfo userInfo = oAuth2Client.getUserInfoByIdentityToken(identityToken);
-        UserUpsertResult result = upsertUser(userInfo);
-        User user = result.user();
-
-        if (result.isNewUser()) {
-            return OAuth2SignUpResponseDto.builder()
-                    .email(user.getEmail())
-                    .provider(user.getProvider())
-                    .build();
-        } else {
-            String serviceAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(user.getEmail());
-            String serviceRefreshToken = jwtUtil.createRefreshToken(user.getEmail());
-
-            redisTemplate.opsForValue().set(
-                    user.getEmail(),
-                    serviceRefreshToken,
-                    refreshTokenExpiration,
-                    TimeUnit.MILLISECONDS
-            );
-
-            return LoginResponseDto.builder()
-                    .userId(user.getId())
-                    .nickname(user.getNickname())
-                    .gender(user.getGender())
-                    .birthDate(user.getBirthDate())
-                    .notificationEnabled(user.isNotificationEnabled())
-                    .broPoint(user.getBroPoint())
-                    .broLevel(user.getBroLevel())
-                    .experience(user.getExperience())
-                    .accessToken(serviceAccessToken)
-                    .refreshToken(serviceRefreshToken)
-                    .userType(user.getUserType())
-                    .build();
-        }
+        return processSocialLogin(userInfo);
     }
 
-    private Object createLoginResponse(UserUpsertResult result) {
-        User user = result.user();
+    private Object processSocialLogin(OAuth2UserInfo userInfo) {
+        Optional<User> userOptional = userRepository.findByEmail(userInfo.getEmail());
 
-        if (result.isNewUser()) {
-            return OAuth2SignUpResponseDto.builder()
-                    .email(user.getEmail())
-                    .provider(user.getProvider())
-                    .build();
-        } else {
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
             String serviceAccessToken = BEARER_PREFIX + jwtUtil.createAccessToken(user.getEmail());
             String serviceRefreshToken = jwtUtil.createRefreshToken(user.getEmail());
 
@@ -149,6 +82,11 @@ public class OAuth2LoginServiceImpl implements OAuth2LoginService {
                     .accessToken(serviceAccessToken)
                     .refreshToken(serviceRefreshToken)
                     .userType(user.getUserType())
+                    .build();
+        } else {
+            return OAuth2SignUpResponseDto.builder()
+                    .email(userInfo.getEmail())
+                    .provider(userInfo.getProvider())
                     .build();
         }
     }
