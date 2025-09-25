@@ -5,9 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/heybro.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -294,7 +291,8 @@
       <workItem from="1758707654911" duration="1122000" />
       <workItem from="1758767125751" duration="1425000" />
       <workItem from="1758770937357" duration="2359000" />
-      <workItem from="1758790200193" duration="93000" />
+      <workItem from="1758790200193" duration="1110000" />
+      <workItem from="1758794691162" duration="358000" />
     </task>
     <servers />
   </component>
