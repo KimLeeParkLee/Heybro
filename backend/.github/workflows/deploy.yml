@@ -1,0 +1,66 @@
+name: Deploy to GCP VM
+
+on:
+  push:
+    branches: [ "backend" ] # backend 브랜치에 푸시될 때 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # 1. Docker Hub에 로그인
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 2. Docker 이미지 빌드 및 푸시
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: rladbsk/heybro-backend:latest # 자신의 Docker Hub ID와 앱 이름으로 변경
+
+      # 3. SSH로 GCP 서버에 접속하여 배포 스크립트 실행
+      - name: Deploy to GCP VM via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.GCP_SSH_HOST }}
+          username: ${{ secrets.GCP_SSH_USERNAME }}
+          key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # Create secrets directory and the FCM key file from GitHub Secrets
+            sudo mkdir -p /etc/heybro/secrets
+            echo '${{ secrets.FCM_KEY_JSON }}' | sudo tee /etc/heybro/secrets/firebase-key.json > /dev/null
+
+            # Docker Hub에서 최신 이미지 받기
+            docker pull rladbsk/heybro-backend:latest
+
+            # 기존에 실행 중인 컨테이너가 있으면 중지 및 삭제
+            docker stop my-app-container || true
+            docker rm my-app-container || true
+
+            # 받은 이미지로 새 컨테이너 실행
+            docker run -d --name my-app-container --network="host" \
+              -v /etc/heybro/secrets/firebase-key.json:/app/secrets/firebase-key.json \
+              -e "FCM_KEY_PATH=/app/secrets/firebase-key.json" \
+              -e "SPRING_PROFILES_ACTIVE=prod" \
+              -e "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" \
+              -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
+              -e "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+              -e "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" \
+              -e "S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }}" \
+              -e "S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}" \
+              -e "S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}" \
+              -e "FACEPP_API_KEY=${{ secrets.FACEPP_API_KEY }}" \
+              -e "FACEPP_API_SECRET=${{ secrets.FACEPP_API_SECRET }}" \
+              -e "APPLE_CLIENT_ID=${{ secrets.APPLE_CLIENT_ID }}" \
+              -e "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" \
+              -e "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" \
+              -e "MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}" \
+              rladbsk/heybro-backend:latest

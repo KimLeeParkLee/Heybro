@@ -1,0 +1,112 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  max-http-request-header-size: 40KB
+
+spring:
+  # 데이터베이스 설정
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/heybro?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  # Redis 설정
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+  # OAuth2 Client 설정
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: https://kimleeparklee.shop/api/login/oauth2/code/google
+            scope:
+              - email
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
+  servlet:
+    multipart:
+      enabled: true # 멀티파트 활성화 (기본값이 true)
+      max-file-size: 10MB      # 개별 파일의 최대 크기
+      max-request-size: 50MB   # 한 번의 요청에 포함된 모든 파일의 총 최대 크기
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha       # API 그룹(Tags)을 알파벳순으로 정렬
+    operations-sorter: method # API를 HTTP Method 순으로 정렬
+
+  # 기본 응답 메시지 비활성화
+  default-produces-media-type: application/json
+  # API 문서에 대한 기본 정보 (선택 사항)
+  info:
+    title: "Heybro API"
+    description: "Heybro 프로젝트의 API 명세서입니다."
+    version: "v1.0.0"
+
+# JWT 설정
+jwt:
+  secret: ${JWT_SECRET_KEY}
+  expiration:
+    access-token: 3600000 # 1시간 (ms)
+    refresh-token: 604800000 # 7일 (ms)
+
+# S3 설정
+aws:
+  s3:
+    bucket: ${S3_BUCKET_NAME}
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+
+facepp:
+  api:
+    key: ${FACEPP_API_KEY}
+    secret: ${FACEPP_API_SECRET}
+
+fcm:
+  service-account-key-path: ${FCM_KEY_PATH}
+
+google:
+  gemini:
+    api-key: ${GEMINI_API_KEY}
+    prompt:
+      system: |
+        너는 사용자의 친한 형인 '브로'야. 항상 반말로 친근하고 유쾌하게 대답해야 해.
+        답변은 최대 3문장으로, 핵심만 말하고 감탄사나 불필요한 문장은 빼.
+        첫 문장은 무조건 "브로, [사용자의 고민이나 질문 내용]이구나!" 형식으로 시작해야 해.
+        그 뒤에는 가장 중요한 팁 하나만 짧게 알려줘.
+        사용자가 면도가 잘 안돼서 고민이면 → "브로, 면도가 잘 안돼서 고민이구나!" 하고 시작,
+        면도 방법을 궁금해하면 → "브로, 면도하는 법이 궁금하구나!" 하고 시작.
+
+oauth2:
+  apple:
+    iss: https://appleid.apple.com
+    public-key-url: https://appleid.apple.com/auth/keys
+    client-id: ${APPLE_CLIENT_ID}

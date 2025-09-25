@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-prod.yml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="heybro" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="heybro" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="heybro" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="heybro" type="f1a62948:ProjectNode" />
+                <item name="실행 구성" type="7b0102dc:RunConfigurationsNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/heybro/heybro/user/repository/UserRepository.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="31DatoIiHMSLIR9D8UELTfldDXP" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.heybro [:com.heybro.heybro.common.OneTimeScraper.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.heybro [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.heybro [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.heybro 빌드.executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.HeybroApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;backend&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/User/Desktop/heybro&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;모듈&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
+    &quot;애플리케이션.HeybroApplication.executor&quot;: &quot;Run&quot;
+  }
+}</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.heybro.heybro.routine.domain" />
+      <recent name="com.heybro.heybro.onboarding.dto.response" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\User\Desktop\heybro\src\main\resources" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.heybro.heybro.routine.domain" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.HeybroApplication">
+    <configuration name="OneTimeScraper" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.heybro.heybro.common.OneTimeScraper" />
+      <module name="heybro.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.heybro.heybro.common.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="heybro [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="heybro [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="HeybroApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="heybro.main" />
+      <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.heybro.heybro.HeybroApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.heybro [build]" />
+        <item itemvalue="Gradle.heybro [clean]" />
+        <item itemvalue="애플리케이션.OneTimeScraper" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.189" />
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.189" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
+  <component name="StructureViewState">
+    <option name="selectedTab" value="논리" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="" />
+      <created>1755061314104</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1755061314104</updated>
+      <workItem from="1755061315394" duration="5000" />
+      <workItem from="1755354010421" duration="1680000" />
+      <workItem from="1755652924254" duration="97000" />
+      <workItem from="1755653039429" duration="18909000" />
+      <workItem from="1755736315012" duration="17465000" />
+      <workItem from="1755920500511" duration="2503000" />
+      <workItem from="1755937963280" duration="15267000" />
+      <workItem from="1756007968730" duration="23263000" />
+      <workItem from="1756081976729" duration="19556000" />
+      <workItem from="1756109815591" duration="702000" />
+      <workItem from="1756126071232" duration="4931000" />
+      <workItem from="1756168567800" duration="21000" />
+      <workItem from="1756185739842" duration="6134000" />
+      <workItem from="1756192804427" duration="13125000" />
+      <workItem from="1756253677884" duration="17311000" />
+      <workItem from="1756295249535" duration="3431000" />
+      <workItem from="1756341327823" duration="18745000" />
+      <workItem from="1756369962347" duration="42000" />
+      <workItem from="1756384615176" duration="698000" />
+      <workItem from="1756429181138" duration="17546000" />
+      <workItem from="1756470429953" duration="3916000" />
+      <workItem from="1756475862211" duration="7611000" />
+      <workItem from="1756528933184" duration="14982000" />
+      <workItem from="1756552456516" duration="1466000" />
+      <workItem from="1756553966744" duration="11552000" />
+      <workItem from="1756621700823" duration="1001000" />
+      <workItem from="1756648785188" duration="10937000" />
+      <workItem from="1756660001347" duration="5087000" />
+      <workItem from="1756688454572" duration="20431000" />
+      <workItem from="1756774888042" duration="16168000" />
+      <workItem from="1756812912460" duration="1648000" />
+      <workItem from="1756825927553" duration="7406000" />
+      <workItem from="1756859943420" duration="23175000" />
+      <workItem from="1756890095412" duration="12286000" />
+      <workItem from="1756946644951" duration="12022000" />
+      <workItem from="1756980925370" duration="4626000" />
+      <workItem from="1757312328843" duration="785000" />
+      <workItem from="1757485820046" duration="1713000" />
+      <workItem from="1757732615083" duration="12741000" />
+      <workItem from="1757849278140" duration="2421000" />
+      <workItem from="1757905955822" duration="290000" />
+      <workItem from="1758080027876" duration="437000" />
+      <workItem from="1758116677375" duration="4526000" />
+      <workItem from="1758127817324" duration="5223000" />
+      <workItem from="1758176609176" duration="6845000" />
+      <workItem from="1758202520318" duration="6606000" />
+      <workItem from="1758212442365" duration="1421000" />
+      <workItem from="1758258118778" duration="13651000" />
+      <workItem from="1758286501403" duration="751000" />
+      <workItem from="1758287284571" duration="1752000" />
+      <workItem from="1758289337362" duration="1246000" />
+      <workItem from="1758290742184" duration="10078000" />
+      <workItem from="1758358629758" duration="1616000" />
+      <workItem from="1758379104092" duration="1416000" />
+      <workItem from="1758381152830" duration="3931000" />
+      <workItem from="1758446557765" duration="4489000" />
+      <workItem from="1758543844597" duration="4874000" />
+      <workItem from="1758602368046" duration="7232000" />
+      <workItem from="1758621052654" duration="6963000" />
+      <workItem from="1758707654911" duration="1122000" />
+      <workItem from="1758767125751" duration="1425000" />
+      <workItem from="1758770937357" duration="2359000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/heybro/heybro/common/jwt/JwtUtil.java</url>
+          <line>67</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
