@@ -55,10 +55,10 @@
  
   <tr>
     <td align="center" width="50%">
-      <img src="https://avatars.githubusercontent.com/kn9012" width="150px;" alt="박지호"/>
+      <img src="https://avatars.githubusercontent.com" width="150px;" alt="박지호"/>
     </td>
     <td align="center" width="50%">
-      <img src="https://avatars.githubusercontent.com/Gongman41" width="150px;" alt="이윤재"/>
+      <img src="https://avatars.githubusercontent.com" width="150px;" alt="이윤재"/>
     </td>
   </tr>
   <tr>    
