@@ -36,4 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
-application-dev.yml
+# Ignore sensitive application properties
+/src/main/resources/application-dev.yml
+/src/main/resources/heybro-9382a-firebase-adminsdk-fbsvc-8f681b5667.json

@@ -10,7 +10,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/heybro?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: appuser
-    password: app_pass
+    password: ${MYSQL_PASSWORD}
 
   # JPA 설정
   jpa:
@@ -109,11 +109,11 @@ facepp:
     secret: ${FACEPP_API_SECRET}
 
 fcm:
-  service-account-key-path: "heybro-9382a-firebase-adminsdk-fbsvc-8f681b5667.json"
+  service-account-key-path: ${FCM_KEY_PATH}
 
 google:
   gemini:
-    api-key: "AIzaSyDav5_WpSDnaLOo_hvctdR4rPjFtZcoZRQ"
+    api-key: ${GEMINI_API_KEY}
     prompt:
       system: |
         너는 사용자의 친한 형인 '브로'야. 항상 반말로 친근하고 유쾌하게 대답해야 해.

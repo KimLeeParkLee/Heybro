@@ -34,6 +34,10 @@ jobs:
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: 22
           script: |
+            # Create secrets directory and the FCM key file from GitHub Secrets
+            sudo mkdir -p /etc/heybro/secrets
+            echo '${{ secrets.FCM_KEY_JSON }}' | sudo tee /etc/heybro/secrets/firebase-key.json > /dev/null
+
             # Docker Hub에서 최신 이미지 받기
             docker pull rladbsk/heybro-backend:latest
 
@@ -43,6 +47,8 @@ jobs:
 
             # 받은 이미지로 새 컨테이너 실행
             docker run -d --name my-app-container --network="host" \
+              -v /etc/heybro/secrets/firebase-key.json:/app/secrets/firebase-key.json \
+              -e "FCM_KEY_PATH=/app/secrets/firebase-key.json" \
               -e "SPRING_PROFILES_ACTIVE=prod" \
               -e "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" \
               -e "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
@@ -54,4 +60,6 @@ jobs:
               -e "FACEPP_API_KEY=${{ secrets.FACEPP_API_KEY }}" \
               -e "FACEPP_API_SECRET=${{ secrets.FACEPP_API_SECRET }}" \
               -e "APPLE_CLIENT_ID=${{ secrets.APPLE_CLIENT_ID }}" \
+              -e "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" \
+              -e "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" \
               rladbsk/heybro-backend:latest
