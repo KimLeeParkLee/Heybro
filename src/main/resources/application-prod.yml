@@ -54,7 +54,7 @@ spring:
   servlet:
     multipart:
       enabled: true # 멀티파트 활성화 (기본값이 true)
-      max-file-size: 50MB      # 개별 파일의 최대 크기
+      max-file-size: 100MB      # 개별 파일의 최대 크기
       max-request-size: 100MB   # 한 번의 요청에 포함된 모든 파일의 총 최대 크기
 
 springdoc:
