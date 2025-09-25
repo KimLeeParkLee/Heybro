@@ -6,27 +6,28 @@ import com.google.firebase.FirebaseOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Configuration
 public class FirebaseConfig {
-
     @Value("${fcm.service-account-key-path}")
-    private String serviceAccountKeyPath;
+    private String fcmKeyPath;
 
     @Bean
     public FirebaseApp initializeFirebase() throws IOException {
-        ClassPathResource resource = new ClassPathResource(serviceAccountKeyPath);
+        InputStream serviceAccount = new FileInputStream(fcmKeyPath);
 
         FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .build();
 
         if (FirebaseApp.getApps().isEmpty()) {
             return FirebaseApp.initializeApp(options);
+        } else {
+            return FirebaseApp.getInstance();
         }
-        return FirebaseApp.getInstance();
     }
 }
