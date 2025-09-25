@@ -5,23 +5,87 @@
 - **팀명:** HEYBRO
 - **개발 기간:** 2025.07.28 ~ 2025.09.05 (6주)
 
-### **Frontend (이권민)**
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="https://avatars.githubusercontent.com/kn9012" width="150px;" alt="김유나"/>
+    </td>
+    <td align="center" width="50%">
+      <img src="https://avatars.githubusercontent.com/Gongman41" width="150px;" alt="이권민"/>
+    </td>
+  </tr>
+  <tr>    
+    <td align="center">
+      <a href="https://github.com/kn9012">
+        <div>김유나</div>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/kimyusan">
+        <div>이권민</div>
+      </a>
+    </td>
+  </tr>
+  <tr>    
+    <td align="center">
+     <b>BackEnd</b>
+    </td>
+    <td align="center">
+      <b>FrontEnd</b>
+    </td>
+  </tr>
+   <tr>
+    <td>
+      <ul>
+        <li>Spring Boot 기반 백엔드 서버 개발</li>
+        <li>Github Actions와 Docker를 활용한 CI/CD 파이프라인 구축</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li><b>프론트엔드 단독 개발</b>: 온보딩, 루틴 추천, AI 피부 측정, 알림, 쿠폰·포인트 시스템 등</li>
+        <li><b>아키텍처 설계</b>: TypeScript 계층 분리, Zustand/Jotai 상태관리, 공용 컴포넌트 구조화</li>
+        <li><b>성능 최적화</b>: iOS URLSession 네이티브 브릿지, FastImage 캐시, 로딩 인디케이터 적용</li>
+        <li><b>OAuth 연동</b>: Google/Kakao/Apple 소셜 로그인 + JWT 인증</li>
+        <li><b>커스텀 컴포넌트 구현</b>: 네비게이션바, DayRing 등 reanimated와 GPU 컴포넌트로 커스텀.</li>
+        <li><b>디자인 협업</b>: Figma → Tailwind 스타일 가이드 기반 UI 구현</li>
+      </ul>
+    </td>
+  </tr>
+ 
+  <tr>
+    <td align="center" width="50%">
+      <img src="https://avatars.githubusercontent.com/kn9012" width="150px;" alt="박지호"/>
+    </td>
+    <td align="center" width="50%">
+      <img src="https://avatars.githubusercontent.com/Gongman41" width="150px;" alt="이윤재"/>
+    </td>
+  </tr>
+  <tr>    
+    <td align="center">
+      <a href="https://github.com/kn9012">
+        <div>박지호</div>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/kimyusan">
+        <div>이윤재</div>
+      </a>
+    </td>
+  </tr>
+  <tr>    
+    <td align="center">
+     <b>Designer</b>
+    </td>
+    <td align="center">
+      <b>Designer</b>
+    </td>
+  </tr>
+   <tr>    
+    
+  </tr>
+</table>
 
-- **프론트엔드 단독 개발**: 온보딩, 루틴 추천, AI 피부 측정, 알림, 쿠폰·포인트 시스템 등
-- **아키텍처 설계**: TypeScript 계층 분리, Zustand/Jotai 상태관리, 공용 컴포넌트 구조화
-- **성능 최적화**: iOS URLSession 네이티브 브릿지, FastImage 캐시, 로딩 인디케이터 적용
-- **OAuth 연동**: Google/Kakao/Apple 소셜 로그인 + JWT 인증
-- **커스텀 컴포넌트 구현: 네비게이션바, DayRing 등 reanimated와 GPU 컴포넌트로 커스텀.**
-- **디자인 협업**: Figma → Tailwind 스타일 가이드 기반 UI 구현
-
-### **Backend (김유나)**
-
-- Spring Boot 기반 백엔드 서버 개발
-- Github Actions와 Docker를 활용한 CI/CD 파이프라인 구축
-
-### **Design (박지호, 이윤재)**
-
-- 
 
 ---
 
@@ -99,7 +163,7 @@ HEYBRO는 **남성 맞춤형 스킨케어 루틴 추천, AI 톡봇, 쿠폰 및 �
 - Google / Kakao / Apple 소셜 로그인
 - JWT 기반 자동 로그인
     
-    <p align="center"><img src="docs/images/로그인.png" width="360" alt="로그인" /></p>
+    <p align="center"><img src="docs/images/login.png" width="360" alt="로그인" /></p>
     
 
 ### 2️⃣ 온보딩 및 맞춤형 루틴 추천
@@ -107,8 +171,8 @@ HEYBRO는 **남성 맞춤형 스킨케어 루틴 추천, AI 톡봇, 쿠폰 및 �
 - 온보딩 설문 기반 루틴 추천
     
 <p align="center">
-  <img src="docs/images/타입%20설문.png" width="300" alt="타입 설문" />
-  <img src="docs/images/타입%20설문%20시작.png" width="300" alt="타입 설문 시작" />
+  <img src="docs/images/type-survey.png" width="300" alt="type survey" />
+  <img src="docs/images/type-survey-start.png" width="300" alt="type survey start" />
   <img src="docs/images/iPhone%2013%20mini%20-%20129.png" width="300" alt="iPhone 13 mini - 129" />
 </p>
     
@@ -118,7 +182,7 @@ HEYBRO는 **남성 맞춤형 스킨케어 루틴 추천, AI 톡봇, 쿠폰 및 �
 - 루틴 완료 현황, 레벨 시스템
 - 사용자 통계 시각화
     
-    <p align="center"><img src="docs/images/스크린샷%202025-09-25%20오후%2012.21.21.png" width="360" alt="스크린샷 2025-09-25 오후 12.21.21" /></p>
+    <p align="center"><img src="docs/images/home-2025-09-25-12-21-21.png" width="360" alt="home 2025-09-25 12:21:21" /></p>
     
 
 ### 4️⃣ 루틴 페이지
@@ -135,7 +199,7 @@ HEYBRO는 **남성 맞춤형 스킨케어 루틴 추천, AI 톡봇, 쿠폰 및 �
 - 카테고리 별 질문 생성 및 조회
 - 이미지 첨부 지원
     
-    <p align="center"><img src="docs/images/스크린샷%202025-09-25%20오후%2012.11.47.png" width="360" alt="스크린샷 2025-09-25 오후 12.11.47" /></p>
+    <p align="center"><img src="docs/images/community-2025-09-25-12-11-47.png" width="360" alt="community 2025-09-25 12:11:47" /></p>
     
 
 ### 6️⃣ 마이페이지
@@ -151,7 +215,7 @@ HEYBRO는 **남성 맞춤형 스킨케어 루틴 추천, AI 톡봇, 쿠폰 및 �
 
 - 루틴 달성 시 적립 받은 포인트로 쿠폰 구매
     
-    <p align="center"><img src="docs/images/스크린샷%202025-09-25%20오후%2012.12.30.png" width="360" alt="스크린샷 2025-09-25 오후 12.12.30" /></p>
+    <p align="center"><img src="docs/images/coupon-2025-09-25-12-12-30.png" width="360" alt="coupon 2025-09-25 12:12:30" /></p>
     
 
 ### 4️⃣ AI 톡봇
