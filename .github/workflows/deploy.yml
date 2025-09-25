@@ -62,4 +62,5 @@ jobs:
               -e "APPLE_CLIENT_ID=${{ secrets.APPLE_CLIENT_ID }}" \
               -e "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" \
               -e "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" \
+              -e "MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}" \
               rladbsk/heybro-backend:latest

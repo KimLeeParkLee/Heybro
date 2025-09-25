@@ -9,24 +9,13 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/heybro?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: appuser
+    username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
 
   # JPA 설정
   jpa:
     hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        # 실행되는 SQL 쿼리를 로그로 출력
-        show_sql: true
-        # SQL 로그를 예쁘게 포맷팅
-        format_sql: true
-        # 주석 처리된 SQL 힌트 출력
-        use_sql_comments: true
-    # 쿼리 파라미터 값을 로그에 남길지 여부 (JPA 3.1 이상)
-    # logging.level.org.hibernate.orm.jdbc.bind: trace 와 함께 사용
-    show-sql: true
+      ddl-auto: validate
 
   # Redis 설정
   data:
@@ -65,13 +54,6 @@ spring:
       enabled: true # 멀티파트 활성화 (기본값이 true)
       max-file-size: 10MB      # 개별 파일의 최대 크기
       max-request-size: 50MB   # 한 번의 요청에 포함된 모든 파일의 총 최대 크기
-
-logging:
-  level:
-    # org.hibernate.SQL: 실행되는 SQL 쿼리 로그
-    org.hibernate.SQL: debug
-    # org.hibernate.type.descriptor.sql.BasicBinder: SQL에 바인딩되는 파라미터 값 로그
-    org.hibernate.type.descriptor.sql: trace
 
 springdoc:
   swagger-ui:
