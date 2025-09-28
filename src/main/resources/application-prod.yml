@@ -27,6 +27,7 @@ spring:
 
   jackson:
     property-naming-strategy: SNAKE_CASE
+    time-zone: Asia/Seoul
 
   # OAuth2 Client 설정
   security:
