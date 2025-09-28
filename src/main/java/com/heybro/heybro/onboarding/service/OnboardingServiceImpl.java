@@ -180,6 +180,7 @@ public class OnboardingServiceImpl implements OnboardingService {
 
         // 11. DailyRoutineLog에 오늘 로그 저장하기
         routineLogService.createLogsForUser(user, LocalDate.now());
+        log.info("Creating daily logs for date: {}", LocalDate.now());
 
         // 12. 최종 결과를 DTO로 변환하여 반환
         return UserTypeResponseDto.from(finalUserType);
