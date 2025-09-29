@@ -39,7 +39,7 @@ public class GeminiService {
         // API 호출
         GeminiResponseDto response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/v1beta/models/gemini-pro:generateContent")
+                        .path("/v1beta/models/gemini-2.5-flash:generateContent")
                         .queryParam("key", geminiApiKey)
                         .build())
                 .bodyValue(requestDto)
