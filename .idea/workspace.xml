@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4f3237ec-06ed-4fa3-84c7-43a14418ebb8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/service/OnboardingServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/heybro/heybro/onboarding/service/OnboardingServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -295,7 +294,8 @@
       <workItem from="1758790200193" duration="1110000" />
       <workItem from="1758794691162" duration="3391000" />
       <workItem from="1758848661695" duration="1304000" />
-      <workItem from="1759074382112" duration="1939000" />
+      <workItem from="1759074382112" duration="3705000" />
+      <workItem from="1759157179275" duration="1366000" />
     </task>
     <servers />
   </component>
