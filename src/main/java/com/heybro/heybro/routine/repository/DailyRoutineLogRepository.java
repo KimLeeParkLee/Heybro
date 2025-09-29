@@ -26,8 +26,8 @@ public interface DailyRoutineLogRepository extends JpaRepository<DailyRoutineLog
     @Query("select d from DailyRoutineLog d join fetch d.routine where d.user = :user and d.taskDate between :startDate and :endDate")
     List<DailyRoutineLog> findAllByUserAndTaskDateBetweenWithRoutine(@Param("user") User user, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    List<DailyRoutineLog> findAllByUserAndTaskDateBetween(User user, LocalDate startDate, LocalDate endDate);
-
     void deleteAllByUser(User user);
+
+    boolean existsByUserAndTaskDate(User user, LocalDate taskDate);
 }
 
