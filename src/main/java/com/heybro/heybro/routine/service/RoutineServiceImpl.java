@@ -14,10 +14,11 @@ import com.heybro.heybro.user.dto.response.UserRoutineResponseDto;
 import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.repository.UserRoutineRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -115,8 +116,16 @@ public class RoutineServiceImpl implements RoutineService {
 
             // 만약 오늘 날짜인데 로그가 없으면 즉시 생성
             if (logs.isEmpty() && date.isEqual(today)) {
-                routineLogService.createLogsForUser(user, dateService.getToday());
-                logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, date);
+                try {
+                    // 이 메소드는 동시성 문제로 예외가 발생할 수 있음
+                    routineLogService.createLogsForUser(user, dateService.getToday());
+                } catch (DataIntegrityViolationException e) {
+                    // 동시성 문제로 다른 요청이 먼저 로그를 생성한 경우, 이 예외를 잡아서 무시하고 진행
+                    // 이미 로그가 안전하게 생성되었다는 신호이므로 정상 처리로 간주함
+                    log.info("Race condition handled: Logs for user {} on {} already created by a concurrent request.", user.getId(), date);
+                }
+                // 예외가 발생했든 안했든, 이제 로그가 확실히 존재하므로 다시 조회
+                logs = dailyRoutineLogRepository.findAllByUserAndTaskDateWithRoutine(user, date);
             }
 
             // (3) 로그를 DTO로 변환
