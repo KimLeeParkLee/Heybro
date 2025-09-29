@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -179,8 +180,7 @@ public class OnboardingServiceImpl implements OnboardingService {
         }
 
         // 11. DailyRoutineLog에 오늘 로그 저장하기
-        routineLogService.createLogsForUser(user, LocalDate.now());
-        log.info("Creating daily logs for date: {}", LocalDate.now());
+        routineLogService.createLogsForUser(user, LocalDate.now(ZoneId.of("Asia/Seoul")));
 
         // 12. 최종 결과를 DTO로 변환하여 반환
         return UserTypeResponseDto.from(finalUserType);
