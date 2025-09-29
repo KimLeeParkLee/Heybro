@@ -52,4 +52,16 @@ public class Routine {
     public void updateRoutineTemplate(RoutineTemplate routineTemplate) {
         this.routineTemplate = routineTemplate;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Routine routine)) return false;
+        return id != null && id.equals(routine.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
