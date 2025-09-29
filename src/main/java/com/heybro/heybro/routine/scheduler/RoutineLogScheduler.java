@@ -1,10 +1,9 @@
 package com.heybro.heybro.routine.scheduler;
 
-import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
+import com.heybro.heybro.common.date.service.DateService;
 import com.heybro.heybro.routine.service.RoutineLogService;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.repository.UserRepository;
-import com.heybro.heybro.user.repository.UserRoutineRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,16 +19,17 @@ import java.util.List;
 public class RoutineLogScheduler {
 
     private final UserRepository userRepository;
-    private final DailyRoutineLogRepository dailyRoutineLogRepository;
-    private final UserRoutineRepository userRoutineRepository;
     private final RoutineLogService routineLogService;
+    private final DateService dateService; // DateService 주입
 
     // 매일 자정(0시 0분 0초)에 실행
     @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     @Transactional
     public void createDailyRoutineLogs() {
         log.info("매일 루틴 로그 생성을 시작합니다.");
-        LocalDate today = LocalDate.now();
+
+        LocalDate today = dateService.getToday(); // 수정: DateService 사용
+
         List<User> allUsers = userRepository.findAll();
 
         for (User user : allUsers) {

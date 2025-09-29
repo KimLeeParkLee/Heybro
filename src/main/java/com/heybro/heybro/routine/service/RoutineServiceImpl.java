@@ -1,5 +1,6 @@
 package com.heybro.heybro.routine.service;
 
+import com.heybro.heybro.common.date.service.DateService;
 import com.heybro.heybro.routine.domain.*;
 import com.heybro.heybro.routine.dto.request.RoutineAddRequestDto;
 import com.heybro.heybro.routine.dto.request.RoutineModifyRequestDto;
@@ -39,6 +40,7 @@ public class RoutineServiceImpl implements RoutineService {
     private final RoutineElementRepository routineElementRepository;
     private final RecommendedProductRepository recommendedProductRepository;
     private final RoutineTipRepository routineTipRepository;
+    private final DateService dateService;
 
     /**
      * 과거부터 오늘까지면 DailyRoutineLog에서 조회
@@ -47,8 +49,10 @@ public class RoutineServiceImpl implements RoutineService {
 
     @Override
     public UserRoutineResponseDto getRoutinesByDate(LocalDate date, String email) {
+        LocalDate today = dateService.getToday();
+
         // 오늘 이후부터 조회
-        if (date.isAfter(LocalDate.now())) {
+        if (date.isAfter(today)) {
             // (1) user 조회
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
@@ -110,8 +114,8 @@ public class RoutineServiceImpl implements RoutineService {
             List<DailyRoutineLog> logs = dailyRoutineLogRepository.findAllByUserAndTaskDateWithRoutine(user, date);
 
             // 만약 오늘 날짜인데 로그가 없으면 즉시 생성
-            if (logs.isEmpty() && date.isEqual(LocalDate.now())) {
-                routineLogService.createLogsForUser(user, LocalDate.now());
+            if (logs.isEmpty() && date.isEqual(today)) {
+                routineLogService.createLogsForUser(user, dateService.getToday());
                 logs = dailyRoutineLogRepository.findAllByUserAndTaskDate(user, date);
             }
 
@@ -181,8 +185,10 @@ public class RoutineServiceImpl implements RoutineService {
         Routine routine = routineRepository.findById(routineId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 루틴을 찾을 수 없습니다."));
 
+        LocalDate today = dateService.getToday();
+
         // (1) DailyRoutineLog에서 회원, 루틴 아이디로 해당하는 루틴 찾기
-        DailyRoutineLog logs = dailyRoutineLogRepository.findByUserAndRoutineAndTaskDate(user, routine, LocalDate.now());
+        DailyRoutineLog logs = dailyRoutineLogRepository.findByUserAndRoutineAndTaskDate(user, routine, today);
 
         // (2) 완료 상태로 변경
         logs.toggleCompletion();

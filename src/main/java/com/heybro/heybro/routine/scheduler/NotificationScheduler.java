@@ -1,5 +1,6 @@
 package com.heybro.heybro.routine.scheduler;
 
+import com.heybro.heybro.common.date.service.DateService;
 import com.heybro.heybro.notification.dto.request.FcmSendDto;
 import com.heybro.heybro.notification.service.FcmService;
 import com.heybro.heybro.user.domain.UserRoutineSchedule;
@@ -10,7 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -22,14 +22,22 @@ public class NotificationScheduler {
 
     private final UserRoutineScheduleRepository userRoutineScheduleRepository;
     private final FcmService fcmService;
+    private final DateService dateService;
 
     @Scheduled(cron = "0 * * * * *") // 매 분마다 실행
     public void sendRoutineNotifications() {
         ZoneId seoulZone = ZoneId.of("Asia/Seoul");
-        LocalTime now = LocalTime.now(seoulZone).withSecond(0).withNano(0);
-        DayOfWeek today = LocalDate.now(seoulZone).getDayOfWeek();
 
-        List<UserRoutineSchedule> schedules = userRoutineScheduleRepository.findAllByDayOfWeekEqualsAndScheduleTimeEquals(today, now);
+        // DateService로 오늘 날짜 가져오기
+        DayOfWeek today = dateService.getToday().getDayOfWeek();
+
+        // 현재 시간 가져오기 (초, 나노 제거)
+        LocalTime now = LocalTime.now(seoulZone).withSecond(0).withNano(0);
+
+        log.info("NotificationScheduler 실행 - 오늘: {}, 현재 시간: {}", today, now);
+
+        List<UserRoutineSchedule> schedules =
+                userRoutineScheduleRepository.findAllByDayOfWeekEqualsAndScheduleTimeEquals(today, now);
 
         for (UserRoutineSchedule schedule : schedules) {
             String deviceToken = schedule.getUserRoutine().getUser().getNotificationToken();
@@ -45,6 +53,7 @@ public class NotificationScheduler {
                         .build();
 
                 fcmService.sendMessage(fcmSendDto);
+                log.info("푸시 알림 전송 완료: {} - {}", title, body);
             }
         }
     }

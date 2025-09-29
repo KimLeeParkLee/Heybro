@@ -1,5 +1,6 @@
 package com.heybro.heybro.coupon.service;
 
+import com.heybro.heybro.common.date.service.DateService;
 import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.coupon.domain.Coupon;
 import com.heybro.heybro.coupon.domain.CouponPurchase;
@@ -19,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -32,6 +32,8 @@ public class CouponServiceImpl implements CouponService {
     private final CouponPurchaseRepository couponPurchaseRepository;
     private final UserRepository userRepository;
 
+    private final DateService dateService; // DateService 주입
+
     private final String COUPON_CODE_PREFIX = "BR";
 
     @Override
@@ -41,7 +43,6 @@ public class CouponServiceImpl implements CouponService {
 
         List<Coupon> coupons = couponRepository.findAllByOrderByIdAsc();
 
-        // 쿠폰을 타입에 맞게 분류 : 금액권/상품권
         for (Coupon coupon : coupons) {
             CouponResponseDto dto = CouponResponseDto.builder()
                     .couponId(coupon.getId())
@@ -85,7 +86,7 @@ public class CouponServiceImpl implements CouponService {
 
         couponPurchaseRepository.save(CouponPurchase.builder()
                 .giftCode(generateCouponCode())
-                .purchaseDate(LocalDate.now())
+                .purchaseDate(dateService.getToday()) // 수정: DateService 사용
                 .coupon(coupon)
                 .user(user)
                 .build());
@@ -132,29 +133,24 @@ public class CouponServiceImpl implements CouponService {
 
         String giftCode = generateCouponCode();
 
-        // 2. CouponPurchase 객체 생성 (선물용)
         CouponPurchase gift = CouponPurchase.builder()
                 .sender(sender)
-                .user(null) // 받는 사람은 아직 없음
+                .user(null)
                 .coupon(coupon)
-                .purchaseDate(LocalDate.now())
+                .purchaseDate(dateService.getToday()) // 수정: DateService 사용
                 .giftCode(giftCode)
                 .giftStatus(GiftStatus.PENDING)
                 .isUsed(false)
                 .build();
 
-        // 3. DB에 저장
         couponPurchaseRepository.save(gift);
 
-        // 4. 생성된 고유 코드를 Controller로 반환
         return CouponGiftCodeResponseDto.builder().giftCode(giftCode).build();
     }
 
     private String generateCouponCode() {
         Random random = new Random();
-        // 0부터 999999 사이의 숫자를 랜덤으로 생성
         int number = random.nextInt(1000000);
-        // 6자리로 포맷팅 (앞자리가 비면 0으로 채움)
         return String.format("%s%06d", COUPON_CODE_PREFIX, number);
     }
 }

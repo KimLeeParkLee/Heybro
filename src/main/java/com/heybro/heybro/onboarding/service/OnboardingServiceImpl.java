@@ -1,5 +1,6 @@
 package com.heybro.heybro.onboarding.service;
 
+import com.heybro.heybro.common.date.service.DateService;
 import com.heybro.heybro.onboarding.domain.OnboardingOption;
 import com.heybro.heybro.onboarding.domain.OnboardingQuestion;
 import com.heybro.heybro.onboarding.domain.UserOnboardingAnswer;
@@ -29,9 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,8 +46,8 @@ public class OnboardingServiceImpl implements OnboardingService {
     private final DailyRoutineLogRepository dailyRoutineLogRepository;
     private final UserRoutineScheduleRepository userRoutineScheduleRepository;
     private final RoutineRepository routineRepository;
-
     private final RoutineLogService routineLogService;
+    private final DateService dateService;
 
     @Override
     public List<OnboardingQuestionResponseDto> findOnboardingQuestions() {
@@ -180,7 +179,7 @@ public class OnboardingServiceImpl implements OnboardingService {
         }
 
         // 11. DailyRoutineLog에 오늘 로그 저장하기
-        routineLogService.createLogsForUser(user, LocalDate.now(ZoneId.of("Asia/Seoul")));
+        routineLogService.createLogsForUser(user, dateService.getToday());
 
         // 12. 최종 결과를 DTO로 변환하여 반환
         return UserTypeResponseDto.from(finalUserType);
