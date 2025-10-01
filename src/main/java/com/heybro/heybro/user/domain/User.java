@@ -35,7 +35,7 @@ public class User {
 
     private String nickname; // 닉네임
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email; // 이메일
 
     private String password; // 비밀번호
@@ -138,10 +138,6 @@ public class User {
     public void updateBedtime(LocalTime bedtime) {
         this.bedtime = bedtime;
     }
-
-    public void updateProvider(String provider) { this.provider = provider; }
-
-    public void updateProviderId(String providerId) { this.providerId = providerId; }
 
     public void updateFcmToken(String notificationToken) { this.notificationToken = notificationToken; }
 
