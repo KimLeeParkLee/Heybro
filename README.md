@@ -1,4 +1,4 @@
-# 남성 그루밍 루틴 서비스, HEYBRO 🧔🏻‍♂️
+# 🧔🏻‍♂️ 남성 그루밍 루틴 서비스 HEYBRO
 
 <img width="3840" height="2160" alt="image" src="https://github.com/user-attachments/assets/84a229f1-95c9-4a19-871d-7fdc9677588b" />
 
