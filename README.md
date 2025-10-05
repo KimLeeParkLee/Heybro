@@ -258,7 +258,7 @@ HEYBRO는 이러한 문제점을 해결하기 위해 탄생했습니다. 저희�
     
 - 온보딩 결과 전송 API에서 루틴 로그 생성 메서드를 호출했으나, **오늘의 루틴 로그가 생성되지 않는 문제**가 발생
 - **@Transactional**이 적용되어 있어 루틴 로그 생성 메서드 호출 시점에는 트랜잭션 내에 루틴 정보가 반영되지 않아 로그를 생성할 데이터를 찾지 못함
-- 루틴 로그 생성 작업이 부모 트랜잭션과 독립적으로 커밋되도록 **@Transactional(propagation = Propagation.REQUIRES_NEW)**를 적용
+- 루틴 로그 생성 작업이 부모 트랜잭션과 독립적으로 커밋되도록 @Transactional(propagation = Propagation.REQUIRES_NEW)를 적용
 
 ## ERD
 
