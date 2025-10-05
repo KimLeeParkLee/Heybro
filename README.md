@@ -4,6 +4,7 @@
 
 - **팀명** : 김이박이
 - **프로젝트 기간** : 2025.07.28 ~ 2025.09.05 (6주)
+- **앱스토어 링크** : https://apps.apple.com/kr/app/heybro/id6752788217
 
 <table>
   <tr>
@@ -55,12 +56,12 @@
  
   <tr>    
     <td align="center">
-      <a href="https://github.com/kn9012">
+      <a href="">
         <div>박지호</div>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/kimyusan">
+      <a href="">
         <div>이윤재</div>
       </a>
     </td>
