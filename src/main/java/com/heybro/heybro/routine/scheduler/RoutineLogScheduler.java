@@ -4,6 +4,7 @@ import com.heybro.heybro.common.date.service.DateService;
 import com.heybro.heybro.routine.service.RoutineLogService;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.repository.UserRepository;
+import com.heybro.heybro.user.repository.UserRoutineRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,6 +21,7 @@ public class RoutineLogScheduler {
 
     private final UserRepository userRepository;
     private final RoutineLogService routineLogService;
+    private final UserRoutineRepository userRoutineRepository;
     private final DateService dateService; // DateService 주입
 
     // 매일 자정(0시 0분 0초)에 실행

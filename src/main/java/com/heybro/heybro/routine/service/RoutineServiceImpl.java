@@ -155,7 +155,6 @@ public class RoutineServiceImpl implements RoutineService {
                     )
             );
 
-
             return UserRoutineResponseDto.builder()
                     .routines(routineResponseDtoList)
                     .build();
@@ -437,5 +436,4 @@ public class RoutineServiceImpl implements RoutineService {
         return userRoutineRepository.findByUserAndRoutine(user, routine)
                 .orElseThrow(() -> new EntityNotFoundException("사용자에게 해당 루틴이 존재하지 않습니다."));
     }
-
 }

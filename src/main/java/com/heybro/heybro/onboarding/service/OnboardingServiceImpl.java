@@ -154,7 +154,6 @@ public class OnboardingServiceImpl implements OnboardingService {
 
         // (5) 생성된 모든 회원 루틴 요소들을 DB에 한 번에 저장
         userRoutineRepository.saveAll(userRoutinesToSave);
-        userRoutineRepository.flush();
 
         // 10. 루틴 알림 시간 설정
         for (UserRoutine userRoutine : userRoutinesToSave) {
@@ -179,7 +178,7 @@ public class OnboardingServiceImpl implements OnboardingService {
         }
 
         // 11. DailyRoutineLog에 오늘 로그 저장하기
-        routineLogService.createLogsForUser(user, dateService.getToday());
+        routineLogService.createLogsForUser(user, userRoutinesToSave, dateService.getToday());
 
         // 12. 최종 결과를 DTO로 변환하여 반환
         return UserTypeResponseDto.from(finalUserType);
