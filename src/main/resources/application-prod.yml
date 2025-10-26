@@ -118,7 +118,11 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info, prometheus # 'prometheus' 엔드포인트를 노출함
+        include: prometheus, health, info
+  endpoint:
+    prometheus:
+      enabled: true
   metrics:
-    tags:
-      application: heybro
+    export:
+      prometheus:
+        enabled: true
