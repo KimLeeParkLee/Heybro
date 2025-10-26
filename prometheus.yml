@@ -16,6 +16,6 @@ scrape_configs:
 
   # 3. (필수) Heybro 백엔드 애플리케이션 모니터링
   - job_name: "heybro_backend_app"
-    metrics_path: '/api/prometheus' # 경로를 명시
+    metrics_path: '/api/actuator/prometheus' # 경로를 명시
     static_configs:
       - targets: ["localhost:8080"]
