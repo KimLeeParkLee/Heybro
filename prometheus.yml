@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s # 15초마다 수집
+
+scrape_configs:
+  # 1. Prometheus 자신을 모니터링
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # 2. Node Exporter (서버 시스템 메트릭) 모니터링
+  - job_name: 'node_exporter'
+    static_configs:
+      # Docker 외부에서 접근 시 호스트 IP를, 내부 통신 시 서비스 이름을 사용
+      # 이 예시에서는 Docker Compose 서비스 이름을 사용합니다.
+      - targets: ['node_exporter:9100']
+
+  # 3. (필수) Heybro 백엔드 애플리케이션 모니터링
+  - job_name: 'heybro_backend'
+    static_configs:
+      # 백엔드 애플리케이션이 /metrics 엔드포인트를 노출해야 함
+      - targets: ['host.docker.internal:8080'] # 예: 백엔드가 8080포트일 경우
