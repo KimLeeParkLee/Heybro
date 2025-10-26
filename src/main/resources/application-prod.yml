@@ -113,3 +113,12 @@ oauth2:
     iss: https://appleid.apple.com
     public-key-url: https://appleid.apple.com/auth/keys
     client-id: ${APPLE_CLIENT_ID}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus # 'prometheus' 엔드포인트를 노출함
+  metrics:
+    tags:
+      application: heybro
