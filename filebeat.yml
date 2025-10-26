@@ -1,0 +1,10 @@
+filebeat.inputs:
+  - type: filestream
+    enabled: true
+    paths:
+      # Docker 컨테이너 내부에서 바라보는 경로
+      - /var/log/my-app-logs/*.log
+
+# Filebeat가 수집한 로그를 Elasticsearch로 보냄
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"] # Docker 내부 통신

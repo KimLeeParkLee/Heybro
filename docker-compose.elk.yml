@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: elasticsearch
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # 메모리 제한 (개발용)
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.1
+    container_name: kibana
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.11.1
+    container_name: filebeat
+    user: root # 호스트 파일 접근 권한
+    volumes:
+      # 1. Filebeat 설정 파일 마운트
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      # 2. 백엔드 로그 파일이 있는 디렉토리 마운트
+      - /Users/User/Desktop/heybro/logs:/var/log/my-app-logs:ro
+      # 3. Filebeat가 수집 상태를 저장할 볼륨
+      - filebeatdata:/usr/share/filebeat/data
+    depends_on:
+      - elasticsearch
+
+volumes:
+  esdata:
+    driver: local
+  filebeatdata:
+    driver: local
