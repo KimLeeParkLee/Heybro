@@ -58,6 +58,10 @@ dependencies {
 	// FCM
 	implementation 'com.google.firebase:firebase-admin:9.3.0'
 
+	// Prometheus/Grafana
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
