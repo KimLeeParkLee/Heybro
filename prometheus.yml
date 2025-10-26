@@ -18,4 +18,4 @@ scrape_configs:
   - job_name: "heybro_backend_app"
     metrics_path: '/api/prometheus' # 경로를 명시
     static_configs:
-      - targets: ["host.docker.internal:8080"]
+      - targets: ["localhost:8080"]
