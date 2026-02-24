@@ -25,7 +25,7 @@
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/kimyusan">
+      <a href="https://github.com/Gongman41">
         <div>이권민</div>
       </a>
     </td>
