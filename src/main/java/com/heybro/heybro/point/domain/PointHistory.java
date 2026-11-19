@@ -21,6 +21,7 @@ public class PointHistory {
 
     private int amount; // 금액
 
+    @Enumerated(EnumType.STRING) // ordinal 저장은 상수 순서가 바뀌면 기존 데이터가 깨짐
     private TransactionType transactionType; // 변동 유형
 
     private LocalDateTime transactionDate; // 변동 날짜

@@ -40,5 +40,6 @@ public class CouponPurchase {
     @JoinColumn(name = "sender_id")
     private User sender; // 보내는 사람
 
+    @Enumerated(EnumType.STRING)
     private GiftStatus giftStatus; // 선물 상태
 }

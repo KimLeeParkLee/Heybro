@@ -1,6 +1,8 @@
 package com.heybro.heybro.coupon.domain;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,6 +23,7 @@ public class Coupon {
 
     private String name; // 쿠폰 이름
 
+    @Enumerated(EnumType.STRING)
     private CouponType couponType; // 쿠폰 타입
 
     private int price; // 가격
