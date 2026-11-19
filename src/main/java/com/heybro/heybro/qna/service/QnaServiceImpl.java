@@ -36,6 +36,7 @@ public class QnaServiceImpl implements QnaService {
     private final UserRepository userRepository;
     private final S3UploadService s3UploadService;
     private final QuestionViewService questionViewService;
+    private final QuestionDetailService questionDetailService;
 
     @Override
     public CustomPageResponse<QuestionListResponseDto> getQuestions(QuestionCategory category, String search, Pageable pageable) {
@@ -55,21 +56,16 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public QuestionResponseDto getQuestion(Long questionId) {
-        // 1. 조회수 증가 로직을 별도 트랜잭션으로 실행
+        // 트랜잭션 없이 두 트랜잭션 메서드를 순서대로 호출한다.
+        // 바깥 트랜잭션이 커넥션을 쥔 채 안쪽(REQUIRES_NEW) 트랜잭션이 커넥션을 하나 더 요구하면
+        // 요청당 커넥션 2개를 써서 부하 시 HikariCP 풀이 고갈되므로, 각 단계가 커넥션을 1개씩 순서대로 쓰게 한다.
+
+        // 1. 조회수 증가 (쓰기 트랜잭션, 커밋 후 커넥션 반납)
         questionViewService.incrementViewCount(questionId);
 
-        // 2. 질문과 관련된 대부분의 정보를 Fetch Join으로 한 번에 조회
-        Question question = questionRepository.findByIdWithDetails(questionId).orElseThrow(
-                () -> new ResourceNotFoundException("해당 아이디를 가진 질문을 찾을 수 없습니다: " + questionId)
-        );
-
-        // 3. 답변과 답변 작성자 정보를 Fetch Join으로 한 번에 조회
-        List<Answer> answers = answerRepository.findAnswersByQuestionIdWithUser(questionId);
-
-        // 4. DTO 변환
-        return QuestionResponseDto.from(question, answers);
+        // 2. 질문 상세 조회 + DTO 변환 (읽기 전용 트랜잭션)
+        return questionDetailService.getQuestionDetail(questionId);
     }
 
     @Override

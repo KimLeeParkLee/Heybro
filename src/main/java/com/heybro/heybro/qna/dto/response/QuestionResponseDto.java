@@ -72,7 +72,7 @@ public class QuestionResponseDto {
                 .answerCount(answers.size())
                 .viewCount(question.getViewCount())
                 .createdAt(question.getCreatedAt())
-                .categories(question.getCategories())
+                .categories(new ArrayList<>(question.getCategories())) // 지연 로딩 컬렉션을 트랜잭션 안에서 복사
                 .tags(question.getTags().stream().map(TagRequestDto::from).toList())
                 .questionImages(question.getQuestionImages().stream().map(QuestionImageResponseDto::from).toList())
                 .answers(answers.stream().map(AnswerResponseDto::from).toList())
