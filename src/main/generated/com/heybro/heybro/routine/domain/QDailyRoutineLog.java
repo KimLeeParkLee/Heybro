@@ -26,6 +26,8 @@ public class QDailyRoutineLog extends EntityPathBase<DailyRoutineLog> {
 
     public final BooleanPath isCompleted = createBoolean("isCompleted");
 
+    public final BooleanPath rewarded = createBoolean("rewarded");
+
     public final QRoutine routine;
 
     public final TimePath<java.time.LocalTime> scheduledTime = createTime("scheduledTime", java.time.LocalTime.class);

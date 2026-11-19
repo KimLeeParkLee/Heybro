@@ -32,6 +32,9 @@ public class DailyRoutineLog {
 
     private boolean isCompleted; // 완료 여부
 
+    // 포인트·경험치 보상을 이미 지급했는지 여부. 완료 취소 후 다시 완료해도 하루에 한 번만 지급하기 위한 플래그
+    private boolean rewarded;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user; // 회원
@@ -42,5 +45,14 @@ public class DailyRoutineLog {
 
     public void toggleCompletion() {
         this.isCompleted = !this.isCompleted;
+    }
+
+    // 완료 상태이고 아직 보상을 받지 않았을 때만 true 를 반환하고 지급 처리로 표시
+    public boolean claimReward() {
+        if (!this.isCompleted || this.rewarded) {
+            return false;
+        }
+        this.rewarded = true;
+        return true;
     }
 }

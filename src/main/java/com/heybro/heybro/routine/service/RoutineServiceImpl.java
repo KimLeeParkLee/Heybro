@@ -1,6 +1,10 @@
 package com.heybro.heybro.routine.service;
 
 import com.heybro.heybro.common.date.service.DateService;
+import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
+import com.heybro.heybro.point.domain.PointHistory;
+import com.heybro.heybro.point.domain.TransactionType;
+import com.heybro.heybro.point.repository.PointHistoryRepository;
 import com.heybro.heybro.routine.domain.*;
 import com.heybro.heybro.routine.dto.request.RoutineAddRequestDto;
 import com.heybro.heybro.routine.dto.request.RoutineModifyRequestDto;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -42,6 +47,10 @@ public class RoutineServiceImpl implements RoutineService {
     private final RecommendedProductRepository recommendedProductRepository;
     private final RoutineTipRepository routineTipRepository;
     private final DateService dateService;
+    private final PointHistoryRepository pointHistoryRepository;
+
+    private static final int ROUTINE_REWARD_POINT = 10;
+    private static final int ROUTINE_REWARD_EXP = 10;
 
     /**
      * 과거부터 오늘까지면 DailyRoutineLog에서 조회
@@ -196,15 +205,27 @@ public class RoutineServiceImpl implements RoutineService {
 
         LocalDate today = dateService.getToday();
 
-        // (1) DailyRoutineLog에서 회원, 루틴 아이디로 해당하는 루틴 찾기
-        DailyRoutineLog logs = dailyRoutineLogRepository.findByUserAndRoutineAndTaskDate(user, routine, today);
+        // (1) DailyRoutineLog에서 회원, 루틴 아이디로 해당하는 루틴 찾기 (행 잠금)
+        DailyRoutineLog routineLog = dailyRoutineLogRepository.findByUserAndRoutineAndTaskDate(user, routine, today);
+        if (routineLog == null) {
+            throw new ResourceNotFoundException("오늘 날짜의 루틴 기록이 없습니다. routineId=" + routineId);
+        }
 
-        // (2) 완료 상태로 변경
-        logs.toggleCompletion();
+        // (2) 완료 상태 토글
+        routineLog.toggleCompletion();
 
-        // (3) 브로 포인트, 경험치 10씩 추가
-        user.earnPoints(10);
-        user.updateExperience(10);
+        // (3) 보상은 하루에 한 번만 지급: 완료 취소 후 재완료, 반복 호출로 포인트가 누적되지 않도록 rewarded 플래그로 제어
+        if (routineLog.claimReward()) {
+            user.earnPoints(ROUTINE_REWARD_POINT);
+            user.updateExperience(ROUTINE_REWARD_EXP);
+            pointHistoryRepository.save(PointHistory.builder()
+                    .amount(ROUTINE_REWARD_POINT)
+                    .transactionDate(LocalDateTime.now())
+                    .transactionType(TransactionType.EARN)
+                    .description("루틴 달성: " + routine.getName())
+                    .user(user)
+                    .build());
+        }
     }
 
     // 단일 루틴 달성률 조회 시 월별, 일별만 가능
