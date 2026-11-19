@@ -4,6 +4,7 @@ import com.heybro.heybro.routine.domain.Routine;
 import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserRoutine;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,10 @@ public interface UserRoutineRepository extends JpaRepository<UserRoutine, Long> 
     boolean existsByUserAndRoutine(User user, Routine routine);
 
     void deleteAllByUser(User user);
+
+    @Modifying
+    @Query("delete from UserRoutine ur where ur.user = :user")
+    int deleteBulkByUser(@Param("user") User user);
 
     // 루틴을 하나라도 가진 회원 id 목록 (자정 로그 생성 대상). 전체 회원 엔티티를 올리지 않고 id 만 가져온다.
     @Query("select distinct ur.user.id from UserRoutine ur")

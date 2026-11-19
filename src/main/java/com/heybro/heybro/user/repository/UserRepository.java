@@ -25,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u.userType FROM User u WHERE u.email = :email")
     UserType findUserTypeByEmail(String email);
 
-    User findByNickname(String nickname);
+    Optional<User> findByNickname(String nickname);
 
     // TOP 10: total_bro_point 인덱스를 역순으로 10건만 읽는다 (윈도 함수를 전체 행에 적용하던 방식에서 변경).
     // 동점 시 보조 정렬(id)도 DESC 로 맞춰야 인덱스(total_bro_point, id)를 거꾸로 읽는 것만으로 끝난다 (방향이 섞이면 정렬이 필요).

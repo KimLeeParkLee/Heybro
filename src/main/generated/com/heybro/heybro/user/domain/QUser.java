@@ -82,6 +82,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final TimePath<java.time.LocalTime> wakeupTime = createTime("wakeupTime", java.time.LocalTime.class);
 
+    public final DateTimePath<java.time.LocalDateTime> withdrawnAt = createDateTime("withdrawnAt", java.time.LocalDateTime.class);
+
     public QUser(String variable) {
         super(User.class, forVariable(variable));
     }

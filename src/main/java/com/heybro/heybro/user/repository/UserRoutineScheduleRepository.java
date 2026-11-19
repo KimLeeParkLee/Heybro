@@ -1,7 +1,9 @@
 package com.heybro.heybro.user.repository;
 
+import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.domain.UserRoutineSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,6 +15,11 @@ import java.util.List;
 @Repository
 public interface UserRoutineScheduleRepository extends JpaRepository<UserRoutineSchedule, Long> {
     List<UserRoutineSchedule> findAllByDayOfWeekEqualsAndScheduleTimeEquals(DayOfWeek dayOfWeek, LocalTime time);
+
+    // 회원의 모든 루틴 스케줄을 벌크 삭제 (UserRoutine 을 지우기 전에 호출)
+    @Modifying
+    @Query("delete from UserRoutineSchedule s where s.userRoutine.id in (select ur.id from UserRoutine ur where ur.user = :user)")
+    int deleteBulkByUser(@Param("user") User user);
 
     // 자정 로그 생성용: 회원 묶음(chunk)의 해당 요일 스케줄을 루틴과 함께 한 번에 조회 (회원별 반복 조회 제거)
     @Query("select s from UserRoutineSchedule s " +

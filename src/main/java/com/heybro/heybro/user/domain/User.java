@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ public class User {
 
     private String name; // 회원 이름
 
+    @Column(unique = true)
     private String nickname; // 닉네임
 
     @Column(nullable = false, unique = true)
@@ -79,11 +81,14 @@ public class User {
 
     private String providerId; // provider id
 
+    private LocalDateTime withdrawnAt; // 탈퇴 일시 (null 이면 활성 회원)
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<CouponPurchase> couponPurchases = new ArrayList<>();
 
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    // 보낸 선물은 받는 사람의 것이므로 보낸 사람이 탈퇴해도 지우지 않는다 (cascade 제거)
+    @OneToMany(mappedBy = "sender")
     @Builder.Default
     private List<CouponPurchase> sentCoupons = new ArrayList<>();
 
@@ -95,11 +100,12 @@ public class User {
     @Builder.Default
     private List<PointHistory> pointHistories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    // 질문·답변은 커뮤니티의 공용 기록이므로 탈퇴해도 남기고 작성자만 익명 처리한다 (cascade 제거)
+    @OneToMany(mappedBy = "user")
     @Builder.Default
     private List<Answer> answers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     @Builder.Default
     private List<Question> questions = new ArrayList<>();
 
@@ -144,6 +150,22 @@ public class User {
     public void updateFcmToken(String notificationToken) { this.notificationToken = notificationToken; }
 
     public void updatePassword(String password) { this.password = password; }
+
+    // 탈퇴: 행을 지우지 않고 개인정보를 비우고 식별자를 익명화한다. 질문·답변에는 "탈퇴한 회원"으로 남는다.
+    public void withdraw() {
+        this.withdrawnAt = LocalDateTime.now();
+        this.email = "withdrawn_" + this.id + "@heybro.invalid";
+        this.nickname = "탈퇴한 회원 " + this.id;
+        this.name = null;
+        this.password = null;
+        this.phone = null;
+        this.birthDate = null;
+        this.notificationToken = null;
+        this.notificationEnabled = false;
+        this.provider = null;
+        this.providerId = null;
+        this.profileImage = null;
+    }
 
     @Override
     public boolean equals(Object o) {

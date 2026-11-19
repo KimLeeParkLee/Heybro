@@ -7,11 +7,19 @@ import com.heybro.heybro.user.domain.User;
 import com.heybro.heybro.user.dto.request.LoginRequestDto;
 import com.heybro.heybro.user.dto.request.UserRegistrationRequestDto;
 import com.heybro.heybro.user.dto.response.*;
+import com.heybro.heybro.common.exception.BusinessException;
+import com.heybro.heybro.common.exception.ErrorCode;
+import com.heybro.heybro.coupon.repository.CouponPurchaseRepository;
+import com.heybro.heybro.onboarding.repository.UserOnboardingAnswerRepository;
+import com.heybro.heybro.point.repository.PointHistoryRepository;
+import com.heybro.heybro.routine.repository.DailyRoutineLogRepository;
+import com.heybro.heybro.skin.repository.SkinDiagnosisRepository;
 import com.heybro.heybro.user.repository.UserRepository;
+import com.heybro.heybro.user.repository.UserRoutineRepository;
+import com.heybro.heybro.user.repository.UserRoutineScheduleRepository;
 import com.heybro.heybro.user.security.UserDetailsImpl;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +29,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +43,13 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, String> redisTemplate;
+    private final DailyRoutineLogRepository dailyRoutineLogRepository;
+    private final UserRoutineScheduleRepository userRoutineScheduleRepository;
+    private final UserRoutineRepository userRoutineRepository;
+    private final UserOnboardingAnswerRepository userOnboardingAnswerRepository;
+    private final SkinDiagnosisRepository skinDiagnosisRepository;
+    private final PointHistoryRepository pointHistoryRepository;
+    private final CouponPurchaseRepository couponPurchaseRepository;
     public static final String BEARER_PREFIX = "Bearer ";
 
     @Value("${jwt.expiration.refresh-token}")
@@ -43,7 +59,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginResponseDto registerNewUser(UserRegistrationRequestDto requestDto) {
         if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
-            throw new IllegalStateException("이미 가입된 이메일입니다.");
+            throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
+        }
+        if (requestDto.getNickname() != null && userRepository.findByNickname(requestDto.getNickname()).isPresent()) {
+            throw new BusinessException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
         String encodedPassword = null;
@@ -194,7 +213,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public NicknameAvailableResponseDto isNicknameAvailable(String nickname) {
-        return NicknameAvailableResponseDto.builder().isAvailable(userRepository.findByNickname(nickname) == null).build();
+        return NicknameAvailableResponseDto.builder().isAvailable(userRepository.findByNickname(nickname).isEmpty()).build();
     }
 
     @Override
@@ -225,7 +244,18 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
-        userRepository.delete(user);
+        // 이전에는 userRepository.delete 가 컬렉션 9개를 각각 로딩해 행마다 DELETE 했고,
+        // 보낸 선물 쿠폰과 남의 질문에 단 답변까지 함께 지워졌다.
+        // 개인 데이터는 벌크로 지우고, 회원 행은 지우지 않고 익명화한다 (질문·답변은 "탈퇴한 회원"으로 남음).
+        dailyRoutineLogRepository.deleteBulkByUser(user);
+        userRoutineScheduleRepository.deleteBulkByUser(user);
+        userRoutineRepository.deleteBulkByUser(user);
+        userOnboardingAnswerRepository.deleteBulkByUser(user);
+        skinDiagnosisRepository.deleteBulkByUser(user);
+        pointHistoryRepository.deleteBulkByUser(user);
+        couponPurchaseRepository.deleteBulkByUser(user);
+        redisTemplate.delete(user.getEmail()); // refresh token 폐기
+        user.withdraw();
     }
 
     @Override

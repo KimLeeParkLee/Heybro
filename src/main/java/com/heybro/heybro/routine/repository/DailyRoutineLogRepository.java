@@ -5,6 +5,7 @@ import com.heybro.heybro.routine.domain.Routine;
 import com.heybro.heybro.user.domain.User;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,6 +28,15 @@ public interface DailyRoutineLogRepository extends JpaRepository<DailyRoutineLog
     List<DailyRoutineLog> findAllByUserAndTaskDateBetweenWithRoutine(@Param("user") User user, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     void deleteAllByUser(User user);
+
+    // 파생 deleteAllBy 는 전부 SELECT 한 뒤 1건씩 DELETE 한다. 탈퇴·온보딩 재제출처럼 많을 수 있는 행은 벌크로 지운다.
+    @Modifying
+    @Query("delete from DailyRoutineLog d where d.user = :user")
+    int deleteBulkByUser(@Param("user") User user);
+
+    @Modifying
+    @Query("delete from DailyRoutineLog d where d.user = :user and d.taskDate = :taskDate")
+    int deleteBulkByUserAndTaskDate(@Param("user") User user, @Param("taskDate") LocalDate taskDate);
 
     boolean existsByUserAndTaskDate(User user, LocalDate taskDate);
 
