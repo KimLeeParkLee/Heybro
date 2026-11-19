@@ -63,3 +63,92 @@ DTO 변환은 읽기 트랜잭션 안에서 끝나며, 지연 로딩 `categories
 - 1 thread × 300 평균 4.2 ms, 8 threads × 300 평균 4.6 ms, 1,159 req/s — 개선 전(3.8 / 4.2 ms)과 오차 범위 내.
 - 조회수: 전체 요청 7,802건(curl 2 + JMeter 7,800) 후 `view_count` = 7,802 로 요청마다 1씩 반영.
 - 포인트 동시 사용: 100 성공 / 20 잔액 부족 / 잔액 0 으로 변동 없음.
+
+## 4. 루틴 완료 토글의 포인트 중복 적립 (`measure2.sh` B)
+
+`PATCH /routines/{id}/complete`가 완료 상태와 상관없이 호출할 때마다 10P·경험치 10을 더했고 포인트 내역도 남기지 않았다.
+`DailyRoutineLog.rewarded` 플래그를 두어 하루에 한 번만 지급하고 내역을 기록한다. 오늘 로그가 없으면 NPE(500) 대신 404.
+
+| 구분 | PATCH 20회 호출 후 포인트 | 포인트 내역 |
+|---|---|---|
+| 개선 전 | 200 | 0건 |
+| 개선 후 | **10** | **1건** |
+
+## 5. 쿠폰 구매·선물의 포인트 미차감 (`measure2.sh` C)
+
+구매·선물 API 가 포인트를 전혀 차감하지 않았고(`Coupon.price` 미사용), 트랜잭션도 없었다.
+`findByEmailForUpdate`(비관적 락) → 잔액 검증 → 차감 → `PointHistory` → `CouponPurchase` 를 한 트랜잭션으로 묶고,
+쿠폰 코드는 `Random` 6자리(약 1,200건부터 충돌 50%)에서 `SecureRandom` 10자리 + 중복 확인 재시도로 바꿨다.
+
+| 구분 (잔액 1,000 · 10P 쿠폰 · 120건 동시) | 성공 | 400 | 최종 잔액 | 구매 내역 | 포인트 내역 |
+|---|---|---|---|---|---|
+| 개선 전 | 120 | 0 | 1,000 (차감 없음) | 120 | 0 |
+| 개선 후 | **100** | **20** | **0** | **100** | **100** |
+
+## 6. 랭킹 조회: 기준 불일치 + 전체 스캔 (`measure2.sh` D, 회원 10만 명)
+
+TOP 10 은 누적 포인트(`DENSE_RANK`), 내 순위는 현재 잔액(`RANK`)으로 계산해 기준이 달랐고, 두 쿼리 모두 윈도 함수 때문에
+`user` 전체를 정렬·임시 테이블에 올렸다(`results/after-items/explain-ranking.txt`).
+누적 포인트로 통일하고 `idx_user_total_bro_point` 를 추가해, TOP 10 은 인덱스 역순 스캔 10건, 내 순위는
+`COUNT(DISTINCT total_bro_point)+1 WHERE total_bro_point > 내 점수`(커버링 인덱스 범위 스캔)로 구한다.
+보조 정렬을 `id DESC` 로 맞춰야 역순 인덱스 스캔이 되고, `id ASC` 면 다시 정렬이 생긴다(실행 계획으로 확인).
+
+| 구분 (8 threads × 100) | 평균 | p95 | 처리량 | TOP 10 실행 계획 |
+|---|---|---|---|---|
+| 개선 전 | 527 ms | 868 ms | 14.9 req/s | Table scan 96,792행 → Sort → Window → Temporary |
+| 개선 후 | **39 ms** | **49 ms** | **170 req/s** | Index scan (reverse) 10행 |
+
+## 7. 자정 루틴 로그 스케줄러 (`measure2.sh` E, 회원 1만 명 × 루틴 3개)
+
+전체 회원 엔티티를 올린 뒤 회원마다 `existsBy` + fetch join 조회를 하고 로그를 1건씩 INSERT 했으며, 전체가 트랜잭션 하나였다.
+루틴이 있는 회원 id 만 가져와 500명 단위로 나누고, 묶음마다 별도 트랜잭션(REQUIRES_NEW)에서
+`이미 생성된 회원 확인 1 + 스케줄 조회 1 + JDBC 배치 INSERT 1` 로 처리한다 (IDENTITY 전략이라 JPA 배치 대신 JdbcTemplate).
+유니크 제약 충돌은 `ON DUPLICATE KEY UPDATE id = id` 로 그 행만 건너뛴다.
+
+| 구분 | 소요 시간 | 쿼리 수 | 생성 로그 |
+|---|---|---|---|
+| 개선 전 | 1,426 s (23.8분, 단일 트랜잭션) | 50,030 | 30,000 |
+| 개선 후 | **5.3 s** | **44** (묶음 20개 × 2 + 배치 INSERT 20 + 대상 조회 1 + 기타) | 30,000 |
+
+## 8. 알림 스케줄러의 지연 로딩 예외 (`measure2.sh` F)
+
+매분 실행되는 `NotificationScheduler`가 트랜잭션 없이 `schedule.getUserRoutine().getUser()` 를 호출해
+실제로는 `LazyInitializationException` 이 나고 알림이 한 건도 나가지 않았다 (`results/base-items/app-notify.log`).
+회원·루틴을 fetch join 하는 `findNotificationTargets` 로 바꾸고, `(day_of_week, schedule_time)` 인덱스를 추가했으며,
+FCM 은 `sendEach` 로 500건씩 묶어 보낸다.
+
+| 구분 (대상 3명) | LazyInitializationException | 조회 쿼리 | 발송 시도 |
+|---|---|---|---|
+| 개선 전 | 2회 (발송 0건) | 3 (스케줄 1 + 프록시 초기화 시도) | 0 |
+| 개선 후 | **0회** | **1** (fetch join) | 3건 일괄 (로컬은 더미 키라 FCM 응답은 실패) |
+
+## 9. 인증 (`measure2.sh` A)
+
+- 로그아웃 시 Redis 에 넣던 블랙리스트를 아무도 읽지 않아 로그아웃한 토큰이 만료까지 유효했다 → 필터에서 확인해 401.
+- access/refresh 토큰이 같은 형식이라 refresh 토큰으로도 API 호출이 됐다 → `typ` 클레임으로 구분, refresh 는 재발급에만 허용.
+- 필터가 요청마다 회원을 DB 조회했다 → 서명 검증된 클레임으로 인증 객체를 만들어 조회 제거.
+
+| 구분 | 질문 상세 조회 쿼리/요청 | 로그아웃한 토큰 | refresh 토큰으로 API 호출 |
+|---|---|---|---|
+| 개선 전 | 7 (회원 조회 1 포함) | 200 | 200 |
+| 개선 후 | **6** | **401** | **401** |
+
+## 10. 외부 API 호출과 트랜잭션
+
+- Face++(`SkinAnalysisService`): 메서드 전체 `@Transactional` → 외부 호출은 밖에서, DB 저장만 `TransactionTemplate` 로.
+- S3 업로드(`QnaServiceImpl.createQuestion/createAnswer`): 업로드를 먼저 끝내고 DB 저장만 트랜잭션으로. 저장 실패 시 업로드 파일 삭제(보상).
+- `RestTemplate` 연결 3초/읽기 10초, Gemini `block(15초)` 타임아웃. (수치 측정은 하지 않음: 외부 API 모킹이 필요)
+
+## 11. 포인트 금액 검증·예외 매핑
+
+`POST /points/use` 에 음수를 보내면 잔액이 늘어나던 문제를 `@Positive` + 서비스 검증으로 막았다.
+검증 실패(400), `EntityNotFoundException`(404), `IllegalStateException`/무결성 위반(409)을 매핑해 500 으로 뭉개지지 않게 했다.
+
+## 측정 스크립트 (2차)
+
+| 파일 | 용도 |
+|---|---|
+| `measure2.sh <jar> <label>` | 위 4~9 항목 자동 측정. `PARTS=ABCDEF` 로 부분 실행 |
+| `seed-routine.sql`, `seed-coupon.sql`, `seed-ranking.sql`, `seed-midnight.sql`, `seed-notify.sql` | 각 항목 시드 |
+| `explain-ranking.sh` | 랭킹 쿼리 실행 계획 전/후 비교 |
+| `common/perf/PerfRunner` (perf 프로필) | 기동 직후 스케줄러를 1회 실행해 측정 (`--perf.task=midnight|notify`) |
