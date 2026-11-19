@@ -187,7 +187,8 @@ public class RoutineServiceImpl implements RoutineService {
     @Override
     @Transactional
     public void completeUserRoutine(String email, Long routineId) {
-        User user = userRepository.findByEmail(email)
+        // 루틴 완료 시 포인트·경험치를 증가시키므로 회원 행을 잠근 뒤 수정 (포인트 사용 요청과의 갱신 손실 방지)
+        User user = userRepository.findByEmailForUpdate(email)
                 .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
         Routine routine = routineRepository.findById(routineId)
