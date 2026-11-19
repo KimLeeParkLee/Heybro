@@ -26,4 +26,8 @@ public interface UserRoutineRepository extends JpaRepository<UserRoutine, Long> 
     boolean existsByUserAndRoutine(User user, Routine routine);
 
     void deleteAllByUser(User user);
+
+    // 루틴을 하나라도 가진 회원 id 목록 (자정 로그 생성 대상). 전체 회원 엔티티를 올리지 않고 id 만 가져온다.
+    @Query("select distinct ur.user.id from UserRoutine ur")
+    List<Long> findAllUserIdsWithRoutine();
 }

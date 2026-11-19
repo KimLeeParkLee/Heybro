@@ -29,5 +29,9 @@ public interface DailyRoutineLogRepository extends JpaRepository<DailyRoutineLog
     void deleteAllByUser(User user);
 
     boolean existsByUserAndTaskDate(User user, LocalDate taskDate);
+
+    // 해당 날짜에 이미 로그가 있는 회원 id (chunk 단위로 한 번에 확인)
+    @Query("select distinct d.user.id from DailyRoutineLog d where d.taskDate = :taskDate and d.user.id in :userIds")
+    List<Long> findUserIdsWithLogOn(@Param("userIds") List<Long> userIds, @Param("taskDate") LocalDate taskDate);
 }
 
