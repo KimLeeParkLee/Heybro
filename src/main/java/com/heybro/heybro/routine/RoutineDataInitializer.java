@@ -3,7 +3,7 @@ package com.heybro.heybro.routine;
 import com.heybro.heybro.routine.domain.*;
 import com.heybro.heybro.routine.repository.RoutineTemplateRepository;
 import com.heybro.heybro.user.domain.UserType;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

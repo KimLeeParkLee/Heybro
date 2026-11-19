@@ -24,7 +24,7 @@ import com.heybro.heybro.user.repository.UserRepository;
 import com.heybro.heybro.user.repository.UserRoutineRepository;
 import com.heybro.heybro.user.repository.UserRoutineScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -76,23 +76,33 @@ public class OnboardingServiceImpl implements OnboardingService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
-        // 이미 온보딩을 진행한 경우 기존 정보 삭제
+        // 이미 온보딩을 진행한 경우 기존 정보 삭제.
+        // 벌크 삭제로 바꿔 행마다 DELETE 하던 쿼리를 줄이고, 과거 달성 이력(DailyRoutineLog)은 지우지 않고 오늘 로그만 다시 만든다.
         if (user.getUserType() != null) {
-            userOnboardingAnswerRepository.deleteAllByUser(user);
-            userRoutineRepository.deleteAllByUser(user);
-            dailyRoutineLogRepository.deleteAllByUser(user);
+            userOnboardingAnswerRepository.deleteBulkByUser(user);
+            userRoutineScheduleRepository.deleteBulkByUser(user);
+            userRoutineRepository.deleteBulkByUser(user);
+            dailyRoutineLogRepository.deleteBulkByUserAndTaskDate(user, dateService.getToday());
         }
 
-        // 2. 요청으로 들어온 답변 DTO 리스트를 실제 Answer 엔티티 리스트로 변환
+        // 2. 답변에 쓰인 질문·선택지를 각각 한 번의 IN 조회로 가져온다 (답변마다 findById 2회 → 2회)
+        Map<Long, OnboardingQuestion> questionById = onboardingQuestionRepository.findAllById(
+                        request.getAnswers().stream().map(a -> a.getOnboardingQuestionId()).distinct().toList())
+                .stream().collect(Collectors.toMap(OnboardingQuestion::getId, q -> q));
+        Map<Long, OnboardingOption> optionById = onboardingOptionRepository.findAllById(
+                        request.getAnswers().stream().map(a -> a.getOnboardingOptionId()).distinct().toList())
+                .stream().collect(Collectors.toMap(OnboardingOption::getId, o -> o));
+
         List<UserOnboardingAnswer> answers = request.getAnswers().stream()
                 .map(answerDto -> {
-                    // 3. answerDto에 있는 optionId로 OnboardingOption 엔티티를 DB에서 조회
-                    OnboardingQuestion question = onboardingQuestionRepository.findById(answerDto.getOnboardingQuestionId())
-                            .orElseThrow(() -> new IllegalArgumentException("해당 질문을 찾을 수 없습니다. ID: " + answerDto.getOnboardingQuestionId()));
-
-                    // 3. answerDto에 있는 optionId로 OnboardingOption 엔티티를 DB에서 조회
-                    OnboardingOption option = onboardingOptionRepository.findById(answerDto.getOnboardingOptionId())
-                            .orElseThrow(() -> new IllegalArgumentException("해당 선택지를 찾을 수 없습니다. ID: " + answerDto.getOnboardingOptionId()));
+                    OnboardingQuestion question = questionById.get(answerDto.getOnboardingQuestionId());
+                    if (question == null) {
+                        throw new IllegalArgumentException("해당 질문을 찾을 수 없습니다. ID: " + answerDto.getOnboardingQuestionId());
+                    }
+                    OnboardingOption option = optionById.get(answerDto.getOnboardingOptionId());
+                    if (option == null) {
+                        throw new IllegalArgumentException("해당 선택지를 찾을 수 없습니다. ID: " + answerDto.getOnboardingOptionId());
+                    }
 
                     // 4. 조회한 엔티티들로 UserOnboardingAnswer를 생성
                     return UserOnboardingAnswer.builder()
@@ -116,6 +126,9 @@ public class OnboardingServiceImpl implements OnboardingService {
         user.updateWakeupTime(request.getWakeupTime());
         user.updateBedtime(request.getBedtime());
 
+        // 8-1. 루틴 알림 시간은 저장 전에 정한다 (이전에는 null 로 INSERT 한 뒤 다시 UPDATE 해 쿼리가 두 배였음)
+        LocalTime wakeupTime = user.getWakeupTime();
+
         // 9. 레벨 1 루틴 및 공통 루틴 추가
         // (1) 레벨 1 & 사용자 타입에 맞는 루틴 조회
         List<Routine> level1Routines = routineRepository.findByLevelAndRoutineTemplateType(1, finalUserType);
@@ -138,11 +151,17 @@ public class OnboardingServiceImpl implements OnboardingService {
                     .schedules(new ArrayList<>()) // 양방향 연관관계를 위해 빈 리스트로 초기화
                     .build();
 
+            LocalTime notificationTime = switch (routine.getTimeOfDay()) {
+                case MORNING -> wakeupTime;
+                case LUNCH -> LocalTime.of(12, 0);
+                case EVENING -> LocalTime.of(19, 0);
+            };
+
             // 생성된 UserRoutineElement에 대해 매일(월~일) 스케줄 생성
             for (DayOfWeek day : DayOfWeek.values()) { // DayOfWeek.values()는 MONDAY부터 SUNDAY까지 모든 요일 반환
                 UserRoutineSchedule schedule = UserRoutineSchedule.builder()
                         .dayOfWeek(day)       // 요일 설정
-                        .scheduleTime(null)   // 시간은 null로 설정
+                        .scheduleTime(notificationTime)
                         .userRoutine(userRoutine) // 부모인 userElement와 연결
                         .build();
 
@@ -152,30 +171,8 @@ public class OnboardingServiceImpl implements OnboardingService {
             userRoutinesToSave.add(userRoutine);
         }
 
-        // (5) 생성된 모든 회원 루틴 요소들을 DB에 한 번에 저장
+        // (5) 생성된 모든 회원 루틴 요소들을 DB에 한 번에 저장 (스케줄은 cascade 로 함께 저장)
         userRoutineRepository.saveAll(userRoutinesToSave);
-
-        // 10. 루틴 알림 시간 설정
-        for (UserRoutine userRoutine : userRoutinesToSave) {
-            TimeOfDay timeOfDay = userRoutine.getRoutine().getTimeOfDay();
-            LocalTime notificationTime = null;
-            switch (timeOfDay) {
-                case MORNING:
-                    notificationTime = user.getWakeupTime();
-                    break;
-                case LUNCH:
-                    notificationTime = LocalTime.of(12, 0);
-                    break;
-                case EVENING:
-                    notificationTime = LocalTime.of(19, 0);
-                    break;
-            }
-
-            for (UserRoutineSchedule schedule : userRoutine.getSchedules()) {
-                schedule.updateScheduleTime(notificationTime);
-            }
-            userRoutineScheduleRepository.saveAll(userRoutine.getSchedules());
-        }
 
         // 11. DailyRoutineLog에 오늘 로그 저장하기
         routineLogService.createLogsForUser(user, userRoutinesToSave, dateService.getToday());
