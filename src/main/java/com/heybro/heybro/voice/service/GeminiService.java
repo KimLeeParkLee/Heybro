@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Duration;
+
 @Service
 public class GeminiService {
+
+    private static final Duration GEMINI_TIMEOUT = Duration.ofSeconds(15);
 
     private final WebClient webClient;
     private final String geminiApiKey;
@@ -45,7 +49,7 @@ public class GeminiService {
                 .bodyValue(requestDto)
                 .retrieve()
                 .bodyToMono(GeminiResponseDto.class)
-                .block(); // 동기적으로 결과를 기다림
+                .block(GEMINI_TIMEOUT); // 동기 대기하되 타임아웃을 두어 외부 지연이 요청 스레드를 붙잡지 않게 함
 
         // 응답 유효성 검사
         if (response == null || response.candidates() == null || response.candidates().isEmpty() ||

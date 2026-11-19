@@ -17,7 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -45,10 +45,13 @@ public class SkinAnalysisService {
 
     private final SkinDiagnosisRepository skinDiagnosisRepository;
     private final UserRepository userRepository;
+    private final TransactionTemplate transactionTemplate;
 
-    @Transactional
+    // 외부 API(Face++) 호출은 트랜잭션 밖에서 먼저 끝내고, DB 저장만 짧은 트랜잭션으로 묶는다.
+    // 이전에는 메서드 전체가 @Transactional 이라 외부 응답을 기다리는 동안 DB 커넥션을 점유했다.
     public SkinScoreResponseDto analyzeWithFacePlusPlus(MultipartFile image, DeviceRequestDto device, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -78,6 +81,11 @@ public class SkinAnalysisService {
 
         SkinAnalysisDataResponseDto skinAnalysisData = buildSkinAnalysisData(faceppResponse.getResult());
 
+        // 여기서부터 DB 작업: 커넥션은 이 블록 안에서만 사용
+        return transactionTemplate.execute(status -> saveDiagnosisAndBuildResponse(user, skinAnalysisData));
+    }
+
+    private SkinScoreResponseDto saveDiagnosisAndBuildResponse(User user, SkinAnalysisDataResponseDto skinAnalysisData) {
         SkinDiagnosis skinDiagnosis = SkinDiagnosis.builder()
                 .user(user)
                 .diagnosisDate(LocalDateTime.now())

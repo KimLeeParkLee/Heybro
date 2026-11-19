@@ -20,11 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,6 +38,7 @@ public class QnaServiceImpl implements QnaService {
     private final S3UploadService s3UploadService;
     private final QuestionViewService questionViewService;
     private final QuestionDetailService questionDetailService;
+    private final TransactionTemplate transactionTemplate;
 
     @Override
     public CustomPageResponse<QuestionListResponseDto> getQuestions(QuestionCategory category, String search, Pageable pageable) {
@@ -68,78 +70,78 @@ public class QnaServiceImpl implements QnaService {
         return questionDetailService.getQuestionDetail(questionId);
     }
 
+    // S3 업로드(외부 I/O)는 트랜잭션 밖에서 먼저 끝내고, DB 저장만 짧은 트랜잭션으로 묶는다.
+    // 이전에는 메서드 전체가 @Transactional 이라 업로드 시간만큼 DB 커넥션을 점유했고, 롤백되면 S3 에 고아 파일이 남았다.
     @Override
-    @Transactional
     public QuestionIdResponseDto createQuestion(QuestionRequestDto requestDto, List<MultipartFile> images, String email) {
         // 1. 회원 정보 조회
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
-        // 2. Question 엔티티 생성
-        Question question = Question.builder()
-                .title(requestDto.getTitle())
-                .content(requestDto.getContent())
-                .createdAt(LocalDateTime.now())
-                .categories(requestDto.getCategories())
-                .user(user)
-                .build();
+        // 2. 이미지 업로드 (트랜잭션 밖)
+        List<String> imageUrls = uploadImages(images);
 
-        // 태그 처리
-        if (requestDto.getTags() != null) {
-            for (Tag tag : requestDto.getTags()) {
-                question.addTag(tag); // addTag에서 question 필드 자동 설정
-            }
-        }
+        try {
+            // 3. DB 저장 (짧은 트랜잭션)
+            return transactionTemplate.execute(status -> {
+                Question question = Question.builder()
+                        .title(requestDto.getTitle())
+                        .content(requestDto.getContent())
+                        .createdAt(LocalDateTime.now())
+                        .categories(requestDto.getCategories())
+                        .user(user)
+                        .build();
 
-        String thumbnailImageUrl = null;
-
-        // 3. 이미지 파일 처리
-        if (images != null && !images.isEmpty()) {
-            for (int i = 0; i < images.size(); i++) {
-                MultipartFile image = images.get(i);
-
-                // 로그 찍기
-                log.info("images[{}] 확인: isEmpty={}, originalFilename='{}'", i, image.isEmpty(), image.getOriginalFilename());
-
-                if (image == null || image.isEmpty() || image.getOriginalFilename() == null || image.getOriginalFilename().isBlank()) {
-                    log.warn("images[{}] 파일이 비어있거나 잘못됨, 건너뜀", i);
-                    continue;
+                if (requestDto.getTags() != null) {
+                    for (Tag tag : requestDto.getTags()) {
+                        question.addTag(tag); // addTag에서 question 필드 자동 설정
+                    }
                 }
 
-                try {
-                    String imageUrl = s3UploadService.saveFile(image);
-                    log.info("images[{}] 업로드 완료: {}", i, imageUrl);
-
-                    if (i == 0) {
-                        thumbnailImageUrl = imageUrl;
-                    }
-
-                    QuestionImage questionImage = QuestionImage.builder()
-                            .questionImage(imageUrl)
+                for (int i = 0; i < imageUrls.size(); i++) {
+                    question.addQuestionImage(QuestionImage.builder()
+                            .questionImage(imageUrls.get(i))
                             .sortOrder(i + 1)
                             .question(question)
-                            .build();
-                    question.addQuestionImage(questionImage);
-                } catch (IOException e) {
-                    throw new RuntimeException("이미지 파일 저장에 실패했습니다.", e);
+                            .build());
                 }
+                if (!imageUrls.isEmpty()) {
+                    question.updateThumbnail(imageUrls.get(0));
+                }
+
+                Question savedQuestion = questionRepository.save(question);
+                return new QuestionIdResponseDto(savedQuestion.getId());
+            });
+        } catch (RuntimeException e) {
+            // DB 저장 실패 시 업로드한 파일을 지워 고아 파일을 남기지 않는다
+            s3UploadService.deleteFiles(imageUrls);
+            throw e;
+        }
+    }
+
+    // 비어 있거나 잘못된 파일은 건너뛰고, 업로드된 URL 을 순서대로 반환
+    private List<String> uploadImages(List<MultipartFile> images) {
+        List<String> urls = new ArrayList<>();
+        if (images == null || images.isEmpty()) {
+            return urls;
+        }
+        for (int i = 0; i < images.size(); i++) {
+            MultipartFile image = images.get(i);
+            if (image == null || image.isEmpty() || image.getOriginalFilename() == null || image.getOriginalFilename().isBlank()) {
+                log.warn("images[{}] 파일이 비어있거나 잘못됨, 건너뜀", i);
+                continue;
+            }
+            try {
+                urls.add(s3UploadService.saveFile(image));
+            } catch (IOException e) {
+                s3UploadService.deleteFiles(urls);
+                throw new RuntimeException("이미지 파일 저장에 실패했습니다.", e);
             }
         }
-
-        // 썸네일 URL이 있다면 Question 객체에 설정
-        if (thumbnailImageUrl != null) {
-            question.updateThumbnail(thumbnailImageUrl);
-        }
-
-        // 4. Question 엔티티 저장 (QuestionImage는 Cascade 옵션으로 자동 저장)
-        Question savedQuestion = questionRepository.save(question);
-
-        // 5. 생성된 Question의 ID를 DTO로 감싸서 반환
-        return new QuestionIdResponseDto(savedQuestion.getId());
+        return urls;
     }
 
     @Override
-    @Transactional
     public QuestionIdResponseDto createAnswer(Long questionId, AnswerRequestDto requestDto, List<MultipartFile> images, String email) {
         // 1. 회원 정보 조회
         User user = userRepository.findByEmail(email)
@@ -149,42 +151,33 @@ public class QnaServiceImpl implements QnaService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 아이디를 가진 질문을 찾을 수 없습니다: " + questionId));
 
-        // 3. Question 엔티티 생성
-        Answer answer = Answer.builder()
-                .content(requestDto.getContent())
-                .createdAt(LocalDateTime.now())
-                .user(user)
-                .question(question)
-                .build();
+        // 3. 이미지 업로드 (트랜잭션 밖)
+        List<String> imageUrls = uploadImages(images);
 
-        // 4. 이미지 파일 처리
-        if (images != null && !images.isEmpty()) {
-            for (int i = 0; i < images.size(); i++) {
-                MultipartFile image = images.get(i);
+        try {
+            // 4. DB 저장 (짧은 트랜잭션)
+            return transactionTemplate.execute(status -> {
+                Answer answer = Answer.builder()
+                        .content(requestDto.getContent())
+                        .createdAt(LocalDateTime.now())
+                        .user(user)
+                        .question(question)
+                        .build();
 
-                if (image == null || image.isEmpty() || image.getOriginalFilename() == null || image.getOriginalFilename().isBlank()) {
-                    continue;
-                }
-
-                try {
-                    String imageUrl = s3UploadService.saveFile(image);
-
-                    AnswerImage answerImage = AnswerImage.builder()
-                            .answerImage(imageUrl)
+                for (int i = 0; i < imageUrls.size(); i++) {
+                    answer.addAnswerImage(AnswerImage.builder()
+                            .answerImage(imageUrls.get(i))
                             .sortOrder(i + 1)
                             .answer(answer)
-                            .build();
-                    answer.addAnswerImage(answerImage);
-                } catch (IOException e) {
-                    throw new RuntimeException("이미지 파일 저장에 실패했습니다.", e);
+                            .build());
                 }
-            }
+
+                Answer savedAnswer = answerRepository.save(answer);
+                return new QuestionIdResponseDto(savedAnswer.getQuestion().getId());
+            });
+        } catch (RuntimeException e) {
+            s3UploadService.deleteFiles(imageUrls);
+            throw e;
         }
-
-        // 4. Question 엔티티 저장 (QuestionImage는 Cascade 옵션으로 자동 저장)
-        Answer savedAnswer = answerRepository.save(answer);
-
-        // 5. 생성된 Question의 ID를 DTO로 감싸서 반환q
-        return new QuestionIdResponseDto(savedAnswer.getQuestion().getId());
     }
 }
