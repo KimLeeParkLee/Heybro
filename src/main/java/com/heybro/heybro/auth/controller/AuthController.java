@@ -76,7 +76,7 @@ public class AuthController {
         String refreshToken = requestDto.getRefreshToken();
 
         // Refresh Token 유효성 검증
-        if (!jwtUtil.validateToken(refreshToken)) {
+        if (!jwtUtil.validateToken(refreshToken) || !jwtUtil.isRefreshToken(refreshToken)) {
             throw new IllegalArgumentException("유효하지 않은 Refresh Token 입니다.");
         }
 

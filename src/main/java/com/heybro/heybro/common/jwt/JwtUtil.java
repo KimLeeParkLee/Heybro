@@ -18,7 +18,9 @@ public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
-    
+    public static final String TOKEN_TYPE_CLAIM = "typ";
+    public static final String TOKEN_TYPE_ACCESS = "access";
+    public static final String TOKEN_TYPE_REFRESH = "refresh";
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -39,23 +41,37 @@ public class JwtUtil {
 
     // Access Token 생성
     public String createAccessToken(String email) {
-        return generateToken(email, accessTokenExpiration);
+        return generateToken(email, accessTokenExpiration, TOKEN_TYPE_ACCESS);
     }
 
     // Refresh Token 생성
     public String createRefreshToken(String email) {
-        return generateToken(email, refreshTokenExpiration);
+        return generateToken(email, refreshTokenExpiration, TOKEN_TYPE_REFRESH);
     }
 
-    private String generateToken(String email, long expiration) {
+    // typ 클레임으로 access/refresh 를 구분해, 수명이 긴 refresh 토큰이 API 인증에 쓰이는 것을 막는다
+    private String generateToken(String email, long expiration, String tokenType) {
         Date now = new Date();
         JwtBuilder builder = Jwts.builder()
                 .subject(email)
+                .claim(TOKEN_TYPE_CLAIM, tokenType)
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + expiration))
                 .signWith(key);
 
         return builder.compact();
+    }
+
+    // access 토큰인지 확인. typ 클레임이 없는 토큰은 이 클레임을 도입하기 전에 발급된 것이므로 access 로 간주한다
+    // (refresh 토큰 만료 기간인 7일이 지나면 typ 없는 토큰은 더 이상 유효하지 않다)
+    public boolean isAccessToken(String token) {
+        String type = getClaims(token).get(TOKEN_TYPE_CLAIM, String.class);
+        return type == null || TOKEN_TYPE_ACCESS.equals(type);
+    }
+
+    public boolean isRefreshToken(String token) {
+        String type = getClaims(token).get(TOKEN_TYPE_CLAIM, String.class);
+        return type == null || TOKEN_TYPE_REFRESH.equals(type);
     }
 
     // 토큰에서 사용자 정보 가져오기

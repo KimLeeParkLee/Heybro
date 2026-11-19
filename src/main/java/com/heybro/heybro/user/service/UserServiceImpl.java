@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AccessTokenResponseDto reissueAccessToken(String refreshToken) {
-        if (!jwtUtil.validateToken(refreshToken)) {
+        if (!jwtUtil.validateToken(refreshToken) || !jwtUtil.isRefreshToken(refreshToken)) {
             throw new IllegalArgumentException("유효하지 않은 Refresh Token 입니다.");
         }
 
