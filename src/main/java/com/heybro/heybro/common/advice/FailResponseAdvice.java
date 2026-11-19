@@ -4,7 +4,9 @@ import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
 import com.heybro.heybro.common.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import com.heybro.heybro.common.exception.BusinessException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +22,13 @@ public class FailResponseAdvice {
     public ApiResponse<?> handleIllegalArgumentException(IllegalArgumentException e) {
         log.warn("handleIllegalArgumentException: {}", e.getMessage());
         return ApiResponse.error(e.getMessage(), 400);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ApiResponse<?>> handleBusinessException(BusinessException e) {
+        log.warn("handleBusinessException: {} ({})", e.getMessage(), e.getErrorCode());
+        HttpStatus status = e.getErrorCode().getStatus();
+        return ResponseEntity.status(status).body(ApiResponse.error(e.getMessage(), status.value()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

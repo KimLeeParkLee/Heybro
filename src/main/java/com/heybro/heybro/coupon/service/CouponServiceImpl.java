@@ -2,6 +2,8 @@ package com.heybro.heybro.coupon.service;
 
 import com.heybro.heybro.common.date.service.DateService;
 import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
+import com.heybro.heybro.common.exception.BusinessException;
+import com.heybro.heybro.common.exception.ErrorCode;
 import com.heybro.heybro.coupon.domain.Coupon;
 import com.heybro.heybro.coupon.domain.CouponPurchase;
 import com.heybro.heybro.coupon.domain.CouponType;
@@ -113,7 +115,7 @@ public class CouponServiceImpl implements CouponService {
             throw new IllegalStateException("쿠폰 가격이 올바르지 않습니다: " + price);
         }
         if (user.getBroPoint() < price) {
-            throw new IllegalArgumentException("포인트가 부족합니다. 필요: " + price + ", 보유: " + user.getBroPoint());
+            throw new BusinessException(ErrorCode.INSUFFICIENT_POINT, "필요: " + price + ", 보유: " + user.getBroPoint());
         }
         user.usePoints(price);
         pointHistoryRepository.save(PointHistory.builder()
@@ -197,6 +199,6 @@ public class CouponServiceImpl implements CouponService {
                 return code;
             }
         }
-        throw new IllegalStateException("쿠폰 코드 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+        throw new BusinessException(ErrorCode.COUPON_CODE_GENERATION_FAILED);
     }
 }

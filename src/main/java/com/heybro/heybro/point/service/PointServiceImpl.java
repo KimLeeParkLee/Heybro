@@ -1,5 +1,7 @@
 package com.heybro.heybro.point.service;
 
+import com.heybro.heybro.common.exception.BusinessException;
+import com.heybro.heybro.common.exception.ErrorCode;
 import com.heybro.heybro.point.domain.PointHistory;
 import com.heybro.heybro.point.domain.TransactionType;
 import com.heybro.heybro.point.dto.request.PointTransactionRequestDto;
@@ -50,7 +52,7 @@ public class PointServiceImpl implements PointService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
 
         if (requestDto.getPoint() <= 0) {
-            throw new IllegalArgumentException("포인트는 1 이상이어야 합니다.");
+            throw new BusinessException(ErrorCode.INVALID_POINT_AMOUNT);
         }
 
         // 포인트 적립
@@ -76,12 +78,12 @@ public class PointServiceImpl implements PointService {
 
         // 음수·0 금액은 거절 (음수를 보내면 잔액이 늘어나는 문제 방지, DTO 검증과 이중 방어)
         if (requestDto.getPoint() <= 0) {
-            throw new IllegalArgumentException("포인트는 1 이상이어야 합니다.");
+            throw new BusinessException(ErrorCode.INVALID_POINT_AMOUNT);
         }
 
         // 현재 포인트가 사용할 포인트보다 적을 경우 400 반환
         if (user.getBroPoint() < requestDto.getPoint()) {
-            throw new IllegalArgumentException("포인트가 부족합니다.");
+            throw new BusinessException(ErrorCode.INSUFFICIENT_POINT);
         }
 
         // 포인트 사용

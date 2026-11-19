@@ -1,7 +1,8 @@
 package com.heybro.heybro.routine.service;
 
 import com.heybro.heybro.common.date.service.DateService;
-import com.heybro.heybro.common.jwt.exception.ResourceNotFoundException;
+import com.heybro.heybro.common.exception.BusinessException;
+import com.heybro.heybro.common.exception.ErrorCode;
 import com.heybro.heybro.point.domain.PointHistory;
 import com.heybro.heybro.point.domain.TransactionType;
 import com.heybro.heybro.point.repository.PointHistoryRepository;
@@ -208,7 +209,7 @@ public class RoutineServiceImpl implements RoutineService {
         // (1) DailyRoutineLog에서 회원, 루틴 아이디로 해당하는 루틴 찾기 (행 잠금)
         DailyRoutineLog routineLog = dailyRoutineLogRepository.findByUserAndRoutineAndTaskDate(user, routine, today);
         if (routineLog == null) {
-            throw new ResourceNotFoundException("오늘 날짜의 루틴 기록이 없습니다. routineId=" + routineId);
+            throw new BusinessException(ErrorCode.ROUTINE_LOG_NOT_FOUND, "routineId=" + routineId);
         }
 
         // (2) 완료 상태 토글
