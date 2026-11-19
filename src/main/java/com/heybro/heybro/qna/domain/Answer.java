@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ public class Answer {
     @JoinColumn(name = "question_id")
     private Question question; // 질문
 
+    // 질문 상세 조회 시 답변마다 이미지를 따로 조회하는 N+1 방지 (answer_id IN (...)으로 묶어서 조회)
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<AnswerImage> answerImages = new ArrayList<>(); // 답변 이미지 목록
