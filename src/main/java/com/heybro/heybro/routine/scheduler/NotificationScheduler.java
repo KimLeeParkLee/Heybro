@@ -36,25 +36,22 @@ public class NotificationScheduler {
 
         log.info("NotificationScheduler 실행 - 오늘: {}, 현재 시간: {}", today, now);
 
-        List<UserRoutineSchedule> schedules =
-                userRoutineScheduleRepository.findAllByDayOfWeekEqualsAndScheduleTimeEquals(today, now);
-
-        for (UserRoutineSchedule schedule : schedules) {
-            String deviceToken = schedule.getUserRoutine().getUser().getNotificationToken();
-            if (deviceToken != null && !deviceToken.isEmpty()) {
-                String routineName = schedule.getUserRoutine().getRoutine().getName();
-                String title = "오늘의 루틴";
-                String body = "브로! 지금은 " + routineName + "할 시간이에요.";
-
-                FcmSendDto fcmSendDto = FcmSendDto.builder()
-                        .targetToken(deviceToken)
-                        .title(title)
-                        .body(body)
-                        .build();
-
-                fcmService.sendMessage(fcmSendDto);
-                log.info("푸시 알림 전송 완료: {} - {}", title, body);
-            }
+        // 회원·루틴을 fetch join 으로 함께 조회해, 트랜잭션 없는 스케줄러에서 지연 로딩 예외(LazyInitializationException)와
+        // 스케줄 1건당 추가 조회(N+1)가 생기지 않게 한다.
+        List<UserRoutineSchedule> schedules = userRoutineScheduleRepository.findNotificationTargets(today, now);
+        if (schedules.isEmpty()) {
+            return;
         }
+
+        List<FcmSendDto> messages = schedules.stream()
+                .map(schedule -> FcmSendDto.builder()
+                        .targetToken(schedule.getUserRoutine().getUser().getNotificationToken())
+                        .title("오늘의 루틴")
+                        .body("브로! 지금은 " + schedule.getUserRoutine().getRoutine().getName() + "할 시간이에요.")
+                        .build())
+                .toList();
+
+        int success = fcmService.sendMessages(messages);
+        log.info("푸시 알림 전송 완료: 대상 {}건, 성공 {}건", messages.size(), success);
     }
 }

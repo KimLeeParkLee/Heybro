@@ -12,6 +12,8 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @Builder
+// 매분 실행되는 알림 스케줄러가 (요일, 시각) 조건으로 조회하므로 전체 스캔을 피하기 위한 복합 인덱스
+@Table(indexes = @Index(name = "idx_user_routine_schedule_day_time", columnList = "dayOfWeek, scheduleTime"))
 public class UserRoutineSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
