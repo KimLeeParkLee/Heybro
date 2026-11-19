@@ -23,6 +23,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Builder
+// 랭킹 조회(누적 포인트 내림차순 TOP 10, 내 순위 범위 스캔)가 전체 테이블을 정렬하지 않도록 인덱스 추가
+@Table(indexes = @Index(name = "idx_user_total_bro_point", columnList = "totalBroPoint"))
 public class User {
     private static final int MAX_LEVEL = 20;
     private static final int EXP_PER_LEVEL = 50;

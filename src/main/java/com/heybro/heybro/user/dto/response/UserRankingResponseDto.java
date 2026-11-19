@@ -52,15 +52,25 @@ public class UserRankingResponseDto {
     private RankingResponseDto myRanking;
 
     public static UserRankingResponseDto from(List<com.heybro.heybro.user.repository.UserRankingProjection> top10Rankings, User user, int myRanking) {
+        // DENSE_RANK: 누적 포인트가 같으면 같은 순위, 다음 순위는 건너뛰지 않음
+        List<RankingResponseDto> rankings = new ArrayList<>();
+        int rank = 0;
+        long previousPoint = Long.MIN_VALUE;
+        for (com.heybro.heybro.user.repository.UserRankingProjection projection : top10Rankings) {
+            if (projection.getTotalBroPoint() != previousPoint) {
+                rank++;
+                previousPoint = projection.getTotalBroPoint();
+            }
+            rankings.add(RankingResponseDto.builder()
+                    .rank(rank)
+                    .nickname(projection.getNickname())
+                    .totalBroPoint(projection.getTotalBroPoint())
+                    .profileImage(projection.getProfileImage())
+                    .build());
+        }
+
         return UserRankingResponseDto.builder()
-                .rankings(top10Rankings.stream()
-                        .map(projection -> RankingResponseDto.builder()
-                                .rank(projection.getRanking())
-                                .nickname(projection.getNickname())
-                                .totalBroPoint(projection.getTotalBroPoint())
-                                .profileImage(projection.getProfileImage())
-                                .build())
-                        .toList())
+                .rankings(rankings)
                 .myRanking(RankingResponseDto.from(user, myRanking))
                 .build();
     }

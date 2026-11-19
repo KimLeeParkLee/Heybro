@@ -4,5 +4,4 @@ public interface UserRankingProjection {
     String getNickname();
     long getTotalBroPoint();
     String getProfileImage();
-    int getRanking();
 }
