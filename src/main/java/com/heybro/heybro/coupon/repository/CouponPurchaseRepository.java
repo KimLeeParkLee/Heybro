@@ -13,6 +13,8 @@ import java.util.List;
 public interface CouponPurchaseRepository extends JpaRepository<CouponPurchase, Long> {
     List<CouponPurchase> findAllByUserOrderByPurchaseDateDesc(User user);
 
+    boolean existsByGiftCode(String giftCode);
+
     @Query("select cp from CouponPurchase cp join fetch cp.coupon where cp.user = :user order by cp.purchaseDate desc")
     List<CouponPurchase> findAllByUserWithCoupon(@Param("user") User user);
 }
