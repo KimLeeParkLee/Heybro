@@ -39,3 +39,6 @@ out/
 # Ignore sensitive application properties
 /src/main/resources/application-dev.yml
 /src/main/resources/heybro-9382a-firebase-adminsdk-fbsvc-8f681b5667.json
+
+# JMeter 측정 원본 결과
+/perf/results/
