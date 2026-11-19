@@ -7,6 +7,7 @@ import com.heybro.heybro.point.dto.response.TotalPointBalanceResponseDto;
 import com.heybro.heybro.point.service.PointService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,13 +38,13 @@ public class PointController {
 
     @Operation(summary = "현재 포인트, 누적 포인트 적립")
     @PostMapping("/earn")
-    public void earnPoints(@RequestBody PointTransactionRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
+    public void earnPoints(@Valid @RequestBody PointTransactionRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
         pointService.earnPoint(requestDto, userDetails.getUsername());
     }
 
     @Operation(summary = "포인트 사용")
     @PostMapping("/use")
-    public void usePoints(@RequestBody PointTransactionRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
+    public void usePoints(@Valid @RequestBody PointTransactionRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
         pointService.usePoints(requestDto, userDetails.getUsername());
     }
 
