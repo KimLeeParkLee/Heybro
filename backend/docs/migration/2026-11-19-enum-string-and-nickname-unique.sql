@@ -4,7 +4,19 @@
 --    coupon.coupon_type            : CouponType 상수 순서대로 (AMOUNT=0, PRODUCT=1)
 --    coupon_purchase.gift_status   : 0=PENDING, 1=ACCEPTED, 2=EXPIRED
 -- 2) user.nickname 유니크 제약 (중복 닉네임이 있으면 먼저 정리해야 인덱스가 생성됨)
--- 반드시 백업 후, 트랜잭션 안에서 실행하고 결과를 확인할 것.
+-- 3) ordinal 시절 Hibernate가 만든 CHECK 제약 (예: transaction_type between 0 and 1) 제거
+--    남겨두면 문자열 값 INSERT가 'Check constraint ... is violated'로 실패함
+-- 반드시 백업 후 실행하고 결과를 확인할 것. (MySQL의 ALTER TABLE은 자동 커밋되므로 트랜잭션으로 되돌릴 수 없음)
+
+-- 제약 이름 확인 (운영 DB에서 이름이 다르면 아래 DROP CHECK 이름을 맞출 것)
+SELECT tc.TABLE_NAME, cc.CONSTRAINT_NAME, cc.CHECK_CLAUSE
+FROM information_schema.CHECK_CONSTRAINTS cc
+JOIN information_schema.TABLE_CONSTRAINTS tc USING (CONSTRAINT_SCHEMA, CONSTRAINT_NAME)
+WHERE cc.CONSTRAINT_SCHEMA = DATABASE();
+
+ALTER TABLE point_history DROP CHECK point_history_chk_1;
+ALTER TABLE coupon DROP CHECK coupon_chk_1;
+ALTER TABLE coupon_purchase DROP CHECK coupon_purchase_chk_1;
 
 START TRANSACTION;
 
